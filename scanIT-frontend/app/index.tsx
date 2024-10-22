@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { CameraView, useCameraPermissions, Camera } from 'expo-camera'
+import { CameraView, useCameraPermissions } from 'expo-camera'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { StatusBar } from 'expo-status-bar'
 
