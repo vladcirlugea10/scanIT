@@ -1,9 +1,15 @@
 import { View, Text, Image, StyleSheet } from 'react-native'
 import React from 'react'
 import MyButton from '@/components/MyButton';
+import useImageOCR from '@/hooks/useImageOCR';
 
 const ImageEdit = ({route}) => {
   const {photoUri} = route.params;
+  const {loading, scanImage} = useImageOCR();
+
+  const handleScanImage = () => {
+    scanImage({uri: photoUri});
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -11,7 +17,7 @@ const ImageEdit = ({route}) => {
         <Image source={{uri: photoUri}} style={styles.image} />
       </View>
       <View style={styles.buttonContainer}>
-        <MyButton title='Scan' onPress={() => console.log("Scanning")} />
+        <MyButton title='Scan' onPress={handleScanImage} />
       </View>
     </View>
   )
