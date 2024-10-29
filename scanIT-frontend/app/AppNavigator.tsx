@@ -4,7 +4,7 @@ import React from 'react'
 import Home from './(tabs)/Home';
 import ImageEdit from './(tabs)/ImageEdit';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
   return (

@@ -1,16 +1,19 @@
 import { View, Text, StyleSheet, Button, Image } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { CameraView, useCameraPermissions } from 'expo-camera'
+import { CameraCapturedPicture, CameraView, useCameraPermissions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import MyButton from '@/components/MyButton'
 import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+
+type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
 const Home = () => {
     const [permission, requestPermission] = useCameraPermissions();
-    const [photo, setPhoto] = useState(null);
+    const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>(undefined);
     const cameraRef = useRef<CameraView>(null);
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<HomeNavProps>();
 
     const takePhoto = async () => {
         if(cameraRef.current){
@@ -18,7 +21,7 @@ const Home = () => {
                 const options = {quality: 0.5, base64: true};
                 const photo = await cameraRef.current?.takePictureAsync(options);
                 setPhoto(photo);
-                console.log(photo.uri);
+                console.log(photo?.uri);
             }catch(err){
                 console.log(err);
             }
@@ -50,7 +53,7 @@ const Home = () => {
                     </View>
                     <View style={{display: "flex", flexDirection:"row", gap: 50}}>
                         <MyButton title='Scan' onPress={handleScan} iconName='checkmark-outline' iconColor='darkgrey'/>
-                        <MyButton title='Redo' onPress={() => setPhoto(null)} iconName='close-outline'/>
+                        <MyButton title='Redo' onPress={() => setPhoto(undefined)} iconName='close-outline'/>
                     </View>
                 </View>
             </View>

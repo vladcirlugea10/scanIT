@@ -1,9 +1,12 @@
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Image, StyleSheet } from 'react-native'
 import React from 'react'
 import MyButton from '@/components/MyButton';
 import useImageOCR from '@/hooks/useImageOCR';
+import { RouteProp } from '@react-navigation/native';
 
-const ImageEdit = ({route}) => {
+type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
+
+const ImageEdit: React.FC<ImageEditProps> = ({route} ) => {
   const {photoUri} = route.params;
   const {loading, scanImage} = useImageOCR();
 

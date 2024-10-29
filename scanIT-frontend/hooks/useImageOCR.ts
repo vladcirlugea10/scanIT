@@ -1,11 +1,12 @@
 import { useState } from "react"
 import axios from "axios"
+import Image from "@/types/Image";
 
 const useImageOCR = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
 
-    const scanImage = async (image) => {
+    const scanImage = async (image: Image) => {
         setLoading(true);
         setData(null);
 
@@ -23,7 +24,7 @@ const useImageOCR = () => {
                 },
             });
             setData(response.data);
-            console.log(data);
+            console.log(response.data);
         } catch(error){
             console.log(error);
         } finally{
