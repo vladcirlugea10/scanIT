@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar'
 import MyButton from '@/components/MyButton'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { getIngredientsAllergens } from '@/database/local/sqLite'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -25,6 +26,12 @@ const Home = () => {
             }catch(err){
                 console.log(err);
             }
+        }
+        try{
+            await getIngredientsAllergens();
+            //console.log("Ingredient: ", ingredient);
+        } catch(error){
+            console.log('Error getting ingredients allergens: ', error);
         }
     };
 
@@ -52,7 +59,7 @@ const Home = () => {
                         <Image source={{uri: photo.uri}} style={styles.camera} />
                     </View>
                     <View style={{display: "flex", flexDirection:"row", gap: 50}}>
-                        <MyButton title='Scan' onPress={handleScan} iconName='checkmark-outline' iconColor='darkgrey'/>
+                        <MyButton title='Advance' onPress={handleScan} iconName='checkmark-outline' iconColor='darkgrey'/>
                         <MyButton title='Redo' onPress={() => setPhoto(undefined)} iconName='close-outline'/>
                     </View>
                 </View>
