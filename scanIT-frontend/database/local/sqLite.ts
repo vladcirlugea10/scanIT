@@ -4,6 +4,7 @@ import * as Sharing from 'expo-sharing';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import allergenIngredients from '@/assets/data/allergen_data';
 import AllergenIngredient from '@/types/AllergenIngredient';
+import unhealthyIngredients from '@/assets/data/unhealthy_data';
 
 const CURRENT_DB_VERSION = '1.0.0';
 const db = SQLite.openDatabaseAsync('scanIT.db');
@@ -58,6 +59,15 @@ const addAllergenIngredient = async (name: string, group: string, description: s
     }
 }
 
+const addUnhealthyIngredient = async (name: string, group: string, description: string) => {
+    try{
+        await (await db).execAsync(`INSERT INTO ingredients_unhealthy (name, "group", description) VALUES ('${name}', '${group}', '${description}')`);
+        console.log(`Inserted: ${name} - ${group} - ${description}`);
+    } catch(error){
+        console.log('Error adding ingredient unhealthy: ', error);
+    }
+}
+
 const addBulkAllergenIngredients = async (ingredients: AllergenIngredient[]) => {
     try{
         await (await db).withTransactionAsync(async () => {
@@ -70,6 +80,18 @@ const addBulkAllergenIngredients = async (ingredients: AllergenIngredient[]) => 
     }
 }
 
+const addBulkUnhealthyIngredients = async (ingredients: AllergenIngredient[]) => {
+    try{
+        await (await db).withTransactionAsync(async () => {
+            for(const ingredient of ingredients){
+                await addUnhealthyIngredient(ingredient.name, ingredient.group, ingredient.description);
+            }
+        });
+    } catch(error){
+        console.log('Error adding bulk ingredient unhealthy: ', error);
+    }
+}
+
 const populateDB = async () => {
     await (await db).execAsync(
         `CREATE TABLE IF NOT EXISTS ingredients_allergens (
@@ -77,10 +99,19 @@ const populateDB = async () => {
             name TEXT NOT NULL,
             "group" TEXT,
             description TEXT
-        );DELETE FROM ingredients_allergens;`
+        );
+        CREATE TABLE IF NOT EXISTS ingredients_unhealthy (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            "group" TEXT,
+            description TEXT
+        );
+        DELETE FROM ingredients_allergens;
+        DELETE FROM ingredients_unhealthy;`
     );
 
     await addBulkAllergenIngredients(allergenIngredients);
+    await addBulkUnhealthyIngredients(unhealthyIngredients);
 }
 
 const updateDB = async (oldVersion: string) => {
