@@ -44,7 +44,8 @@ const ImageEdit: React.FC<ImageEditProps> = ({route} ) => {
     )
   }
 
-  if(data){
+  if(data.text.length > 0){
+    console.log("data", data);
     return(
       <View style={styles.mainContainer}>
         <Text style={{fontSize: 25, fontWeight: 700}}>

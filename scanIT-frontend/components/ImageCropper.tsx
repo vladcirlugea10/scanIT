@@ -4,7 +4,12 @@ import MyButton from './MyButton';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
-const ImageCropper = ({imageUri, onCropComplete}) => {
+interface ImageCropperProps {
+    imageUri: string,
+    onCropComplete: (cropArea: {originX: number, originY: number, width: number, height: number}) => void
+}
+
+const ImageCropper: React.FC<ImageCropperProps> = ({imageUri, onCropComplete}) => {
     const [cropArea, setCropArea] = useState({
         x: 0,
         y: 0,
@@ -12,7 +17,7 @@ const ImageCropper = ({imageUri, onCropComplete}) => {
         height: screenHeight * 0.4
     });
     const [imageSize, setImageSize] = useState({width: 0, height: 0});
-    const [displayDimensions, setDisplayDimensions] = useState({
+    const [imageDisplayDimensions, setDisplayDimensions] = useState({
         width: 0,
         height: 0,
         x: 0,
@@ -63,17 +68,17 @@ const ImageCropper = ({imageUri, onCropComplete}) => {
                 let newCropArea = {...cropArea};
                 const minSize = 50;
                 
-                const maxX = displayDimensions.x + displayDimensions.width;
-                const maxY = displayDimensions.y + displayDimensions.height;
+                const maxX = imageDisplayDimensions.x + imageDisplayDimensions.width;
+                const maxY = imageDisplayDimensions.y + imageDisplayDimensions.height;
                 
                 switch(handlePosition) {
                     case 'topLeft':
                         newCropArea.x = Math.max(
-                            displayDimensions.x,
+                            imageDisplayDimensions.x,
                             Math.min(cropArea.x + gestureState.dx, cropArea.x + cropArea.width - minSize)
                         );
                         newCropArea.y = Math.max(
-                            displayDimensions.y,
+                            imageDisplayDimensions.y,
                             Math.min(cropArea.y + gestureState.dy, cropArea.y + cropArea.height - minSize)
                         );
                         newCropArea.width = cropArea.x + cropArea.width - newCropArea.x;
@@ -85,7 +90,7 @@ const ImageCropper = ({imageUri, onCropComplete}) => {
                             maxX - cropArea.x
                         ));
                         newCropArea.y = Math.max(
-                            displayDimensions.y,
+                            imageDisplayDimensions.y,
                             Math.min(cropArea.y + gestureState.dy, cropArea.y + cropArea.height - minSize)
                         );
                         newCropArea.width = newWidthTR;
@@ -93,7 +98,7 @@ const ImageCropper = ({imageUri, onCropComplete}) => {
                         break;
                     case 'bottomLeft':
                         newCropArea.x = Math.max(
-                            displayDimensions.x,
+                            imageDisplayDimensions.x,
                             Math.min(cropArea.x + gestureState.dx, cropArea.x + cropArea.width - minSize)
                         );
                         newCropArea.width = cropArea.x + cropArea.width - newCropArea.x;
@@ -124,12 +129,12 @@ const ImageCropper = ({imageUri, onCropComplete}) => {
     const handleCompleteCrop = () => {
         if (!imageSize.width || !imageSize.height) return;
 
-        const scaleX = imageSize.width / displayDimensions.width;
-        const scaleY = imageSize.height / displayDimensions.height;
+        const scaleX = imageSize.width / imageDisplayDimensions.width;
+        const scaleY = imageSize.height / imageDisplayDimensions.height;
         
         const cropImageArea = {
-            originX: Math.max(0, Math.round((cropArea.x - displayDimensions.x) * scaleX)),
-            originY: Math.max(0, Math.round((cropArea.y - displayDimensions.y) * scaleY)),
+            originX: Math.max(0, Math.round((cropArea.x - imageDisplayDimensions.x) * scaleX)),
+            originY: Math.max(0, Math.round((cropArea.y - imageDisplayDimensions.y) * scaleY)),
             width: Math.min(imageSize.width, Math.round(cropArea.width * scaleX)),
             height: Math.min(imageSize.height, Math.round(cropArea.height * scaleY))
         };
@@ -141,10 +146,10 @@ const ImageCropper = ({imageUri, onCropComplete}) => {
         <View style={styles.container}>
             <Image 
                 style={[styles.image, {
-                    width: displayDimensions.width,
-                    height: displayDimensions.height,
-                    left: displayDimensions.x,
-                    top: displayDimensions.y
+                    width: imageDisplayDimensions.width,
+                    height: imageDisplayDimensions.height,
+                    left: imageDisplayDimensions.x,
+                    top: imageDisplayDimensions.y
                 }]} 
                 source={{uri: imageUri}} 
             />

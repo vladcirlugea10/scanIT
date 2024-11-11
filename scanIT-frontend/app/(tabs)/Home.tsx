@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Button, Image } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import MyButton from '@/components/MyButton'
@@ -21,13 +21,15 @@ const Home = () => {
             try{
                 const options = {quality: 0.5, base64: true};
                 const photo = await cameraRef.current?.takePictureAsync(options);
-                const resizedPhoto = await ImageManipulator.manipulateAsync(
-                    photo.uri,
-                    [{ resize: { width: 1500, height: 2000 } }],
-                    { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
-                  );
-                  setPhoto(resizedPhoto);
-                  console.log("photo in home:", resizedPhoto.width, resizedPhoto.height);
+                if(photo){
+                    const resizedPhoto = await ImageManipulator.manipulateAsync(
+                        photo.uri,
+                        [{ resize: { width: 1500, height: 2000 } }],
+                        { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+                    );
+                    setPhoto(resizedPhoto);
+                    console.log("photo in home:", resizedPhoto.width, resizedPhoto.height);
+                }       
             }catch(err){
                 console.log(err);
             }
