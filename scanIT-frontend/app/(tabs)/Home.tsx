@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, Button, Image } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import MyButton from '@/components/MyButton'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { getIngredientsAllergens } from '@/database/local/sqLite'
+import * as ImageManipulator from 'expo-image-manipulator'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -21,17 +21,16 @@ const Home = () => {
             try{
                 const options = {quality: 0.5, base64: true};
                 const photo = await cameraRef.current?.takePictureAsync(options);
-                setPhoto(photo);
-                console.log(photo?.uri);
+                const resizedPhoto = await ImageManipulator.manipulateAsync(
+                    photo.uri,
+                    [{ resize: { width: 1500, height: 2000 } }],
+                    { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+                  );
+                  setPhoto(resizedPhoto);
+                  console.log("photo in home:", resizedPhoto.width, resizedPhoto.height);
             }catch(err){
                 console.log(err);
             }
-        }
-        try{
-            await getIngredientsAllergens();
-            //console.log("Ingredient: ", ingredient);
-        } catch(error){
-            console.log('Error getting ingredients allergens: ', error);
         }
     };
 
