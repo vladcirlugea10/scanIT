@@ -11,7 +11,7 @@ const db = SQLite.openDatabaseAsync('scanIT.db');
 console.log(FileSystem.documentDirectory);
 
 export const initDB = async () => {
-    await AsyncStorage.removeItem('dbVersion');
+    //await AsyncStorage.removeItem('dbVersion');
     const dbVersion = await AsyncStorage.getItem('dbVersion');
     console.log(dbVersion);
     if(dbVersion === null){
@@ -105,9 +105,7 @@ const populateDB = async () => {
             name TEXT NOT NULL,
             "group" TEXT,
             description TEXT
-        );
-        DELETE FROM ingredients_allergens;
-        DELETE FROM ingredients_unhealthy;`
+        );`
     );
 
     await addBulkAllergenIngredients(allergenIngredients);

@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons';
+import { colors } from '@/assets/colors';
 
 interface MyButtonProps {
     onPress: () => void;
@@ -19,7 +20,7 @@ const MyButton = ({
     containerStyle = {},
     iconName,
     iconSize = 24,
-    iconColor = "darkgrey"
+    iconColor = colors.secondary
 }:MyButtonProps) => {
   return (
     <TouchableOpacity onPress={onPress} style={[styles.container, containerStyle]}>
@@ -33,13 +34,13 @@ const MyButton = ({
 
 const styles = StyleSheet.create({
     buttonText:{
-        color: "darkgrey",
+        color: colors.secondary,
         fontSize: 20,
     },
     container:{
-        backgroundColor: 'lightblue',
+        backgroundColor: colors.primary,
         padding: 10,
-        borderRadius: 50,
+        borderRadius: 15,
         width: 100,
         height: 50,
         alignItems: 'center',
