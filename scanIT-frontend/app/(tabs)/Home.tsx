@@ -6,6 +6,8 @@ import MyButton from '@/components/MyButton'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import * as ImageManipulator from 'expo-image-manipulator'
+import { globalStyles } from '@/assets/styles'
+import { colors } from '@/assets/colors'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -53,14 +55,14 @@ const Home = () => {
 
     if(photo){
         return(
-            <View style={styles.mainContainer}>
+            <View style={[styles.mainContainer]}>
                 <StatusBar style='light' backgroundColor='black' />
                 <View style={styles.dataContainer}>
                     <View style={styles.cameraContainer}>
                         <Image source={{uri: photo.uri}} style={styles.camera} />
                     </View>
                     <View style={{display: "flex", flexDirection:"row", gap: 50}}>
-                        <MyButton title='Advance' onPress={handleScan} iconName='checkmark-outline' iconColor='darkgrey'/>
+                        <MyButton title='Advance' onPress={handleScan} iconName='checkmark-outline' />
                         <MyButton title='Redo' onPress={() => setPhoto(undefined)} iconName='close-outline'/>
                     </View>
                 </View>
@@ -75,7 +77,7 @@ const Home = () => {
                 <View style={styles.cameraContainer}>
                     <CameraView ref={cameraRef} style={styles.camera} />
                 </View>
-                <MyButton iconName='camera' iconColor='darkgrey' iconSize={34} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} />
+                <MyButton iconName='camera' iconColor={colors.secondary} iconSize={30} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} />
             </View>
         </View>
     );
@@ -86,7 +88,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'gray',
+        backgroundColor: colors.secondary
     },
     dataContainer:{
         gap: 10,
@@ -105,16 +107,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        borderRadius: 50,
     },
-    navbar:{
-        width: '80%',
-        height: 50,
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'lightblue',
-    }
 });
 
 export default Home

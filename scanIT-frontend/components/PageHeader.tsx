@@ -1,11 +1,12 @@
 import { View, Text, Image, StyleSheet } from 'react-native'
 import React from 'react'
+import { colors } from '@/assets/colors';
 
 const PageHeader = ({title}: {title: string}) => {
   return (
     <View style={styles.header}>
-        <Image style={styles.headerLogo} source={require('@/assets/images/logo.png')} />
-        <Text style={styles.headerText} >{title}</Text>
+        <Image style={styles.headerLogo} source={require('@/assets/images/logo_nobg_white.png')} />
+        <Text style={[styles.headerText]} >{title}</Text>
     </View>
   )
 }
@@ -17,10 +18,10 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingLeft: 10,
-        backgroundColor: 'lightblue',
+        backgroundColor: colors.third,
     },
     headerText: {
-        color: 'darkgrey',
+        color: colors.secondary,
         fontSize: 30,
     },
     headerLogo: {

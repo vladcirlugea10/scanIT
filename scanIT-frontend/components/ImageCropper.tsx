@@ -1,6 +1,7 @@
 import { View, Dimensions, PanResponder, Image, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import MyButton from './MyButton';
+import { colors } from '@/assets/colors';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -145,7 +146,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({imageUri, onCropComplete}) =
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image 
+                <Image
                     style={[styles.image, {
                         width: imageDisplayDimensions.width,
                         height: imageDisplayDimensions.height,
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#000000AA'
+        backgroundColor: colors.secondary,
     },
     imageContainer: {
         justifyContent: 'center',
@@ -194,18 +195,19 @@ const styles = StyleSheet.create({
     },
     cropArea: {
         borderWidth: 2,
-        borderColor: 'white',
+        borderColor: colors.primary,
         position: 'absolute',
         backgroundColor: 'rgba(255, 255, 255, 0.2)'
     },
     cropButton: {
         width: 20,
         height: 20,
-        backgroundColor: 'white',
+        backgroundColor: colors.primary,
         position: 'absolute',
         borderRadius: 10,
         borderWidth: 2,
-        borderColor: 'darkgrey'
+        borderColor: colors.secondary,
+        opacity: 0.7
     }
 });
 

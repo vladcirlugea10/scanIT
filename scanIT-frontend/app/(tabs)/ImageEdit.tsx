@@ -5,6 +5,7 @@ import useImageOCR from '@/hooks/useImageOCR';
 import { RouteProp } from '@react-navigation/native';
 import * as ImageManipulator from 'expo-image-manipulator';
 import ImageCropper from '@/components/ImageCropper';
+import { colors } from '@/assets/colors';
 
 type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
 
@@ -39,7 +40,7 @@ const ImageEdit: React.FC<ImageEditProps> = ({route} ) => {
   if(loading){
     return(
       <View style={styles.mainContainer}>
-        <ActivityIndicator size='large' color="darkgrey" />
+        <ActivityIndicator size='large' color={colors.primary} />
       </View>
     )
   }
