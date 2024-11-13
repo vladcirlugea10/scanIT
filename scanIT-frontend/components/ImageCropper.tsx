@@ -144,27 +144,29 @@ const ImageCropper: React.FC<ImageCropperProps> = ({imageUri, onCropComplete}) =
 
     return (
         <View style={styles.container}>
-            <Image 
-                style={[styles.image, {
-                    width: imageDisplayDimensions.width,
-                    height: imageDisplayDimensions.height,
-                    left: imageDisplayDimensions.x,
-                    top: imageDisplayDimensions.y
-                }]} 
-                source={{uri: imageUri}} 
-            />
-            <View style={[styles.cropArea, {
-                left: cropArea.x,
-                top: cropArea.y,
-                width: cropArea.width,
-                height: cropArea.height
-            }]}>
-                <View {...handleImageCropping('topLeft').panHandlers} style={[styles.cropButton, {top: -10, left: -10}]} />
-                <View {...handleImageCropping('topRight').panHandlers} style={[styles.cropButton, {top: -10, right: -10}]} />
-                <View {...handleImageCropping('bottomLeft').panHandlers} style={[styles.cropButton, {bottom: -10, left: -10}]} />
-                <View {...handleImageCropping('bottomRight').panHandlers} style={[styles.cropButton, {bottom: -10, right: -10}]} />
+            <View style={styles.imageContainer}>
+                <Image 
+                    style={[styles.image, {
+                        width: imageDisplayDimensions.width,
+                        height: imageDisplayDimensions.height,
+                        left: imageDisplayDimensions.x,
+                        top: imageDisplayDimensions.y
+                    }]} 
+                    source={{uri: imageUri}} 
+                />
+                <View style={[styles.cropArea, {
+                    left: cropArea.x,
+                    top: cropArea.y,
+                    width: cropArea.width,
+                    height: cropArea.height
+                }]}>
+                    <View {...handleImageCropping('topLeft').panHandlers} style={[styles.cropButton, {top: -10, left: -10}]} />
+                    <View {...handleImageCropping('topRight').panHandlers} style={[styles.cropButton, {top: -10, right: -10}]} />
+                    <View {...handleImageCropping('bottomLeft').panHandlers} style={[styles.cropButton, {bottom: -10, left: -10}]} />
+                    <View {...handleImageCropping('bottomRight').panHandlers} style={[styles.cropButton, {bottom: -10, right: -10}]} />
+                </View>
             </View>
-            <MyButton title='Complete' onPress={handleCompleteCrop} />
+            <MyButton title='Complete crop' onPress={handleCompleteCrop} containerStyle={styles.completeButton} />
         </View>
     );
 };
@@ -176,9 +178,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#000000AA'
     },
+    imageContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: screenWidth * 0.85,
+        height: '80%',
+    },
+    completeButton: {
+        marginTop: 10,
+        width: 150
+    },
     image: {
         position: 'absolute',
-        resizeMode: 'contain'
+        resizeMode: 'contain',
     },
     cropArea: {
         borderWidth: 2,
@@ -193,7 +205,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         borderRadius: 10,
         borderWidth: 2,
-        borderColor: '#666'
+        borderColor: 'darkgrey'
     }
 });
 
