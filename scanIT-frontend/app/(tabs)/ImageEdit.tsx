@@ -16,12 +16,8 @@ const ImageEdit: React.FC<ImageEditProps> = ({route} ) => {
   const [croppedImage, setCroppedImage] = useState("");
 
   const handleCropImage = async (cropArea: {originX: number, originY: number, width: number, height: number} ) => {
-    console.log("crop area",cropArea);
-    const newImageSize = {width: cropArea.width, height: cropArea.height};
-    console.log("new image size: ", newImageSize);
     const editedResult = await ImageManipulator.manipulateAsync(photoUri, [{crop: cropArea}], {compress: 1, format: ImageManipulator.SaveFormat.JPEG});
     setCroppedImage(editedResult.uri);
-    console.log("edited result: ", editedResult);
     setIsCropping(false);
   }
 

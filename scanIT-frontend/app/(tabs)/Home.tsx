@@ -6,7 +6,6 @@ import MyButton from '@/components/MyButton'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import * as ImageManipulator from 'expo-image-manipulator'
-import { globalStyles } from '@/assets/styles'
 import { colors } from '@/assets/colors'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
@@ -30,7 +29,6 @@ const Home = () => {
                         { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
                     );
                     setPhoto(resizedPhoto);
-                    console.log("photo in home:", resizedPhoto.width, resizedPhoto.height);
                 }       
             }catch(err){
                 console.log(err);
