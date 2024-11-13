@@ -4,7 +4,7 @@ import React from 'react'
 import Home from './(tabs)/Home';
 import ImageEdit from './(tabs)/ImageEdit';
 import PageHeader from '@/components/PageHeader';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

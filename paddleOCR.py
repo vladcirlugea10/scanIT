@@ -17,7 +17,7 @@ def ocr_img():
     result = ocr.ocr(img_path, cls=True)
     text_output = []
     for line in result[0]:
-        words = line[1][0].split()  # Split each line into words
+        words = line[1][0].split()
         text_output.extend(words)
 
     return jsonify({'text': text_output}), 200
