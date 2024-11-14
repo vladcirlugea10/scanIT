@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import allergenIngredients from '@/assets/data/allergen_data';
-import AllergenIngredient from '@/types/AllergenIngredient';
+import AllergenIngredient, { GetAllergenIngredient } from '@/types/AllergenIngredient';
 import unhealthyIngredients from '@/assets/data/unhealthy_data';
 
 const CURRENT_DB_VERSION = '1.0.0';
@@ -43,11 +43,24 @@ export const shareDatabaseFile = async () => {
     }
 };
 
-export const getIngredientsAllergens = async () => {
-    (await db).withTransactionAsync(async () => {
-        const result =  (await db).getAllSync('SELECT * FROM ingredients_allergens');
-        console.log(result);
-    })
+export const getIngredientsAllergens = async (): Promise<GetAllergenIngredient[]> => {
+    const result = (await db).getAllSync('SELECT * FROM ingredients_allergens') as GetAllergenIngredient[];
+        return result.map(ingredient => ({
+            id: ingredient.id,
+            name: ingredient.name,
+            group: ingredient.group,
+            description: ingredient.description
+        }));
+};
+
+export const getIngredientsUnhealthy = async (): Promise<GetAllergenIngredient[]> => {
+    const result = (await db).getAllSync('SELECT * FROM ingredients_unhealthy') as GetAllergenIngredient[];
+        return result.map(ingredient => ({
+            id: ingredient.id,
+            name: ingredient.name,
+            group: ingredient.group,
+            description: ingredient.description
+        }));
 };
 
 const addAllergenIngredient = async (name: string, group: string, description: string) => {

@@ -19,13 +19,12 @@ const useImageOCR = () => {
                 name: 'image.jpg',
             });
         
-            const response = await axios.post('http://192.168.1.107:5000/api/ocr', formData, {
+            const response = await axios.post('http://192.168.1.4:5000/api/ocr', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             setData(response.data);
-            console.log("response",response.data);
         } catch(error){
             console.log(error);
         } finally{

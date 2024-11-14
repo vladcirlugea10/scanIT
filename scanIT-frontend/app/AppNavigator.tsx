@@ -7,6 +7,7 @@ import PageHeader from '@/components/PageHeader';
 import { TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@/assets/colors';
+import ScanImage from './(tabs)/ScanImage';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -27,6 +28,7 @@ const AppNavigator = () => {
         <Stack.Navigator initialRouteName='Home'>
             <Stack.Screen name='Home' component={Home} options={{headerTitle: () => <PageHeader title={"Home"} />, headerRight: () => <Ionicons name='person-outline' size={24} color={colors.secondary}/>}} />
             <Stack.Screen name='ImageEdit' component={ImageEdit} options={{headerTitle: () => <PageHeader title={"Edit image"} />, headerRight: () => <BackButton />, headerBackVisible: false,}} />
+            <Stack.Screen name='ScanImage' component={ScanImage} options={{headerTitle: () => <PageHeader title={"Scan image"} />, headerRight: () => <BackButton />, headerBackVisible: false,}} />
         </Stack.Navigator>
     </NavigationContainer>
   );
