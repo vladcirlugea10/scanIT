@@ -11,7 +11,6 @@ type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
 const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {photoUri} = route.params;
-  const {data} = useImageOCR();
   const [isCropping, setIsCropping] = useState(true);
   const [croppedImage, setCroppedImage] = useState("");
 

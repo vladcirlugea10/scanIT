@@ -72,7 +72,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         return(
           <View style={styles.mainContainer}>
             <Ionicons name='alert-circle-outline' size={50} color={colors.warning} />
-            <Text>Something went wrong! Please try again</Text>
+            <Text>Something went wrong! Please try again!</Text>
           </View>
         )
     }
