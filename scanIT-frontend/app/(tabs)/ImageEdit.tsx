@@ -1,10 +1,10 @@
 import { View, Image, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import MyButton from '@/components/MyButton';
-import useImageOCR from '@/hooks/useImageOCR';
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native';
 import * as ImageManipulator from 'expo-image-manipulator';
 import ImageCropper from '@/components/ImageCropper';
+import { RootStackParamList } from '@/types/StackParamsList';
 
 type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
 

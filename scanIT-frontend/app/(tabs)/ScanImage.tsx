@@ -1,20 +1,18 @@
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
 import React, { useEffect } from 'react'
-import { RouteProp, useNavigation } from '@react-navigation/native'
+import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
 import useImageOCR from '@/hooks/useImageOCR';
 import { colors } from '@/assets/colors';
 import MyButton from '@/components/MyButton';
-import { GetAllergenIngredient } from '@/types/AllergenIngredient';
-import { getIngredientsAllergens, getIngredientsUnhealthy } from '@/database/local/sqLite';
 import { Ionicons } from '@expo/vector-icons';
+import { RootStackParamList } from '@/types/StackParamsList';
 
 type ScanImageNavProps = { route: RouteProp<RootStackParamList, 'ScanImage'> };
 
 const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
-    const navigation = useNavigation<ScanImageNavProps>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { photoUri } = route.params;
     const { scanImage, loading, data } = useImageOCR();
-    console.log(data);
 
     useEffect(() => {
         handleScan();
@@ -26,24 +24,8 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         } 
     }
 
-    const handleCheckIngredients = async () => {
-        const allergens: GetAllergenIngredient[] = await getIngredientsAllergens();
-        const unhealthy: GetAllergenIngredient[] = await getIngredientsUnhealthy();
-  
-        if(allergens.length > 0){
-          allergens.map((ingredient) => {
-            if(data.text.includes(ingredient.name)){
-              console.log(ingredient);
-            }
-          })
-        }
-        if(unhealthy.length > 0){
-          unhealthy.map((ingredient) => {
-            if(data.text.includes(ingredient.name)){
-              console.log(ingredient);
-            }
-          })
-        }
+    const handleCheckIngredients = () => {
+        navigation.navigate('IngredientsCheck', {data: data});
     }
 
     if(loading){
