@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { RouteProp } from '@react-navigation/native'
+import { NavigationProp, RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
 import { GetAllergenIngredient } from '@/types/AllergenIngredient';
 import { getIngredientsAllergens, getIngredientsUnhealthy } from '@/database/local/sqLite';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@/assets/colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import IngredientModal from '../../components/IngredientModal';
+import MyButton from '@/components/MyButton';
 
 type IngredientsCheckNavProps = { route: RouteProp<RootStackParamList, 'IngredientsCheck'> };
 
@@ -13,10 +16,22 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     const { data } = route.params;
     const [foundAllergenIngredients, setFoundAllergenIngredients] = useState<GetAllergenIngredient[]>([]);
     const [foundUnhealthyIngredients, setFoundUnhealthyIngredients] = useState<GetAllergenIngredient[]>([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedIngredient, setSelectedIngredient] = useState<GetAllergenIngredient | null>(null);
 
     useEffect(() => {
         handleCheckIngredients();
     }, [data]);
+
+    const handleOpenModal = (ingredient: GetAllergenIngredient) => {
+        setSelectedIngredient(ingredient);
+        setModalVisible(true);
+    }
+
+    const handleCloseModal = () => {
+        setSelectedIngredient(null);
+        setModalVisible(false);
+    }
 
     const handleCheckIngredients = async () => {
         const allergens: GetAllergenIngredient[] = await getIngredientsAllergens();
@@ -64,13 +79,14 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                 </View>
                 {foundAllergenIngredients.length > 0 ? foundAllergenIngredients.map((ingredient) => (
                   <View style={{flexDirection: 'column'}}>
+                    <MyButton title='More' onPress={() => handleOpenModal(ingredient)} />
                     <Text style={{color: colors.danger}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
                     <Text>{ingredient.description}</Text>
                   </View>
                 ))
-                :
+                : (
                   <Text>No allergen ingredients found!</Text>
-                }
+                )}
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Ionicons name='alert-circle-outline' size={40} color={colors.warning} />
@@ -86,6 +102,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                 <Text>No unhealthy ingredients found!</Text>
               }
             </View>
+            <IngredientModal visible={modalVisible} onClose={handleCloseModal} ingredient={selectedIngredient} />
           </View>
         )
     }

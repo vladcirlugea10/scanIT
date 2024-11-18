@@ -10,10 +10,9 @@ import { RootStackParamList } from '@/types/StackParamsList';
 type ScanImageNavProps = { route: RouteProp<RootStackParamList, 'ScanImage'> };
 
 const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { photoUri } = route.params;
     const { scanImage, loading, data } = useImageOCR();
-    console.log(data);
 
     useEffect(() => {
         handleScan();
