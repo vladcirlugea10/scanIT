@@ -3,7 +3,8 @@ export const colors = {
     secondary: '#DBE4EE',
     third: '#025D8A',
     warning: '#EAC435',
-    fifth: '#DE541E',
+    danger: '#DE541E',
+    success: '#4CAF50',
     white: '#ffffff',
     Oldthird: '#0C090D',
     newThird: '#08415C'

@@ -13,6 +13,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { photoUri } = route.params;
     const { scanImage, loading, data } = useImageOCR();
+    console.log(data);
 
     useEffect(() => {
         handleScan();
