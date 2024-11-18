@@ -2,6 +2,7 @@ import { useState } from "react"
 import axios from "axios"
 import Image from "@/types/Image";
 import OCRResult from "@/types/OCRTypes";
+import { getExpoServerIP } from "@/utils/expo_server";
 
 const useImageOCR = () => {
     const [loading, setLoading] = useState(false);
@@ -18,14 +19,14 @@ const useImageOCR = () => {
                 type: 'image/jpg',
                 name: 'image.jpg',
             });
-        
-            const response = await axios.post('http://192.168.1.107:5000/api/ocr', formData, {
+            
+            const serverIP = getExpoServerIP();
+            const response = await axios.post(`http://${serverIP}:5000/api/ocr`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             setData(response.data);
-            console.log("response",response.data);
         } catch(error){
             console.log(error);
         } finally{

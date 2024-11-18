@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import * as ImageManipulator from 'expo-image-manipulator'
 import { colors } from '@/assets/colors'
+import { RootStackParamList } from '@/types/StackParamsList'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 

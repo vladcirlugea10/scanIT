@@ -12,12 +12,12 @@ const App = () => {
     } catch(error){
       console.log('Error initializing database: ', error);
     }
-    try{
-      await shareDatabaseFile();
-      console.log('Database shared with success!');
-    } catch(error){
-      console.log('Error sharing database: ', error);
-    }
+    // try{
+    //   await shareDatabaseFile();
+    //   console.log('Database shared with success!');
+    // } catch(error){
+    //   console.log('Error sharing database: ', error);
+    // }
   };
 
   useEffect(() => {

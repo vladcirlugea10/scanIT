@@ -1,7 +1,12 @@
-interface AllergenIngredient{
+export interface AllergenIngredient{
     name: string;
     group: string;
     description: string;
 }
 
-export default AllergenIngredient;
+export interface GetAllergenIngredient{
+    id: number;
+    name: string;
+    group: string;
+    description: string;
+}
