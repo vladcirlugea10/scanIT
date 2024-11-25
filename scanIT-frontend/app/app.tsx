@@ -2,8 +2,7 @@ import 'react-native-url-polyfill/auto';
 import React, { useEffect } from 'react'
 import AppNavigator from './AppNavigator'
 import { registerRootComponent } from 'expo'
-import { initDB, shareDatabaseFile } from '@/database/local/sqLite';
-import { AppRegistry } from 'react-native';
+import { initDB } from '@/database/local/sqLite';
 
 const App = () => {
   const initDatabase = async () => {

@@ -32,6 +32,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         return(
           <View style={styles.mainContainer}>
             <ActivityIndicator size='large' color={colors.primary} />
+            <Text>Scanning image...</Text>
           </View>
         )
     }
@@ -50,7 +51,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         )
     }
 
-    if(data.text.length === 0){
+    if(data.text.length === 0 || !data.text){
         return(
           <View style={styles.mainContainer}>
             <Ionicons name='alert-circle-outline' size={50} color={colors.warning} />
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
       },
       resultContainer:{
         width: '85%',
-        height: '75%',
+        height: '50%',
         padding: 16,
         borderTopWidth: 2,
         borderTopColor: 'black',

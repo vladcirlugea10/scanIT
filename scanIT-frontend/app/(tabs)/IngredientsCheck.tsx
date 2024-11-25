@@ -1,12 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { NavigationProp, RouteProp } from '@react-navigation/native'
+import { RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
 import { GetAllergenIngredient } from '@/types/AllergenIngredient';
 import { getIngredientsAllergens, getIngredientsUnhealthy } from '@/database/local/sqLite';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@/assets/colors';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import IngredientModal from '../../components/IngredientModal';
 import MyButton from '@/components/MyButton';
 
@@ -62,7 +61,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     if(foundAllergenIngredients.length === 0 && foundUnhealthyIngredients.length === 0){
         return(
           <View style={styles.mainContainer}>
-            <Text style={{fontSize: 25, fontWeight: 700}}>All Ingredients are safe!</Text>
+            <Text style={{fontSize: 25, fontWeight: 700}}>No bad ingredients found!</Text>
             <Ionicons name='checkmark-circle-outline' size={50} color={colors.success} />
           </View>
         )
