@@ -3,6 +3,7 @@ import React from 'react'
 import { colors } from '@/assets/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from './BackButton';
+import { Ionicons } from '@expo/vector-icons';
 
 const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) => {
   return (
@@ -13,7 +14,7 @@ const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) =
                 <Text style={styles.headerText} >{title}</Text>
             </View>
             <View>
-                {backButton && <BackButton />}
+                {backButton ? (<BackButton />) : (<Ionicons name="person-outline" size={24} color={colors.secondary} />)}
             </View>
         </View>
     </SafeAreaView>

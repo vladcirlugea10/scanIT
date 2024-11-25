@@ -8,7 +8,7 @@ const BackButton = () => {
     const navigation = useNavigation();
     return (
       <View style={{ backgroundColor: colors.third, height: 70, justifyContent: 'center' }}>
-        <TouchableOpacity onPress={() => {navigation.goBack(); console.log("press");}} style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name='chevron-back' size={24} color={colors.secondary} />
         </TouchableOpacity>
       </View>
