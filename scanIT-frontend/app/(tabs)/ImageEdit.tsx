@@ -44,8 +44,7 @@ const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,

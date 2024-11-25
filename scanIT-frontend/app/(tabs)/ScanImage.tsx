@@ -1,11 +1,11 @@
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
 import React, { useEffect } from 'react'
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
-import useImageOCR from '@/hooks/useImageOCR';
 import { colors } from '@/assets/colors';
 import MyButton from '@/components/MyButton';
 import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from '@/types/StackParamsList';
+import useImageOCR from '@/hooks/useImageOCR';
 
 type ScanImageNavProps = { route: RouteProp<RootStackParamList, 'ScanImage'> };
 
