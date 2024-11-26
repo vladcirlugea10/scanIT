@@ -6,6 +6,8 @@ import { GetAllergenIngredient } from '@/types/AllergenIngredient';
 import { getIngredientsAllergens, getIngredientsUnhealthy } from '@/database/local/sqLite';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@/assets/colors';
+import IngredientModal from '../../components/IngredientModal';
+import MyButton from '@/components/MyButton';
 
 type IngredientsCheckNavProps = { route: RouteProp<RootStackParamList, 'IngredientsCheck'> };
 
@@ -13,10 +15,22 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     const { data } = route.params;
     const [foundAllergenIngredients, setFoundAllergenIngredients] = useState<GetAllergenIngredient[]>([]);
     const [foundUnhealthyIngredients, setFoundUnhealthyIngredients] = useState<GetAllergenIngredient[]>([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedIngredient, setSelectedIngredient] = useState<GetAllergenIngredient | null>(null);
 
     useEffect(() => {
         handleCheckIngredients();
     }, [data]);
+
+    const handleOpenModal = (ingredient: GetAllergenIngredient) => {
+        setSelectedIngredient(ingredient);
+        setModalVisible(true);
+    }
+
+    const handleCloseModal = () => {
+        setSelectedIngredient(null);
+        setModalVisible(false);
+    }
 
     const handleCheckIngredients = async () => {
         const allergens: GetAllergenIngredient[] = await getIngredientsAllergens();
@@ -47,7 +61,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     if(foundAllergenIngredients.length === 0 && foundUnhealthyIngredients.length === 0){
         return(
           <View style={styles.mainContainer}>
-            <Text style={{fontSize: 25, fontWeight: 700}}>All Ingredients are safe!</Text>
+            <Text style={{fontSize: 25, fontWeight: 700}}>No bad ingredients found!</Text>
             <Ionicons name='checkmark-circle-outline' size={50} color={colors.success} />
           </View>
         )
@@ -63,29 +77,29 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                   <Text style={styles.subtitle}>Allergen Ingredients:</Text>
                 </View>
                 {foundAllergenIngredients.length > 0 ? foundAllergenIngredients.map((ingredient) => (
-                  <View style={{flexDirection: 'column'}}>
+                  <View key={ingredient.id} style={{flexDirection: 'row', alignContent: "center"}}>
                     <Text style={{color: colors.danger}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
-                    <Text>{ingredient.description}</Text>
+                    <MyButton title='' onPress={() => handleOpenModal(ingredient)} containerStyle={{justifyContent: "center", alignItems: "center", width: 40, height: 40, backgroundColor: colors.secondary}} iconName='add-outline' iconSize={15} iconColor={colors.danger} />
                   </View>
                 ))
-                :
+                : (
                   <Text>No allergen ingredients found!</Text>
-                }
+                )}
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Ionicons name='alert-circle-outline' size={40} color={colors.warning} />
                   <Text style={styles.subtitle}>Unhealthy Ingredients:</Text>
               </View>
               {foundUnhealthyIngredients.length > 0 ? foundUnhealthyIngredients.map((ingredient) => (
-                <View style={{flexDirection: 'column'}}>
+                <View key={ingredient.id} style={{flexDirection: 'column'}}>
                   <Text style={{color: colors.warning}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
-                  <Text>{ingredient.description}</Text>
                 </View>
               )) 
               : 
                 <Text>No unhealthy ingredients found!</Text>
               }
             </View>
+            <IngredientModal visible={modalVisible} onClose={handleCloseModal} ingredient={selectedIngredient} />
           </View>
         )
     }
@@ -98,11 +112,12 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       gap: 16,
+      backgroundColor: colors.secondary,
     },
     resultContainer:{
       width: '85%',
       height: '90%',
-      padding: 20,
+      padding: 8,
     },
     allergenContainer: {
       width: '100%',

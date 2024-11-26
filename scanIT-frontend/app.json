@@ -1,24 +1,20 @@
 {
   "expo": {
-    "name": "scanIT-frontend",
-    "slug": "scanIT-frontend",
+    "name": "scanIT",
+    "slug": "scanIT",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo_nobg.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/logo_nobg.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#DBE4EE"
-    },
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#DBE4EE"
+        "backgroundColor": "#ffffff"
       }
     },
     "web": {
@@ -27,13 +23,17 @@
       "favicon": "./assets/images/logo_nobg.png"
     },
     "plugins": [
-        "expo-router",
-        [
-          "expo-font",
-          {
-            "fonts": ["./assets/fonts/Montserrat-VariableFont_wght.ttf"]
-          }
-        ]
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo_nobg.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-sqlite",
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true

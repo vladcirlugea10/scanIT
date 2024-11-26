@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Button, Image } from 'react-native'
 import React, { useRef, useState } from 'react'
-import { CameraCapturedPicture, CameraView, useCameraPermissions } from 'expo-camera'
+import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import MyButton from '@/components/MyButton'
 import { useNavigation } from '@react-navigation/native'
@@ -21,7 +21,7 @@ const Home = () => {
     const takePhoto = async () => {
         if(cameraRef.current){
             try{
-                const options = {quality: 0.5, base64: true};
+                const options: CameraPictureOptions = {quality: 0.5, base64: true, shutterSound: false};
                 const photo = await cameraRef.current?.takePictureAsync(options);
                 if(photo){
                     const resizedPhoto = await ImageManipulator.manipulateAsync(

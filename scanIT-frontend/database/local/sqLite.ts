@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import allergenIngredients from '@/assets/data/allergen_data';
-import AllergenIngredient, { GetAllergenIngredient } from '@/types/AllergenIngredient';
+import {AllergenIngredient, GetAllergenIngredient } from '@/types/AllergenIngredient';
 import unhealthyIngredients from '@/assets/data/unhealthy_data';
 
 const CURRENT_DB_VERSION = '1.0.0';

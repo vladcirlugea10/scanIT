@@ -5,6 +5,7 @@ import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/nati
 import * as ImageManipulator from 'expo-image-manipulator';
 import ImageCropper from '@/components/ImageCropper';
 import { RootStackParamList } from '@/types/StackParamsList';
+import { colors } from '@/assets/colors';
 
 type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
 
@@ -44,11 +45,11 @@ const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,
+    backgroundColor: colors.secondary
   },
   imageContainer:{
     width: '85%',
