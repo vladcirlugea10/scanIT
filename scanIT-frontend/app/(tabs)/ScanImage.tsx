@@ -46,7 +46,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
             <View style={styles.resultContainer}>
               <Text style={{fontSize: 16}}>{data.text.join(" ")}</Text>
             </View>
-            <MyButton title='Check ingredients' onPress={handleCheckIngredients} containerStyle={{width: 175}} />
+            <MyButton title='Check ingredients' onPress={handleCheckIngredients} containerStyle={{width: "45%"}} />
           </View>
         )
     }
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 16,
+        backgroundColor: colors.secondary,
       },
       resultContainer:{
         width: '85%',

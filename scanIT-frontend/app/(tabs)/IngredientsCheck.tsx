@@ -77,10 +77,9 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                   <Text style={styles.subtitle}>Allergen Ingredients:</Text>
                 </View>
                 {foundAllergenIngredients.length > 0 ? foundAllergenIngredients.map((ingredient) => (
-                  <View style={{flexDirection: 'column'}}>
-                    <MyButton title='More' onPress={() => handleOpenModal(ingredient)} />
+                  <View key={ingredient.id} style={{flexDirection: 'row', alignContent: "center"}}>
                     <Text style={{color: colors.danger}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
-                    <Text>{ingredient.description}</Text>
+                    <MyButton title='' onPress={() => handleOpenModal(ingredient)} containerStyle={{justifyContent: "center", alignItems: "center", width: 40, height: 40, backgroundColor: colors.secondary}} iconName='add-outline' iconSize={15} iconColor={colors.danger} />
                   </View>
                 ))
                 : (
@@ -92,9 +91,8 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                   <Text style={styles.subtitle}>Unhealthy Ingredients:</Text>
               </View>
               {foundUnhealthyIngredients.length > 0 ? foundUnhealthyIngredients.map((ingredient) => (
-                <View style={{flexDirection: 'column'}}>
+                <View key={ingredient.id} style={{flexDirection: 'column'}}>
                   <Text style={{color: colors.warning}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
-                  <Text>{ingredient.description}</Text>
                 </View>
               )) 
               : 
@@ -114,11 +112,12 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       gap: 16,
+      backgroundColor: colors.secondary,
     },
     resultContainer:{
       width: '85%',
       height: '90%',
-      padding: 20,
+      padding: 8,
     },
     allergenContainer: {
       width: '100%',
