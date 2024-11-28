@@ -48,7 +48,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
         if(unhealthy.length > 0){
           unhealthy.map((ingredient) => {
             if(data.text.includes(ingredient.name)){
-              foundUnhealthy.push(ingredient);
+              foundUnhealthy.push(ingredient);                       
             }
           })
         }

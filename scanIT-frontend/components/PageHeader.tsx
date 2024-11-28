@@ -4,21 +4,25 @@ import { colors } from '@/assets/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from './BackButton';
 import { Ionicons } from '@expo/vector-icons';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '@/types/StackParamsList';
 
 const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) => {
-  return (
-    <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-            <View style={styles.titleContainer}>
-                <Image style={styles.headerLogo} source={require('@/assets/images/logo_nobg_white.png')} />
-                <Text style={styles.headerText} >{title}</Text>
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.header}>
+                <View style={styles.titleContainer}>
+                    <Image style={styles.headerLogo} source={require('@/assets/images/logo_nobg_white.png')} />
+                    <Text style={styles.headerText} >{title}</Text>
+                </View>
+                <View>
+                    {backButton ? (<BackButton />) : (<Ionicons name="person-outline" size={24} color={colors.secondary} onPress={() => navigation.navigate('ProfilePage')} />)}
+                </View>
             </View>
-            <View>
-                {backButton ? (<BackButton />) : (<Ionicons name="person-outline" size={24} color={colors.secondary} />)}
-            </View>
-        </View>
-    </SafeAreaView>
-  )
+        </SafeAreaView>
+    )
 }
 
 const styles = StyleSheet.create({
