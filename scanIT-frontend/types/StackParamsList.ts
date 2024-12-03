@@ -5,4 +5,5 @@ export type RootStackParamList = {
     ImageEdit: { photoUri: string };
     ScanImage: { photoUri: string };
     IngredientsCheck: { data: OCRResult};
+    BarcodeResults: { product: Product };
 };

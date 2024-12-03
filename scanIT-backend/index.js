@@ -5,11 +5,15 @@ const dotenv = require('dotenv');
 const multer = require('multer');
 const axios = require('axios');
 const FormData = require('form-data');
+require('./database');
 
 const app = express();
 dotenv.config();
 app.use(cors());
 app.use(express.json());
+
+//authentication
+app.use('/api/auth', require('./routes/userAuth'));
 
 const uploadImage = multer({storage: multer.memoryStorage()});
 
