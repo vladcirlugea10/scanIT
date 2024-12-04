@@ -11,7 +11,6 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   const energykcal = product.nutriments["energy-kcal"];
   const energykcal100g = product.nutriments["energy-kcal_100g"];
   const energykcalunit = product.nutriments["energy-kcal_unit"];
-  console.log('aici', product.nutriments);
 
   const getNutriscoreImage = (nutriscore: string) => {
     let imageURL: string;
@@ -42,11 +41,14 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
       <Text style={styles.title}>{product.product_name} - {product.brands}</Text>
       <Text>({product.countries}) - {product.ingredients_text}</Text>
       <Image source={{uri: product.image_url}} style={{width: 100, height: 100}} />
+      {product.selected_images && product.selected_images.front && <Image source={{uri: product.selected_images.front.display.ro}} style={{width: 100, height: 100}} />}
+      {product.selected_images && product.selected_images.ingredients && <Image source={{uri: product.selected_images.ingredients.display.ro}} style={{width: 100, height: 100}} />}
+      {product.selected_images && product.selected_images.nutrition && <Image source={{uri: product.selected_images.nutrition.display.ro}} style={{width: 100, height: 100}} />}
       <Text>Nutriscore: {product.nutriscore_grade}</Text>
       <Image source={{ uri: getNutriscoreImage(product.nutriscore_grade)}} style={{width: 200, height: 100}} />
-      <Text>{product.nutriments.carbohydrates} - {product.nutriments.carbohydrates_100g}/100{product.nutriments.carbohydrates_unit}</Text>
-      <Text>{energykcal} - {energykcal100g}/100{energykcalunit}</Text>
-      <Text>{product.nutriments.fat} - {product.nutriments.fat_100g}/100{product.nutriments.fat_unit}</Text>
+      <Text>Carbohidrati: {product.nutriments.carbohydrates} - {product.nutriments.carbohydrates_100g}/100{product.nutriments.carbohydrates_unit}</Text>
+      <Text>Energie: {energykcal} - {energykcal100g}/100{energykcalunit}</Text>
+      <Text>Grasimi: {product.nutriments.fat} - {product.nutriments.fat_100g}/100{product.nutriments.fat_unit}</Text>
     </View>
   )
 };

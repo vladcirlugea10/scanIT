@@ -1,7 +1,10 @@
 interface Product {
+    _id: string;
     product_name: string;
     brands: string;
+    categories: string;
     image_url: string;
+    image_front_url: string;
     manufacturing_places: string;
     countries: string;
     stores: string;
@@ -11,7 +14,26 @@ interface Product {
     allergens: string;
     allergens_tags: string[];
     nutriscore_grade: string;
+    ecoscore_grade: string;
+    ecoscore_score: number;
     nutriments: Nutriment;
+    selected_images: {
+        front: {
+            display: { [key: string]: string };
+            small: { [key: string]: string };
+            thumb: { [key: string]: string };
+        };
+        ingredients: {
+            display: { [key: string]: string };
+            small: { [key: string]: string };
+            thumb: { [key: string]: string };
+        };
+        nutrition: {
+            display: { [key: string]: string };
+            small: { [key: string]: string };
+            thumb: { [key: string]: string };
+        };
+    };
 }
 
 interface Nutriment {
