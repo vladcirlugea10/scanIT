@@ -11,7 +11,6 @@ const useOpenFoodFacts = () => {
         try{
             const response = await axios.get(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
             setProduct(response.data.product);
-            console.log(response.data.product);
         } catch(error){
             console.log(error);
         }

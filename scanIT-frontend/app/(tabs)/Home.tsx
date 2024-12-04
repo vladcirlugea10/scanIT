@@ -29,11 +29,12 @@ const Home = () => {
                 console.log("home: ", product);
                 if(product){
                     navigation.navigate('BarcodeResults', { product: product });
+                    setBarcodeData(undefined);
                 }
             }
         }
         fetchProduct();
-    }, [barcodeData, selectedMode]);
+    }, [barcodeData]);
 
     const takePhoto = async () => {
         if(cameraRef.current){
@@ -64,7 +65,7 @@ const Home = () => {
         return(
             <View style={styles.mainContainer}>
                 <Text>Permission to use camera required!</Text>
-                <Button title='Request Permission' onPress={requestPermission} />
+                <MyButton title='Request camera permission' onPress={requestPermission} />
             </View>
         )
     }
@@ -91,15 +92,15 @@ const Home = () => {
             <StatusBar style='light' backgroundColor='black' />
             <View style={styles.dataContainer} >
                 <View style={styles.buttonContainer}>
-                    <MyButton title='barcode' onPress={() => {setSelectedMode('barcode'), console.log(selectedMode)}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
-                    <MyButton title='photo' onPress={() => {setSelectedMode('photo'), console.log(selectedMode)}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
+                    <MyButton title='Barcode' onPress={() => {setBarcodeData(undefined); setSelectedMode('barcode'); console.log(selectedMode)}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
+                    <MyButton title='Photo' onPress={() => {setSelectedMode('photo'), console.log(selectedMode)}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                 </View>
                 <View style={styles.cameraContainer}>
                     <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {
                         setBarcodeData(data);
                     }} />
                 </View>
-                <MyButton iconName='camera' iconColor={colors.secondary} iconSize={30} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} />
+                { selectedMode === 'photo' ? <MyButton iconName='camera' iconColor={colors.secondary} iconSize={30} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} /> : null }
             </View>
         </View>
     );
@@ -143,13 +144,14 @@ const styles = StyleSheet.create({
         padding: 5,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'grey'
     },
     buttonText: {
         fontSize: 12,
         fontWeight: 'light'
     },
     selectedModeButton: {
-        backgroundColor: 'grey',
+        backgroundColor: colors.primary,
     }
 });
 
