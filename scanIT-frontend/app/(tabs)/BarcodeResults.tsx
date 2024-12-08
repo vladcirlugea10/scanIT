@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
@@ -37,19 +37,82 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   }
 
   return (
-    <View style={styles.mainContainer}>
-      <Text style={styles.title}>{product.product_name} - {product.brands}</Text>
-      <Text>({product.countries}) - {product.ingredients_text}</Text>
-      <Image source={{uri: product.image_url}} style={{width: 100, height: 100}} />
-      {product.selected_images && product.selected_images.front && <Image source={{uri: product.selected_images.front.display.ro}} style={{width: 100, height: 100}} />}
-      {product.selected_images && product.selected_images.ingredients && <Image source={{uri: product.selected_images.ingredients.display.ro}} style={{width: 100, height: 100}} />}
-      {product.selected_images && product.selected_images.nutrition && <Image source={{uri: product.selected_images.nutrition.display.ro}} style={{width: 100, height: 100}} />}
-      <Text>Nutriscore: {product.nutriscore_grade}</Text>
-      <Image source={{ uri: getNutriscoreImage(product.nutriscore_grade)}} style={{width: 200, height: 100}} />
-      <Text>Carbohidrati: {product.nutriments.carbohydrates} - {product.nutriments.carbohydrates_100g}/100{product.nutriments.carbohydrates_unit}</Text>
-      <Text>Energie: {energykcal} - {energykcal100g}/100{energykcalunit}</Text>
-      <Text>Grasimi: {product.nutriments.fat} - {product.nutriments.fat_100g}/100{product.nutriments.fat_unit}</Text>
-    </View>
+    <ScrollView style={styles.scrollContainer}>
+      <View style={styles.mainContainer}>
+        <Text style={styles.title}>{product.product_name} - {product.brands}</Text>
+        <View style={styles.imagesContainer}>
+          <Image style={styles.image} source={{uri: product.image_url}} />
+          {product.selected_images && product.selected_images.front && <Image source={{uri: product.selected_images.front.display.ro}} style={styles.image} />}
+          {product.selected_images && product.selected_images.ingredients && <Image source={{uri: product.selected_images.ingredients.display.ro}} style={styles.image} />}
+          {product.selected_images && product.selected_images.nutrition && <Image source={{uri: product.selected_images.nutrition.display.ro}} style={styles.image} />}
+        </View>
+        <Text style={styles.subtitle}>Vândut în: </Text>
+        <Text style={styles.text}>{product.countries}</Text>
+        <Text style={styles.subtitle}>Ingrediente: </Text>
+        <Text style={styles.text}>{product.ingredients_text}</Text>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Image source={{ uri: getNutriscoreImage(product.nutriscore_grade)}} style={{width: 200, height: 100}} />
+        </View>
+        <Text style={styles.subtitle}>Valori Nutriționale: </Text>
+
+        <View style={styles.tableHeader}>
+          <View style={[styles.tableRow, {borderBottomWidth: 5, borderBottomColor: colors.primary}]}>
+            <Text style={styles.headerText}>Nutrient</Text>
+            <Text style={styles.headerText}>Unitate</Text>
+            <Text style={styles.headerText}>Per 100g</Text>
+            <Text style={styles.headerText}>Per porție</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Energie</Text>
+            <Text style={styles.rowText}>{energykcalunit}</Text>
+            <Text style={styles.rowText}>{energykcal100g}</Text>
+            <Text style={styles.rowText}>{energykcal}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Grasimi</Text>
+            <Text style={styles.rowText}>{product.nutriments.fat_unit}</Text>
+            <Text style={styles.rowText}>{product.nutriments.fat_100g}</Text>
+            <Text style={styles.rowText}>{product.nutriments.fat}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Grasimi saturate</Text>
+            <Text style={styles.rowText}>{product.nutriments.saturated_fat_unit}</Text>
+            <Text style={styles.rowText}>{product.nutriments.saturated_fat_100g}</Text>
+            <Text style={styles.rowText}>{product.nutriments.saturated_fat}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Carbohidrati</Text>
+            <Text style={styles.rowText}>{product.nutriments.carbohydrates_unit}</Text>
+            <Text style={styles.rowText}>{product.nutriments.carbohydrates_100g}</Text>
+            <Text style={styles.rowText}>{product.nutriments.carbohydrates}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Zaharuri</Text>
+            <Text style={styles.rowText}>{product.nutriments.sugars_unit}</Text>
+            <Text style={styles.rowText}>{product.nutriments.sugars_100g}</Text>
+            <Text style={styles.rowText}>{product.nutriments.sugars}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Proteine</Text>
+            <Text style={styles.rowText}>{product.nutriments.proteins_unit}</Text>
+            <Text style={styles.rowText}>{product.nutriments.proteins_100g}</Text>
+            <Text style={styles.rowText}>{product.nutriments.proteins}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Sare</Text>
+            <Text style={styles.rowText}>{product.nutriments.salt_unit}</Text>
+            <Text style={styles.rowText}>{product.nutriments.salt_100g}</Text>
+            <Text style={styles.rowText}>{product.nutriments.salt}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.rowText}>Sodiu</Text>
+            <Text style={styles.rowText}>{product.nutriments.sodium_unit}</Text>
+            <Text style={styles.rowText}>{product.nutriments.sodium_100g}</Text>
+            <Text style={styles.rowText}>{product.nutriments.sodium}</Text>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   )
 };
 
@@ -59,13 +122,58 @@ const styles = StyleSheet.create({
     height: '100%',
     display: "flex",
     flexDirection: "column",
+    gap: 10,
     backgroundColor: colors.secondary,
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
+  scrollContainer: {
+    flexGrow: 1,
+    backgroundColor: colors.secondary,
+  },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  text: {
+    fontSize: 16,
+  },
+  imagesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 10,
+    paddingTop: 10,
+    borderTopWidth: 5,
+    borderTopColor: colors.primary,
+  },
+  image: {
+    width: "30%",
+    height: 100,
+    marginBottom: 10,
+  },
+  tableHeader: {
+    marginTop: 10,
+    gap: 5,
+  },
+  headerText: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  tableRow: {
+    flex: 1, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    borderBottomWidth: 2,
+  },
+  rowText: {
+    flex: 1,
+    textAlign: 'center',
   }
 });
 
