@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Image, ActivityIndicator, Alert } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
@@ -18,10 +18,26 @@ const Home = () => {
     const [selectedMode, setSelectedMode] = useState<'barcode' | 'photo'>('photo');
     const [barcodeData, setBarcodeData] = useState<string | undefined>(undefined);
     const cameraRef = useRef<CameraView>(null);
-    const { getProduct, product, loading } = useOpenFoodFacts();
+    const { getProduct, product, loading, notFound } = useOpenFoodFacts();
 
     const navigation = useNavigation<HomeNavProps>();
     console.log(barcodeData);
+
+    const showAlert = () =>
+    Alert.alert(
+        'Product not found!',
+        'A product with this barcode couldn\'t be found! Please try again!',
+        [
+            {
+                text: 'Ok',
+                style: 'cancel',
+            }
+        ],
+        {
+            cancelable: true,
+        },
+    );
+
     useFocusEffect(
         React.useCallback(() => {
             setBarcodeData(undefined);
@@ -43,6 +59,13 @@ const Home = () => {
             setBarcodeData(undefined);
         }
     }, [product]);
+
+    useEffect(() => {
+        if(notFound){
+            showAlert();
+            console.log("Product not found!");
+        }
+    }, [notFound]);
 
     const takePhoto = async () => {
         if(cameraRef.current){
