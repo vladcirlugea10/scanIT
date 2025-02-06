@@ -21,7 +21,7 @@ const useImageOCR = () => {
             });
             
             const serverIP = getExpoServerIP();
-            const response = await axios.post(`http://${serverIP}:5000/api/ocr`, formData, {
+            const response = await axios.post(`http://192.168.1.5:5000/api/ocr`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

@@ -1,22 +1,71 @@
-import { View, Text, StyleSheet, Button, Image } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { View, Text, StyleSheet, Image, ActivityIndicator, Alert } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import MyButton from '@/components/MyButton'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import * as ImageManipulator from 'expo-image-manipulator'
 import { colors } from '@/assets/colors'
 import { RootStackParamList } from '@/types/StackParamsList'
+import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
 const Home = () => {
     const [permission, requestPermission] = useCameraPermissions();
     const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>(undefined);
+    const [selectedMode, setSelectedMode] = useState<'barcode' | 'photo'>('photo');
+    const [barcodeData, setBarcodeData] = useState<string | undefined>(undefined);
     const cameraRef = useRef<CameraView>(null);
+    const { getProduct, product, loading, notFound } = useOpenFoodFacts();
 
     const navigation = useNavigation<HomeNavProps>();
+    console.log(barcodeData);
+
+    const showAlert = () =>
+    Alert.alert(
+        'Product not found!',
+        'A product with this barcode couldn\'t be found! Please try again!',
+        [
+            {
+                text: 'Ok',
+                style: 'cancel',
+            }
+        ],
+        {
+            cancelable: true,
+        },
+    );
+
+    useFocusEffect(
+        React.useCallback(() => {
+            setBarcodeData(undefined);
+            setPhoto(undefined);
+            return () => {}
+        }, [])
+    );
+
+    useEffect(() => {
+        if(selectedMode === 'barcode' && barcodeData){
+            getProduct(barcodeData);
+        }
+    }, [barcodeData]);
+
+    useEffect(() => {
+        if(product){
+            console.log("home: ", product);
+            navigation.navigate('BarcodeResults', { product: product });
+            setBarcodeData(undefined);
+        }
+    }, [product]);
+
+    useEffect(() => {
+        if(notFound){
+            showAlert();
+            console.log("Product not found!");
+        }
+    }, [notFound]);
 
     const takePhoto = async () => {
         if(cameraRef.current){
@@ -47,7 +96,16 @@ const Home = () => {
         return(
             <View style={styles.mainContainer}>
                 <Text>Permission to use camera required!</Text>
-                <Button title='Request Permission' onPress={requestPermission} />
+                <MyButton title='Request camera permission' onPress={requestPermission} />
+            </View>
+        )
+    }
+
+    if(loading){
+        return(
+            <View style={styles.mainContainer}>
+                <ActivityIndicator size='large' color={colors.primary} />
+                <Text>Searching for product...</Text>
             </View>
         )
     }
@@ -73,10 +131,16 @@ const Home = () => {
         <View style={styles.mainContainer}>
             <StatusBar style='light' backgroundColor='black' />
             <View style={styles.dataContainer} >
-                <View style={styles.cameraContainer}>
-                    <CameraView ref={cameraRef} style={styles.camera} />
+                <View style={styles.buttonContainer}>
+                    <MyButton title='Barcode' onPress={() => {setBarcodeData(undefined); setSelectedMode('barcode')}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
+                    <MyButton title='Photo' onPress={() => {setSelectedMode('photo')}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                 </View>
-                <MyButton iconName='camera' iconColor={colors.secondary} iconSize={30} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} />
+                <View style={styles.cameraContainer}>
+                    <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {
+                        setBarcodeData(data);
+                    }} />
+                </View>
+                { selectedMode === 'photo' ? <MyButton iconName='camera' iconColor={colors.secondary} iconSize={30} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} /> : null }
             </View>
         </View>
     );
@@ -107,6 +171,28 @@ const styles = StyleSheet.create({
         height: '100%',
         overflow: 'hidden',
     },
+    buttonContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start'
+    },
+    button: {
+        width: 60,
+        height: 30,
+        borderRadius: 10,
+        padding: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'grey'
+    },
+    buttonText: {
+        fontSize: 12,
+        fontWeight: 'light'
+    },
+    selectedModeButton: {
+        backgroundColor: colors.primary,
+    }
 });
 
 export default Home

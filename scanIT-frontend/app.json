@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "scanIT",
-    "slug": "scanIT",
+    "slug": "scanit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo_nobg.png",
@@ -37,6 +37,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f818c370-1822-4dd8-9e69-9c694911e36d"
+      }
+    },
+    "owner": "mrv07"
   }
 }

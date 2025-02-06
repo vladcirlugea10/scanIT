@@ -1,4 +1,4 @@
-import AllergenIngredient from "@/types/AllergenIngredient";
+import { AllergenIngredient } from "@/types/AllergenIngredient";
 
 const allergenIngredients: AllergenIngredient[] = [
     {name: 'grau', group: 'Cereale care conțin gluten', description: 'Alergia la grâu are o prevalență la nivel mondial de 0,5 – 9%. Principalele simptome sunt: urticarie sau erupții pe piele, mâncărime, greață, indigestie, strănut, astm, dureri de cap sau dificultăți în respirație. În caz de urgență, tratamentul pentru șoc anafilactic este epinefrina.'},
