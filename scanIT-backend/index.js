@@ -58,6 +58,7 @@ app.post('/api/ocr', uploadImage.single('image'), async(req, res) => {
 // });
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+const localIP = '192.168.1.5';
+app.listen(port, localIP, () => {
+    console.log(`Server running at http://${localIP}:${port}`);
 });

@@ -14,6 +14,7 @@ const useOpenFoodFacts = () => {
         } catch(error){
             console.log(error);
         }
+        setLoading(false);
     }
 
     return { loading, getProduct, product };
