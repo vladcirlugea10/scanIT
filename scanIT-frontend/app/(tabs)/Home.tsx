@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, Button, Image, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
 import MyButton from '@/components/MyButton'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import * as ImageManipulator from 'expo-image-manipulator'
 import { colors } from '@/assets/colors'
@@ -21,20 +21,28 @@ const Home = () => {
     const { getProduct, product, loading } = useOpenFoodFacts();
 
     const navigation = useNavigation<HomeNavProps>();
+    console.log(barcodeData);
+    useFocusEffect(
+        React.useCallback(() => {
+            setBarcodeData(undefined);
+            setPhoto(undefined);
+            return () => {}
+        }, [])
+    );
 
     useEffect(() => {
-        const fetchProduct = async () => {
-            if(selectedMode === 'barcode' && barcodeData){
-                await getProduct(barcodeData);
-                if(product){
-                    console.log("home: ", product);
-                    navigation.navigate('BarcodeResults', { product: product });
-                    setBarcodeData(undefined);
-                }
-            }
+        if(selectedMode === 'barcode' && barcodeData){
+            getProduct(barcodeData);
         }
-        fetchProduct();
     }, [barcodeData]);
+
+    useEffect(() => {
+        if(product){
+            console.log("home: ", product);
+            navigation.navigate('BarcodeResults', { product: product });
+            setBarcodeData(undefined);
+        }
+    }, [product]);
 
     const takePhoto = async () => {
         if(cameraRef.current){
