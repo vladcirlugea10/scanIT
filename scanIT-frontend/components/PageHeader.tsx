@@ -4,8 +4,23 @@ import { colors } from '@/assets/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from './BackButton';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@/types/StackParamsList';
 
 const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) => {
+
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const user = false;
+
+    const handleAuth = () => {
+        if(user){
+            navigation.navigate('Profile');
+        } else{
+            navigation.navigate('Auth');
+        }
+    };
+
   return (
     <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
@@ -14,7 +29,7 @@ const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) =
                 <Text style={styles.headerText} >{title}</Text>
             </View>
             <View>
-                {backButton ? (<BackButton />) : (<Ionicons name="person-outline" size={24} color={colors.secondary} />)}
+                {backButton ? (<BackButton />) : (<Ionicons name="person-outline" size={24} color={colors.secondary} onPress={handleAuth} />)}
             </View>
         </View>
     </SafeAreaView>
