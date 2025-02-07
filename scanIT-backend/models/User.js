@@ -14,13 +14,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    lasName: {
+    lastName: {
         type: String,
         required: false,
     },
     userName: {
         type: String,
         required: false,
+        unique: true,
     },
     birthday: {
         type: String,
