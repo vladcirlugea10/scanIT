@@ -7,14 +7,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types/StackParamsList';
+import { useAuth } from '@/hooks/useAuth';
 
 const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) => {
 
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const user = false;
+    const { isAuth } = useAuth();
 
     const handleAuth = () => {
-        if(user){
+        if(isAuth){
             navigation.navigate('Profile');
         } else{
             navigation.navigate('Auth');
