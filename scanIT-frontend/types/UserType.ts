@@ -17,6 +17,9 @@ interface UserData{
     lastName?: string | null;
     userName?: string | null;
     birthday?: string | null;
+    height?: number | null;
+    weight?: number | null;
+    allergies?: string[] | null;
     createdAt: string;
 }
 

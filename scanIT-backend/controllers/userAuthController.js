@@ -28,6 +28,9 @@ exports.registerUser = async (req, res) => {
             lastName: user.lastName,
             userName: user.userName,
             birthday: user.birthday,
+            height: user.height,
+            weight: user.weight,
+            allergies: user.allergies,
             createdAt: user.createdAt,
         }, process.env.JWT_SECRET, { expiresIn: '5d' });
 
@@ -68,6 +71,9 @@ exports.loginUser = async (req, res) => {
             lastName: user.lastName,
             userName: user.userName,
             birthday: user.birthday,
+            height: user.height,
+            weight: user.weight,
+            allergies: user.allergies,
             createdAt: user.createdAt,
         }, process.env.JWT_SECRET, { expiresIn: '5d' });
         
