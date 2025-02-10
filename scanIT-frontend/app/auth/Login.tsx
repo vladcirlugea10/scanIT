@@ -3,19 +3,33 @@ import React, { useState } from 'react'
 import { colors } from '@/assets/colors'
 import MyButton from '@/components/MyButton';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParams } from '@/types/StackParamsList';
+import { AuthStackParams, RootStackParamList } from '@/types/StackParamsList';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '@/hooks/useAuth';
 
 type LoginNavProps = NativeStackNavigationProp<AuthStackParams, 'Login'>;
+type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const navigation = useNavigation<LoginNavProps>();
+  const { onLogin } = useAuth();
 
-  const onSubmit = () => {
-    console.log('email:', email);
+  const navigation = useNavigation<LoginNavProps>();
+  const parentNavigation = useNavigation<ParentNavigationProps>();
+
+  const onSubmit = async () => {
+    const loginData = {
+      email: email,
+      password: password,
+    }
+
+    const response = await onLogin(loginData);
+    console.log(response);
+    if(response){
+      parentNavigation.navigate('Profile');
+    }
   }
 
   return (

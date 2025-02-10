@@ -34,7 +34,7 @@ const Register = () => {
 
     const response = await onRegister(newUser);
     if(response){
-      parentNavigation.navigate('Home');
+      parentNavigation.navigate('Profile');
     }
   }
 

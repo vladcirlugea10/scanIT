@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableHighlight, TouchableWithoutFeedback, Pressable } from 'react-native'
 import React from 'react'
 import { colors } from '@/assets/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,7 +26,9 @@ const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) =
     <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
             <View style={styles.titleContainer}>
-                <Image style={styles.headerLogo} source={require('@/assets/images/logo_nobg_white.png')} />
+                <Pressable onPress={() => navigation.navigate('Home')}>
+                    <Image style={styles.headerLogo} source={require('@/assets/images/logo_nobg_white.png')} />
+                </Pressable>
                 <Text style={styles.headerText} >{title}</Text>
             </View>
             <View>

@@ -48,7 +48,25 @@ export const AuthProvider = ({children}: any) => {
     };
 
     const onLogin = async (loginData: LoginData): Promise<any> => {
+        try{
+            const response = await axios.post("http://192.168.1.5:5000/api/auth/login", loginData, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log("Response: ", response.data);
+            const newToken = response.data.token;
+            if(!newToken){
+                throw new Error("Token not found");
+            }
+            setToken(newToken);
+            setIsAuth(true);
 
+            return true;
+        }catch(error){
+            console.log("Error on login: ", error);
+            throw error;
+        }
     }
 
     return(<AuthContext.Provider value={{
