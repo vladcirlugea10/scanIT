@@ -10,5 +10,14 @@ interface RegisterData{
     userName?: string;
     birthday?: string;
 }
+interface UserData{
+    id: string;
+    email:string;
+    firstName: string;
+    lastName?: string | null;
+    userName?: string | null;
+    birthday?: string | null;
+    createdAt: string;
+}
 
-export type { LoginData, RegisterData };
+export type { LoginData, RegisterData, UserData };

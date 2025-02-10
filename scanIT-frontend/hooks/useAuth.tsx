@@ -1,10 +1,12 @@
 import axios from "axios";
-import { LoginData, RegisterData } from "@/types/UserType";
+import { LoginData, RegisterData, UserData } from "@/types/UserType";
 import { createContext, useContext, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
     token?: string | null;
     isAuth?: boolean | null;
+    user?: UserData | null;
     onLogin: (loginData: LoginData) => Promise<any>;
     onRegister: (registerData: RegisterData) => Promise<boolean>;
     onLogout?: () => Promise<void>;
@@ -23,6 +25,19 @@ export const useAuth = () => {
 export const AuthProvider = ({children}: any) => {
     const [token, setToken] = useState<string | null>(null);
     const [isAuth, setIsAuth] = useState<boolean | null>(null);
+    const [user, setUser] = useState<UserData | null>(null);
+
+    const decodeToken = (newToken: string) => {
+        try{
+            const decodedUser: UserData = jwtDecode(newToken);
+            setUser(decodedUser); 
+            console.log("Decoded user: ", decodedUser);
+        }catch(error){
+            console.log("Error on decodeToken: ", error);
+            setUser(null);
+            throw error;
+        }
+    }
 
     const onRegister = async (registerData: RegisterData): Promise<boolean> => {
         try {
@@ -59,6 +74,7 @@ export const AuthProvider = ({children}: any) => {
             if(!newToken){
                 throw new Error("Token not found");
             }
+            decodeToken(newToken);
             setToken(newToken);
             setIsAuth(true);
 
@@ -72,6 +88,7 @@ export const AuthProvider = ({children}: any) => {
     return(<AuthContext.Provider value={{
         token,
         isAuth,
+        user,
         onRegister,
         onLogin,
     }}>
