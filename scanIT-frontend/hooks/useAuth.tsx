@@ -1,7 +1,8 @@
 import axios from "axios";
 import { LoginData, RegisterData, UserData } from "@/types/UserType";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import * as SecureStorage from "expo-secure-store";
 
 interface AuthContextType {
     token?: string | null;
@@ -30,7 +31,34 @@ export const AuthProvider = ({children}: any) => {
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => {
+        loadToken();
+    }, []);
+
     const clearError = () => setError(null);
+
+    const saveToken = async (newToken: string) => {
+        try{
+            await SecureStorage.setItemAsync("token", newToken);
+        }catch(error){
+            console.log("Error on saveToken: ", error);
+            throw error;
+        }
+    }
+
+    const loadToken = async () => {
+        try{
+            const loadedToken = await SecureStorage.getItemAsync("token");
+            if(loadedToken){
+                setToken(loadedToken);
+                decodeToken(loadedToken);
+                setIsAuth(true);
+            }
+        }catch(error){
+            console.log("Error on loadToken: ", error);
+            throw error;
+        }
+    }
 
     const decodeToken = (newToken: string) => {
         try{
@@ -58,6 +86,7 @@ export const AuthProvider = ({children}: any) => {
                 throw new Error("Token not found");
             }
             setToken(newToken);
+            await saveToken(newToken);
             setIsAuth(true);
 
             return true;
@@ -84,6 +113,7 @@ export const AuthProvider = ({children}: any) => {
             }
             decodeToken(newToken);
             setToken(newToken);
+            await saveToken(newToken);
             setIsAuth(true);
 
             return true;
@@ -96,10 +126,17 @@ export const AuthProvider = ({children}: any) => {
     }
 
     const onLogout = async () => {
-        axios.defaults.headers.common["Authorization"] = "";
-        setToken(null);
-        setIsAuth(false);
-        setUser(null);
+        try{
+            await SecureStorage.deleteItemAsync("token");
+            console.log("Token deleted");
+            axios.defaults.headers.common["Authorization"] = "";
+            setToken(null);
+            setIsAuth(false);
+            setUser(null);
+        } catch(error){
+            console.log("Error on logout: ", error);
+            throw error;
+        }
     }
 
     return(<AuthContext.Provider value={{
