@@ -7,9 +7,11 @@ interface AuthContextType {
     token?: string | null;
     isAuth?: boolean | null;
     user?: UserData | null;
+    error?: string | null;
+    clearError: () => void;
     onLogin: (loginData: LoginData) => Promise<any>;
     onRegister: (registerData: RegisterData) => Promise<boolean>;
-    onLogout?: () => Promise<void>;
+    onLogout?: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,12 +28,14 @@ export const AuthProvider = ({children}: any) => {
     const [token, setToken] = useState<string | null>(null);
     const [isAuth, setIsAuth] = useState<boolean | null>(null);
     const [user, setUser] = useState<UserData | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const clearError = () => setError(null);
 
     const decodeToken = (newToken: string) => {
         try{
             const decodedUser: UserData = jwtDecode(newToken);
             setUser(decodedUser); 
-            console.log("Decoded user: ", decodedUser);
         }catch(error){
             console.log("Error on decodeToken: ", error);
             setUser(null);
@@ -41,6 +45,7 @@ export const AuthProvider = ({children}: any) => {
 
     const onRegister = async (registerData: RegisterData): Promise<boolean> => {
         try {
+            clearError();
             const response = await axios.post("http://192.168.1.5:5000/api/auth/register", registerData, {
                 headers: {
                     "Content-Type": "application/json",
@@ -56,14 +61,17 @@ export const AuthProvider = ({children}: any) => {
             setIsAuth(true);
 
             return true;
-        }catch(error){
+        }catch(error: any){
             console.log("Error on register: " ,error);
+            const errorMessage = error.response?.data?.message || error.message || 'An error ocurred on register';
+            setError(errorMessage);
             throw error;
         }
     };
 
     const onLogin = async (loginData: LoginData): Promise<any> => {
         try{
+            clearError();
             const response = await axios.post("http://192.168.1.5:5000/api/auth/login", loginData, {
                 headers: {
                     "Content-Type": "application/json",
@@ -79,18 +87,30 @@ export const AuthProvider = ({children}: any) => {
             setIsAuth(true);
 
             return true;
-        }catch(error){
+        }catch(error: any){
             console.log("Error on login: ", error);
+            const errorMessage = error.response?.data?.message || error.message || 'An error ocurred on login';
+            setError(errorMessage);
             throw error;
         }
+    }
+
+    const onLogout = async () => {
+        axios.defaults.headers.common["Authorization"] = "";
+        setToken(null);
+        setIsAuth(false);
+        setUser(null);
     }
 
     return(<AuthContext.Provider value={{
         token,
         isAuth,
         user,
+        error,
+        clearError,
         onRegister,
         onLogin,
+        onLogout,
     }}>
         {children}
         </AuthContext.Provider>

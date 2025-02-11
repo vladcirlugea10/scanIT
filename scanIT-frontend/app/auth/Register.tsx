@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { colors } from '@/assets/colors'
 import MyButton from '@/components/MyButton'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -20,7 +20,7 @@ const Register = () => {
   const [lastName, setLastName] = useState('');
   const [userName, setUserName] = useState('');
 
-  const { onRegister } = useAuth();
+  const { onRegister, error, clearError } = useAuth();
 
   const onSubmit = async () => {
     console.log('email:', email);
@@ -31,12 +31,16 @@ const Register = () => {
       lastName: lastName,
       userName: userName,
     }
-
+  
     const response = await onRegister(newUser);
     if(response){
       parentNavigation.navigate('Profile');
     }
   }
+
+  useEffect(() => {
+    return () => clearError();
+  }, [email, password, firstName, lastName, userName]);
 
   return (
     <View style={styles.mainContainer}>
@@ -49,6 +53,7 @@ const Register = () => {
           <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='last name(optional)' autoCapitalize="words" />
           <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='username(optional)' autoCapitalize="none" />
         </View>
+        {error && <Text style={styles.errorText}>{error}</Text>}
         <View style={styles.buttonContainer}>
           <MyButton title='Register' onPress={onSubmit} containerStyle={styles.button} />
           <Text style={styles.text} onPress={() => navigation.navigate('Login')} >Already have an account?</Text>
@@ -104,6 +109,10 @@ const styles = StyleSheet.create({
       color: colors.third,
       fontWeight: 'bold',
       fontSize: 15,
+    },
+    errorText:{
+      fontWeight: 'bold',
+      color: colors.danger,
     }
 })
 

@@ -4,9 +4,10 @@ import { useAuth } from '@/hooks/useAuth'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/StackParamsList';
 import { colors } from '@/assets/colors';
+import MyButton from '@/components/MyButton';
 
 const Profile = () => {
-  const { isAuth, user } = useAuth();
+  const { isAuth, user, onLogout } = useAuth();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
@@ -19,6 +20,13 @@ const Profile = () => {
     return null;
   }
 
+  const handleLogout = async () => {
+    if(onLogout){
+      await onLogout();
+      navigation.navigate("Home");
+    }
+  }
+
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.title}>Personal information</Text>
@@ -28,6 +36,7 @@ const Profile = () => {
         <Text>Email: {user?.email}</Text>
         <Text>Member since: {user?.createdAt}</Text>
       </View>
+      <MyButton title='Logout' onPress={handleLogout} />
     </View>
   )
 }
