@@ -1,18 +1,33 @@
 const User = require("../models/User");
 const Crypto = require("crypto-js");
-const crypto = require("crypto");
 const ResetPassToken = require("../models/ResetPassToken");
 const nodemailer = require("nodemailer");
 
+exports.checkCode = async (req, res) => {
+    try{
+        await ResetPassToken.deleteMany({ expiresAt: { $lt: Date.now() } });
+        const { resetCode } = req.body;
+        if(!resetCode || resetCode.length !== 6){
+            return res.status(400).json({message: 'Invalid code length!'});
+        }
+        const resetPassToken = await ResetPassToken.findOne({ resetToken: resetCode });
+        if(resetPassToken.expiresAt < Date.now()){
+            return res.status(400).json({message: 'Code expired!'});
+        }
+        if(resetPassToken.resetToken !== resetCode){
+            return res.status(400).json({message: 'Invalid code!'});
+        }
+        await ResetPassToken.deleteOne({ resetToken: resetCode });
+        res.status(200).json({message: 'Code verified!', resetPassToken});
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
 exports.changePassword = async (req, res) => {
     try{
-        const { resetToken, newPassword, confirmNewPassword } = req.body;
-
-        const resetPassToken = await ResetPassToken.findOne({ resetToken });
-
-        if (!resetToken || resetToken.expiresAt < Date.now()) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
-        }
+        const { email, newPassword, confirmNewPassword } = req.body;
 
         if(newPassword !== confirmNewPassword){
             return res.status(400).json({message: 'Passwords do not match!'});
@@ -22,7 +37,7 @@ exports.changePassword = async (req, res) => {
             return res.status(400).json({message: 'Password must be at least 6 characters long!'});
         }
 
-        const user = await User.findById(resetPassToken.userId);
+        const user = await User.findOne({ email: email });
         if(!user){
             return res.status(400).json({message: 'User not found!'});
         }
@@ -47,18 +62,16 @@ exports.forgotPasswordEmail = async (req, res) => {
         if(!user){
             return res.status(404).json({message: 'User not found!'});
         }
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 30*60*1000); //30 minutes
+        const resetCode = Math.floor(100000 + Math.random() * 900000);
+        const expiresAt = new Date(Date.now() + 2*60*1000); // 2 minutes
         
         await ResetPassToken.deleteMany({ userId: user._id });
 
         await new ResetPassToken({
             userId: user._id,
-            resetToken: resetToken,
+            resetToken: resetCode,
             expiresAt: expiresAt,
         }).save();
-
-        const resetPassLink = `myapp://reset-password?token=${resetToken}`;
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -75,27 +88,14 @@ exports.forgotPasswordEmail = async (req, res) => {
             html: `
                 <div style="padding: 20px; background-color: #f5f5f5;">
                     <h2 style="color: #333;">Password Reset Request</h2>
-                    <p style="color: #666;">Click the button below to reset your password:</p>
-                    <a href="${resetPassLink}" 
-                       style="display: inline-block; 
-                              padding: 10px 20px; 
-                              background-color: #007bff; 
-                              color: white; 
-                              text-decoration: none; 
-                              border-radius: 5px; 
-                              margin: 20px 0;">
-                        Reset Password
-                    </a>
-                    <p style="color: #666; margin-top: 20px;">
-                        If the button doesn't work, copy and paste this link in your app:
-                        <br>
-                        <span style="color: #007bff;">${resetPassLink}</span>
-                    </p>
+                    <p style="color: #666;">Your password reset code is: <b>${resetCode}</b></p>
+                    <p style="color: #666;">This code will expire in 2 minutes.</p>
+                    <p style="color: #666;">If you didn't request a password reset, you can ignore this email.</p>
                 </div>
             `,
         });
 
-        res.json({message: 'Reset password link sent to email!'});
+        res.json({message: 'Reset code sent to email!'});
 
     } catch(error){
         console.log(error);

@@ -1,33 +1,68 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, StyleSheet, TextInput, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { colors } from '@/assets/colors'
 import MyButton from '@/components/MyButton';
 import { useAuth } from '@/hooks/useAuth';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParams } from '@/types/StackParamsList';
+import { useNavigation } from '@react-navigation/native';
+
+type ForgotPasswordProps = NativeStackNavigationProp<AuthStackParams, 'ForgotPassword'>;
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
-  const { forgotPassword } = useAuth();
+  const [step, setStep] = useState(1);
+  const [code, setCode] = useState('');
+  const { forgotPassword, checkResetCode, loading, error, clearError } = useAuth();
+  const navigation = useNavigation<ForgotPasswordProps>();
+
+  useEffect(() => {
+    return () => clearError();
+  }, [email, code]);
 
   const handleForgotPass = async () => {
     if(email){
       const response = await forgotPassword(email);
       if(response){
         console.log('Reset link sent!');
-        setSent(true);
+        setStep(2);
       }
     }
-  } 
+  }
+  
+  const handleCheckCode = async () => {
+    if(code){
+      const response = await checkResetCode(code);
+      if(response){
+        console.log('Code is correct!');
+        navigation.navigate('ResetPassword', { email: email });
+      }
+    }
+  }
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Enter your account's email to receive a reset link.</Text>
-        <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Your email' keyboardType="email-address" autoCapitalize='none' />
-        {sent && <Text style={styles.successText}>The email has been sent! Check your inbox.</Text>}
-        <MyButton containerStyle={styles.button} title='Send reset link' onPress={handleForgotPass} />
+    step === 1 ? (
+      <View style={styles.mainContainer}>
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>Enter your account's email to receive the reset code.</Text>
+          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Your email' keyboardType="email-address" autoCapitalize='none' />
+          {loading && <ActivityIndicator size='large' color={colors.primary} />}
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          <MyButton containerStyle={styles.button} title='Send reset link' onPress={handleForgotPass} />
+        </View>
       </View>
-    </View>
+    ) : (
+      <View style={styles.mainContainer}>
+        <View style={styles.formContainer}>
+          <Text>Enter the 6 digit code</Text>
+          <TextInput style={styles.input} value={code} onChangeText={setCode} placeholder='Code' keyboardType='numeric' />
+          {loading && <ActivityIndicator size='large' color={colors.primary} />}
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          <MyButton containerStyle={styles.button} title='Submit' onPress={handleCheckCode} />
+        </View>
+      </View>
+    )
+    
   )
 }
 
@@ -55,13 +90,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: colors.primary,
   },
+  errorText:{
+    color: colors.danger,
+    fontWeight: 'bold',
+  },
   input:{
     borderWidth: 1,
     borderColor: colors.third,
     fontWeight: 'bold',
     color: colors.primary,
   },
-  button:{
+  button:{ 
     width: '100%',
   },
   successText:{

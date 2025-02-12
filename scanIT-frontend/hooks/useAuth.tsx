@@ -9,11 +9,14 @@ interface AuthContextType {
     isAuth?: boolean | null;
     user?: UserData | null;
     error?: string | null;
+    loading?: boolean;
     clearError: () => void;
     onLogin: (loginData: LoginData) => Promise<any>;
     onRegister: (registerData: RegisterData) => Promise<boolean>;
     onLogout?: () => void;
     forgotPassword: (email: string) => Promise<any>;
+    checkResetCode: (resetCode: string) => Promise<any>;
+    changePassword: ({email, password, confirmPassword} : {email: string, password: string, confirmPassword: string}) => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +34,7 @@ export const AuthProvider = ({children}: any) => {
     const [isAuth, setIsAuth] = useState<boolean | null>(null);
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         loadToken();
@@ -152,14 +156,55 @@ export const AuthProvider = ({children}: any) => {
 
     const forgotPassword = async (email: string) => {
         try{
+            setLoading(true);
             const response = await axios.post("http://192.168.1.5:5000/api/user/forgot-password", { email }, {
                 headers: {
                     "Content-Type": "application/json",
                 }
             });
+            setLoading(false);
             return response.data;
-        }catch(error){
+        }catch(error: any){
             console.log("Error on forgotPassword: ", error);
+            setError(error.response?.data?.message || error.message || 'An error ocurred while sending the email');
+            setLoading(false);
+            throw error;
+        }
+    }
+
+    const checkResetCode = async (resetCode: string) => {
+        try{
+            setLoading(true);
+            const response = await axios.post("http://192.168.1.5:5000/api/user/check-code", { resetCode }, {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            setLoading(false);
+            return response.data;
+        }catch(error: any){
+            console.log("Error on checkResetCode: ", error);
+            setLoading(false);
+            setError(error.response?.data?.message || error.message || 'An error ocurred while checking the code');
+            throw error;
+        }
+    }
+
+    const changePassword = async ({email, password, confirmPassword} : {email: string, password: string, confirmPassword: string}) => {
+        try{
+            setLoading(true);
+            const response = await axios.put("http://192.168.1.5:5000/api/user/change-password", { email, newPassword: password, confirmNewPassword: confirmPassword }, {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            setLoading(false);
+            return response.data;
+        }catch(error: any){
+            console.log("Error on changePassword: ", error);
+            setLoading(false);
+            const errorMessage = error.response?.data?.message || error.message || 'An error ocurred on change password';
+            setError(errorMessage);
             throw error;
         }
     }
@@ -169,11 +214,14 @@ export const AuthProvider = ({children}: any) => {
         isAuth,
         user,
         error,
+        loading,
         clearError,
         onRegister,
         onLogin,
         onLogout,
         forgotPassword,
+        checkResetCode,
+        changePassword,
     }}>
         {children}
         </AuthContext.Provider>

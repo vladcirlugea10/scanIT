@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { AuthStackParams, RootStackParamList } from '@/types/StackParamsList'
 import { useNavigation } from '@react-navigation/native'
 import { useAuth } from '@/hooks/useAuth'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -19,6 +20,7 @@ const Register = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userName, setUserName] = useState('');
+  const [showPass, setShowPass] = useState(false);
 
   const { onRegister, error, clearError } = useAuth();
 
@@ -42,13 +44,20 @@ const Register = () => {
     return () => clearError();
   }, [email, password, firstName, lastName, userName]);
 
+  const handleShowPass = () => {
+    setShowPass(!showPass);
+  }
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Create an account</Text>
         <View style={styles.inputContainer}>
           <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
-          <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='Password' autoCapitalize="none" secureTextEntry />
+          <View style={styles.passwordContainer}>
+            <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='Password' autoCapitalize="none" secureTextEntry={!showPass} />
+            <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+          </View>
           <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
           <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
           <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username(optional)' autoCapitalize="none" />
@@ -113,7 +122,17 @@ const styles = StyleSheet.create({
     errorText:{
       fontWeight: 'bold',
       color: colors.danger,
-    }
+    },
+    passwordContainer:{
+      position: 'relative',
+      width: '100%',
+    },
+    eyeIcon:{
+      position: 'absolute',
+      right: 10,
+      top: '25%',
+      color: colors.primary,
+    },
 })
 
 export default Register

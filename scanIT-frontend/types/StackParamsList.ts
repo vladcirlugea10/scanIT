@@ -14,5 +14,5 @@ export type AuthStackParams = {
     Login: undefined;
     Register: undefined;
     ForgotPassword: undefined;
-    ResetPassword: undefined;
+    ResetPassword: { email: string };
 };
