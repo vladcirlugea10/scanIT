@@ -47,11 +47,11 @@ const Register = () => {
       <View style={styles.formContainer}>
         <Text style={styles.title}>Create an account</Text>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='email' keyboardType="email-address" autoCapitalize="none" />
-          <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='password' autoCapitalize="none" secureTextEntry />
-          <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='first name' autoCapitalize="words" />
-          <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='last name(optional)' autoCapitalize="words" />
-          <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='username(optional)' autoCapitalize="none" />
+          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
+          <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='Password' autoCapitalize="none" secureTextEntry />
+          <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
+          <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
+          <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username(optional)' autoCapitalize="none" />
         </View>
         {error && <Text style={styles.errorText}>{error}</Text>}
         <View style={styles.buttonContainer}>

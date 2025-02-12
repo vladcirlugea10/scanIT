@@ -14,6 +14,8 @@ app.use(express.json());
 
 //authentication
 app.use('/api/auth', require('./routes/userAuth'));
+//user
+app.use('/api/user', require('./routes/user'));
 
 const uploadImage = multer({storage: multer.memoryStorage()});
 

@@ -13,6 +13,7 @@ interface AuthContextType {
     onLogin: (loginData: LoginData) => Promise<any>;
     onRegister: (registerData: RegisterData) => Promise<boolean>;
     onLogout?: () => void;
+    forgotPassword: (email: string) => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,6 +38,16 @@ export const AuthProvider = ({children}: any) => {
 
     const clearError = () => setError(null);
 
+    const checkTokenExpiration = (token: string) => {
+        try{
+            const decodedToken: any = jwtDecode(token);
+            return decodedToken.exp * 1000 > Date.now();
+        } catch(error){
+            console.log("Error on checkTokenExpiration: ", error);
+            throw error;
+        }
+    }   
+
     const saveToken = async (newToken: string) => {
         try{
             await SecureStorage.setItemAsync("token", newToken);
@@ -49,7 +60,7 @@ export const AuthProvider = ({children}: any) => {
     const loadToken = async () => {
         try{
             const loadedToken = await SecureStorage.getItemAsync("token");
-            if(loadedToken){
+            if(loadedToken && checkTokenExpiration(loadedToken)){
                 setToken(loadedToken);
                 decodeToken(loadedToken);
                 setIsAuth(true);
@@ -139,6 +150,20 @@ export const AuthProvider = ({children}: any) => {
         }
     }
 
+    const forgotPassword = async (email: string) => {
+        try{
+            const response = await axios.post("http://192.168.1.5:5000/api/user/forgot-password", { email }, {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            return response.data;
+        }catch(error){
+            console.log("Error on forgotPassword: ", error);
+            throw error;
+        }
+    }
+
     return(<AuthContext.Provider value={{
         token,
         isAuth,
@@ -148,6 +173,7 @@ export const AuthProvider = ({children}: any) => {
         onRegister,
         onLogin,
         onLogout,
+        forgotPassword,
     }}>
         {children}
         </AuthContext.Provider>

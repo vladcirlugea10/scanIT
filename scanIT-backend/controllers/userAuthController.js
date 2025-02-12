@@ -14,6 +14,9 @@ exports.registerUser = async (req, res) => {
             lastName: req.body.lastName ? req.body.lastName : null,
             userName: req.body.userName ? req.body.userName : null,
             birthday: req.body.birthday ? req.body.birthday : null,
+            height: req.body.height ? req.body.height : null,
+            weight: req.body.weight ? req.body.weight : null,
+            allergies: req.body.allergies ? req.body.allergies : null,
         });
 
         const user = await newUser.save();

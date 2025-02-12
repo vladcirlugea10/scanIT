@@ -13,15 +13,26 @@ import BarcodeResults from './(tabs)/BarcodeResults';
 import Profile from './(tabs)/Profile';
 import AuthNavigator from './AuthNavigator';
 import { useAuth } from '@/hooks/useAuth';
+import * as LinkingExpo from 'expo-linking';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const AppNavigator = () => {
+const linking = {
+  prefixes: ['myapp://', LinkingExpo.createURL('/')],
+  config: {
+    screens: {
+      Home: 'home',
+      ResetPassword: 'reset-password',
+    },
+  },
+};
+
+const AppNavigator = ({ linking }: { linking: any }) => {
   const { isAuth } = useAuth();
   console.log(isAuth);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
         <Stack.Navigator initialRouteName='Home'>
             <Stack.Screen name='Home' component={Home} options={{header: () => <PageHeader title={"Home"} backButton={false} />, headerRight: () => <Ionicons name='person-outline' size={24} color={colors.secondary}/>}} />
             <Stack.Screen name='ImageEdit' component={ImageEdit} options={{header: () => <PageHeader title={"Edit image"} backButton={true} />, headerBackVisible: false,}} />
