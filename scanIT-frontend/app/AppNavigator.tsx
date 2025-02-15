@@ -10,6 +10,8 @@ import ScanImage from './(tabs)/ScanImage';
 import IngredientsCheck from './(tabs)/IngredientsCheck';
 import { RootStackParamList } from '@/types/StackParamsList';
 import BarcodeResults from './(tabs)/BarcodeResults';
+import Profile from './(tabs)/Profile';
+import AuthNavigator from './AuthNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,6 +24,14 @@ const AppNavigator = () => {
             <Stack.Screen name='ScanImage' component={ScanImage} options={{header: () => <PageHeader title={"Scan results"} backButton={true} />, headerBackVisible: false,}} />
             <Stack.Screen name='IngredientsCheck' component={IngredientsCheck} options={{header: () => <PageHeader title={"Check Ingredients"} backButton={true} />, headerBackVisible: false,}} />
             <Stack.Screen name='BarcodeResults' component={BarcodeResults} options={{header: () => <PageHeader title={"Result"} backButton={true} />, headerBackVisible: false}} />
+            <Stack.Screen name='Profile' component={Profile} options={{header: () => <PageHeader title={"Profile"} backButton={true} />, headerBackVisible: false}} 
+              listeners={{
+                beforeRemove: (e) => {
+                  
+                }
+              }}
+            />
+            <Stack.Screen name='Auth' component={AuthNavigator} options={{headerShown: false}} />
         </Stack.Navigator>
     </NavigationContainer>
   );

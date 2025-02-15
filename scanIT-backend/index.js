@@ -14,6 +14,8 @@ app.use(express.json());
 
 //authentication
 app.use('/api/auth', require('./routes/userAuth'));
+//user
+app.use('/api/user', require('./routes/user'));
 
 const uploadImage = multer({storage: multer.memoryStorage()});
 
@@ -58,7 +60,7 @@ app.post('/api/ocr', uploadImage.single('image'), async(req, res) => {
 // });
 
 const port = process.env.PORT || 5000;
-const localIP = '192.168.1.5';
+const localIP = '192.168.1.7';
 app.listen(port, localIP, () => {
     console.log(`Server running at http://${localIP}:${port}`);
 });

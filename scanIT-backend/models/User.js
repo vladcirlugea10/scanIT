@@ -14,18 +14,31 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    lasName: {
+    lastName: {
         type: String,
         required: false,
     },
     userName: {
         type: String,
         required: false,
+        unique: true,
     },
     birthday: {
         type: String,
         required: false,
     },
+    height: {
+        type: Number,
+        required: false,
+    },
+    weight: {
+        type: Number,
+        required: false,
+    },
+    allergies: [{
+        type: String,
+        required: false,
+    }]
 }, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);

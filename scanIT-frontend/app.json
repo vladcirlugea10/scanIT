@@ -6,16 +6,21 @@
     "orientation": "portrait",
     "icon": "./assets/images/logo_nobg.png",
     "scheme": "myapp",
+    "deepLinks": [
+      "myapp://"
+    ],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mrv07.scanit"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mrv07.scanit"
     },
     "web": {
       "bundler": "metro",
@@ -33,7 +38,8 @@
         }
       ],
       "expo-sqlite",
-      "expo-router"
+      "expo-router",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
