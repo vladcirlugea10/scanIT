@@ -35,6 +35,7 @@ export const AuthProvider = ({children}: any) => {
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const localIP = "192.168.1.7";
 
     useEffect(() => {
         loadToken();
@@ -88,8 +89,9 @@ export const AuthProvider = ({children}: any) => {
 
     const onRegister = async (registerData: RegisterData): Promise<boolean> => {
         try {
+            setLoading(true);
             clearError();
-            const response = await axios.post("http://192.168.1.5:5000/api/auth/register", registerData, {
+            const response = await axios.post(`http://${localIP}:5000/api/auth/register`, registerData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -103,20 +105,23 @@ export const AuthProvider = ({children}: any) => {
             setToken(newToken);
             await saveToken(newToken);
             setIsAuth(true);
+            setLoading(false);
 
             return true;
         }catch(error: any){
             console.log("Error on register: " ,error);
             const errorMessage = error.response?.data?.message || error.message || 'An error ocurred on register';
             setError(errorMessage);
+            setLoading(false);
             throw error;
         }
     };
 
     const onLogin = async (loginData: LoginData): Promise<any> => {
         try{
+            setLoading(true);
             clearError();
-            const response = await axios.post("http://192.168.1.5:5000/api/auth/login", loginData, {
+            const response = await axios.post(`http://${localIP}:5000/api/auth/login`, loginData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -130,12 +135,14 @@ export const AuthProvider = ({children}: any) => {
             setToken(newToken);
             await saveToken(newToken);
             setIsAuth(true);
+            setLoading(false);
 
             return true;
         }catch(error: any){
             console.log("Error on login: ", error);
             const errorMessage = error.response?.data?.message || error.message || 'An error ocurred on login';
             setError(errorMessage);
+            setLoading(false);
             throw error;
         }
     }
@@ -157,7 +164,7 @@ export const AuthProvider = ({children}: any) => {
     const forgotPassword = async (email: string) => {
         try{
             setLoading(true);
-            const response = await axios.post("http://192.168.1.5:5000/api/user/forgot-password", { email }, {
+            const response = await axios.post(`http://${localIP}:5000/api/user/forgot-password`, { email }, {
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -175,7 +182,7 @@ export const AuthProvider = ({children}: any) => {
     const checkResetCode = async (resetCode: string) => {
         try{
             setLoading(true);
-            const response = await axios.post("http://192.168.1.5:5000/api/user/check-code", { resetCode }, {
+            const response = await axios.post(`http://${localIP}:5000/api/user/check-code`, { resetCode }, {
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -193,7 +200,7 @@ export const AuthProvider = ({children}: any) => {
     const changePassword = async ({email, password, confirmPassword} : {email: string, password: string, confirmPassword: string}) => {
         try{
             setLoading(true);
-            const response = await axios.put("http://192.168.1.5:5000/api/user/change-password", { email, newPassword: password, confirmNewPassword: confirmPassword }, {
+            const response = await axios.put(`http://${localIP}:5000/api/user/change-password`, { email, newPassword: password, confirmNewPassword: confirmPassword }, {
                 headers: {
                     "Content-Type": "application/json",
                 }

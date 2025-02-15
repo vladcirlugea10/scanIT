@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Keyboard, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '@/assets/colors'
 import MyButton from '@/components/MyButton';
@@ -16,7 +16,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
 
-  const { onLogin, error, clearError } = useAuth();
+  const { onLogin, error, clearError, loading } = useAuth();
 
   const navigation = useNavigation<LoginNavProps>();
   const parentNavigation = useNavigation<ParentNavigationProps>();
@@ -26,6 +26,7 @@ const Login = () => {
   }, [email, password]);
 
   const onSubmit = async () => {
+    Keyboard.dismiss();
     const loginData = {
       email: email,
       password: password,
@@ -43,24 +44,27 @@ const Login = () => {
   }
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Welcome back!</Text>
-        <View style={styles.inputContainer}>
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='email' keyboardType="email-address" autoCapitalize="none" />
-          <View style={styles.passwordContainer}>
-            <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='password' autoCapitalize="none" secureTextEntry={!showPass} />
-            <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+    <ScrollView>
+      <View style={styles.mainContainer}>
+          <View style={styles.formContainer}>
+            <Text style={styles.title}>Welcome back!</Text>
+            <View style={styles.inputContainer}>
+              <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='email' keyboardType="email-address" autoCapitalize="none" />
+              <View style={styles.passwordContainer}>
+                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='password' autoCapitalize="none" secureTextEntry={!showPass} />
+                <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+              </View>
+              {loading && <ActivityIndicator size='large' color={colors.primary} />}
+              {error && <Text style={styles.errorText}>{error}</Text>}
+            </View>
+            <View style={styles.buttonContainer}>
+              <MyButton title='Login' onPress={onSubmit} containerStyle={styles.button} />
+              <Text style={styles.text} onPress={() => navigation.navigate('ForgotPassword')}>Forgot password?</Text>
+              <Text style={styles.text} onPress={() => navigation.navigate('Register')}>Create an account</Text>
+            </View>
           </View>
-          {error && <Text style={styles.errorText}>{error}</Text>}
-        </View>
-        <View style={styles.buttonContainer}>
-          <MyButton title='Login' onPress={onSubmit} containerStyle={styles.button} />
-          <Text style={styles.text} onPress={() => navigation.navigate('ForgotPassword')}>Forgot password?</Text>
-          <Text style={styles.text} onPress={() => navigation.navigate('Register')}>Create an account</Text>
-        </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -73,9 +77,9 @@ const styles = StyleSheet.create({
   },
   formContainer:{
     width: '100%',
-    height: '80%',
+    height: '100%',
     backgroundColor: colors.white,
-    marginTop: '70%',
+    marginTop: '80%',
     gap: 30,
     padding: '10%',
     display: 'flex',

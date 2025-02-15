@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, ScrollView, Keyboard } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '@/assets/colors'
 import MyButton from '@/components/MyButton'
@@ -22,9 +22,10 @@ const Register = () => {
   const [userName, setUserName] = useState('');
   const [showPass, setShowPass] = useState(false);
 
-  const { onRegister, error, clearError } = useAuth();
+  const { onRegister, error, clearError, loading } = useAuth();
 
   const onSubmit = async () => {
+    Keyboard.dismiss();
     console.log('email:', email);
     const newUser = {
       email: email,
@@ -49,26 +50,29 @@ const Register = () => {
   }
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Create an account</Text>
-        <View style={styles.inputContainer}>
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
-          <View style={styles.passwordContainer}>
-            <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='Password' autoCapitalize="none" secureTextEntry={!showPass} />
-            <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+    <ScrollView>
+      <View style={styles.mainContainer}>
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>Create an account</Text>
+          <View style={styles.inputContainer}>
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
+            <View style={styles.passwordContainer}>
+              <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='Password' autoCapitalize="none" secureTextEntry={!showPass} />
+              <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+            </View>
+            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
+            <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
+            <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username(optional)' autoCapitalize="none" />
           </View>
-          <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
-          <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
-          <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username(optional)' autoCapitalize="none" />
-        </View>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        <View style={styles.buttonContainer}>
-          <MyButton title='Register' onPress={onSubmit} containerStyle={styles.button} />
-          <Text style={styles.text} onPress={() => navigation.navigate('Login')} >Already have an account?</Text>
+          {loading && <ActivityIndicator size='large' color={colors.primary} />}
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          <View style={styles.buttonContainer}>
+            <MyButton title='Register' onPress={onSubmit} containerStyle={styles.button} />
+            <Text style={styles.text} onPress={() => navigation.navigate('Login')} >Already have an account?</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -81,9 +85,9 @@ const styles = StyleSheet.create({
   },
   formContainer:{
       width: '100%',
-      height: '80%',
+      height: '100%',
       backgroundColor: colors.white,
-      marginTop: '40%',
+      marginTop: '60%',
       gap: 30,
       padding: '10%',
       display: 'flex',
