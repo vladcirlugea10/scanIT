@@ -35,7 +35,7 @@ export const AuthProvider = ({children}: any) => {
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const localIP = "192.168.1.7";
+    const localIP = "192.168.1.8"; // Change this to your local IP
 
     useEffect(() => {
         loadToken();

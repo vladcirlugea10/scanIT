@@ -7,6 +7,8 @@ import { AuthStackParams, RootStackParamList } from '@/types/StackParamsList'
 import { useNavigation } from '@react-navigation/native'
 import { useAuth } from '@/hooks/useAuth'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { formatDateToString } from '@/utils/date'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -20,7 +22,9 @@ const Register = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userName, setUserName] = useState('');
+  const [birthday, setBirthday] = useState<Date | null>(null);
   const [showPass, setShowPass] = useState(false);
+  const [showDate, setShowDate] = useState(false);
 
   const { onRegister, error, clearError, loading } = useAuth();
 
@@ -33,6 +37,7 @@ const Register = () => {
       firstName: firstName,
       lastName: lastName,
       userName: userName,
+      birthday: formatDateToString(birthday),
     }
   
     const response = await onRegister(newUser);
@@ -49,6 +54,10 @@ const Register = () => {
     setShowPass(!showPass);
   }
 
+  const handleShowDate = () => {
+    setShowDate(!showDate);
+  }
+
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
@@ -60,9 +69,19 @@ const Register = () => {
               <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='Password' autoCapitalize="none" secureTextEntry={!showPass} />
               <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
             </View>
-            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
+            <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username' autoCapitalize="none" />
+            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name(optional)' autoCapitalize="words" />
             <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
-            <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username(optional)' autoCapitalize="none" />
+            <View>
+              {showDate && <DateTimePicker value={new Date()} mode='date' display='spinner' onChange={(event, selectedDate) => {
+                if(selectedDate){
+                  setBirthday(selectedDate);
+                }
+                setShowDate(false);
+              }} />}
+              <TextInput style={styles.input} value={formatDateToString(birthday)} placeholder='Birthday(optional)' editable={false} />
+              <MaterialCommunityIcons name='calendar' size={24} style={styles.eyeIcon} onPress={handleShowDate} />
+            </View>
           </View>
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
           {error && <Text style={styles.errorText}>{error}</Text>}
@@ -109,6 +128,11 @@ const styles = StyleSheet.create({
       borderColor: colors.third,
       fontWeight: 'bold',
       color: colors.primary,
+    },
+    dateContainer:{
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
     },
     button:{
       width: '100%',

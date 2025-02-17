@@ -10,9 +10,9 @@ exports.registerUser = async (req, res) => {
         const newUser = new User({
             email: req.body.email,
             password: Crypto.AES.encrypt(req.body.password, process.env.PASS_SECRET).toString(),
-            firstName: req.body.firstName,
+            userName: req.body.userName,
+            firstName: req.body.firstName ? req.body.firstName : null,
             lastName: req.body.lastName ? req.body.lastName : null,
-            userName: req.body.userName ? req.body.userName : null,
             birthday: req.body.birthday ? req.body.birthday : null,
             height: req.body.height ? req.body.height : null,
             weight: req.body.weight ? req.body.weight : null,
@@ -27,9 +27,9 @@ exports.registerUser = async (req, res) => {
         const token = jwt.sign({
             id: user._id,
             email: user.email,
+            userName: user.userName,
             firstName: user.firstName,
             lastName: user.lastName,
-            userName: user.userName,
             birthday: user.birthday,
             height: user.height,
             weight: user.weight,
@@ -70,9 +70,9 @@ exports.loginUser = async (req, res) => {
         const token = jwt.sign({
             id: user._id,
             email: user.email,
+            userName: user.userName,
             firstName: user.firstName,
             lastName: user.lastName,
-            userName: user.userName,
             birthday: user.birthday,
             height: user.height,
             weight: user.weight,

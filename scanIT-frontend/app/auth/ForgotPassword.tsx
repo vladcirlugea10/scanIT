@@ -54,7 +54,7 @@ const ForgotPassword = () => {
     ) : (
       <View style={styles.mainContainer}>
         <View style={styles.formContainer}>
-          <Text>Enter the 6 digit code</Text>
+          <Text style={styles.title}>Enter the 6 digit code</Text>
           <TextInput style={styles.input} value={code} onChangeText={setCode} placeholder='Code' keyboardType='numeric' />
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
           {error && <Text style={styles.errorText}>{error}</Text>}
