@@ -102,3 +102,27 @@ exports.forgotPasswordEmail = async (req, res) => {
         res.status(500).json({message: 'Internal server error'});
     }
 }
+
+exports.addAllergy = async (req, res) => {
+    try{
+        const { email, allergy } = req.body;
+
+        const user = await User.findOne({email: email});
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        if(user.allergies && user.allergies.includes(allergy)){
+            return res.status(400).json({message: 'Allergy already existst!'});
+        }
+        if(!user.allergies){
+            user.allergies = [];
+        }
+        user.allergies.push(allergy);
+        await user.save();
+
+        res.status(200).json({message: 'Allergy added successfully!'});
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { colors } from '@/assets/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -7,33 +7,42 @@ type SelectBoxProps = {
     title?: string;
     options: string[];
     style?: object;
+    selectedOption: string;
+    setSelectedOption: (option: string) => void;
 }
 
-const SelectBox: React.FC<SelectBoxProps> = ({title, options, style}) => {
+const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOption, setSelectedOption}) => {
     const [showOptions, setShowOptions] = useState(false);
 
     const handleShowOptions = () => {
         setShowOptions(!showOptions);
     }
 
+    const handleSelectOption = (option: string) => {
+        setSelectedOption(option);
+        setShowOptions(false);
+    }
+
     return (
         <View style={[styles.mainContainer, style]}>
-            <View style={styles.title}>
-                <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={handleShowOptions}>
-                    { title ? <Text>{title}</Text> : <Text>Select</Text> }
+            <TouchableOpacity style={{width: '100%'}} onPress={handleShowOptions}>
+                <View style={styles.title}>
+                    { selectedOption ? <Text style={styles.textTitle}>{selectedOption}</Text> : ( title ? <Text style={styles.textTitle}>{title}</Text> : <Text style={styles.textTitle}>Select</Text> ) }
                     <MaterialCommunityIcons name="chevron-down" size={24} color={colors.primary} />
-                </TouchableOpacity>
-            </View>
-            { showOptions &&
-                <View style={styles.optionsContainer}>
-                    {options.map((option, index) => (
-                        <TouchableOpacity style={styles.optionContainer} key={index}>
-                            <View style={{alignContent: 'center', justifyContent: 'center'}}>
-                                <Text>{option}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
                 </View>
+            </TouchableOpacity>
+            { showOptions &&
+                <ScrollView style={{width: '100%', height: 'auto'}}>
+                    <View style={styles.optionsContainer}>
+                        {options.map((option, index) => (
+                            <TouchableOpacity style={styles.optionContainer} key={index} onPress={() => handleSelectOption(option)}>
+                                <View style={{alignContent: 'center', justifyContent: 'center'}}>
+                                    <Text style={styles.option}>{option}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </ScrollView>
             }
         </View>
     )
@@ -51,13 +60,21 @@ const styles = StyleSheet.create({
         borderColor: colors.third,
     },
     title:{
+        padding: 2,
+        justifyContent: 'center',
         display: 'flex',
         flexDirection: 'row',
     },
+    textTitle:{
+        fontWeight: 'bold',
+        color: colors.primary,
+    },
     optionsContainer:{
         width: '100%',
+        height: 'auto',
         display: 'flex',
         flexDirection: 'column',
+        backgroundColor: colors.primary,
     },
     optionContainer:{
         width: '100%',
@@ -69,7 +86,7 @@ const styles = StyleSheet.create({
     },
     option:{
         height: 'auto',
-        width: '100%',
+        fontWeight: 'bold',
     }
 });
 

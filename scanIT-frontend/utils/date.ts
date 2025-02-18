@@ -8,3 +8,14 @@ export const formatDateToString = (date: Date | null) => {
 
     return `${day}-${month}-${year}`;
 }
+
+export const calculateDays = (date: Date | undefined) => {
+    if(!date){
+        return;
+    }
+    const today = new Date();
+    const accountCreated = new Date(date);
+    const diffTime = Math.abs(today.getTime() - accountCreated.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+}

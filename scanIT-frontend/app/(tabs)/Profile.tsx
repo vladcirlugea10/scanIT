@@ -7,11 +7,16 @@ import { colors } from '@/assets/colors';
 import MyButton from '@/components/MyButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SelectBox from '@/components/SelectBox';
+import { calculateDays, formatDateToString } from '@/utils/date';
+import { AllergenGroups } from '@/types/AllergenIngredient';
+import useUser from '@/hooks/useUser';
 
 const Profile = () => {
-  const { isAuth, user, onLogout } = useAuth();
+  const { isAuth, user, onLogout, token } = useAuth();
+  const { addAllergy, loading, error } = useUser(token);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [showSelectBox, setShowSelectBox] = useState(false);
+  const [selectedAllergy, setSelectedAllergy] = useState('');
 
   useEffect(() => {
     if(!isAuth){
@@ -30,8 +35,12 @@ const Profile = () => {
     }
   }
 
-  const handleAddAllergy = () => {
-    console.log('Add allergy');
+  const handleAddAllergy = async () => {
+    if(selectedAllergy){
+      await addAllergy(selectedAllergy);
+      setShowSelectBox(false);
+      setSelectedAllergy('');
+    }
   }
 
   const handleEditProfile = () => {
@@ -61,15 +70,22 @@ const Profile = () => {
           </Text>
           <Text>
             <Text style={styles.subtitle}>Member since: </Text>
-            <Text style={styles.text}>{user?.createdAt}</Text>
+            <Text style={styles.text}>{ user?.createdAt ? formatDateToString(new Date(user?.createdAt)) : ''} ({calculateDays(user?.createdAt)} days)</Text>
           </Text>
           <View style={styles.allergiesContainer}>
             <View style={styles.allergiesTitle}> 
                 <Text style={styles.subtitle}>Allergies: </Text>
-                <TouchableOpacity onPress={handleAddAllergy}>
+                <TouchableOpacity>
                     { showSelectBox ? <MaterialCommunityIcons name='minus-box' size={24} color={colors.third} onPress={handleSelectBox} /> : <MaterialCommunityIcons name='plus-box' size={24} color={colors.third} onPress={handleSelectBox} /> }
                 </TouchableOpacity>
-                { showSelectBox && <SelectBox style={{position: 'absolute', right: "10%", zIndex: 100}} title='Select an allergy' options={['a', 'b', 'c']}/> }
+                { showSelectBox && 
+                    <View style={{position: 'absolute', display: 'flex', right: 0, flexDirection: 'row', gap: 10}}>
+                        <SelectBox style={{zIndex: 100, width: 130}} title='Select an allergy' options={AllergenGroups} selectedOption={selectedAllergy} setSelectedOption={setSelectedAllergy} />
+                        <TouchableOpacity>
+                            <MaterialCommunityIcons name='check' size={24} color={colors.primary} onPress={handleAddAllergy} />
+                        </TouchableOpacity>
+                    </View> 
+                }
             </View>
             { user?.allergies && user?.allergies.length > 0 ? user?.allergies?.map((allergy, index) => (
                 <Text style={{marginLeft: '5%'}} key={index}>{allergy}</Text>
@@ -117,7 +133,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   text:{
-    fontSize: 15,
+    fontSize: 20,
   },
   dataContainer:{
     width: '90%',

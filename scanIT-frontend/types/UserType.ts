@@ -20,7 +20,7 @@ interface UserData{
     height?: number | null;
     weight?: number | null;
     allergies?: string[] | null;
-    createdAt: string;
+    createdAt: Date;
 }
 
 export type { LoginData, RegisterData, UserData };
