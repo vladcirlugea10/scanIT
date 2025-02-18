@@ -13,7 +13,7 @@ import useUser from '@/hooks/useUser';
 
 const Profile = () => {
   const { isAuth, user, onLogout, token } = useAuth();
-  const { addAllergy, loading, error } = useUser(token);
+  const { addAllergy, loading, error, getUserData, removeAllergy } = useUser(token);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [showSelectBox, setShowSelectBox] = useState(false);
   const [selectedAllergy, setSelectedAllergy] = useState('');
@@ -23,6 +23,10 @@ const Profile = () => {
       navigation.navigate('Auth');
     }
   }, [isAuth]);
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   if(!isAuth){
     return null;
@@ -37,9 +41,23 @@ const Profile = () => {
 
   const handleAddAllergy = async () => {
     if(selectedAllergy){
-      await addAllergy(selectedAllergy);
-      setShowSelectBox(false);
-      setSelectedAllergy('');
+      try{
+          await addAllergy(selectedAllergy);
+          setShowSelectBox(false);
+          setSelectedAllergy('');
+      } catch(error){
+          console.log('Error adding allergy: ', error);
+      }
+    }
+  }
+
+  const handleRemoveAllergy = async (allergy: string) => {
+    if(allergy){
+      try{
+          await removeAllergy(allergy);
+      } catch(error){
+          console.log('Error removing allergy: ', error);
+        }
     }
   }
 
@@ -88,7 +106,12 @@ const Profile = () => {
                 }
             </View>
             { user?.allergies && user?.allergies.length > 0 ? user?.allergies?.map((allergy, index) => (
-                <Text style={{marginLeft: '5%'}} key={index}>{allergy}</Text>
+                <View style={styles.allergyContainer} key={index}>
+                    <Text style={{marginLeft: '5%'}}>{allergy}</Text>
+                    <TouchableOpacity>
+                        <MaterialCommunityIcons name='minus-box' size={24} color={colors.danger} onPress={() => handleRemoveAllergy(allergy)} />
+                    </TouchableOpacity>
+                </View>
               )) : <Text style={{marginLeft: '5%'}} >You don't have any alleries!</Text>
             }
           </View>
@@ -152,12 +175,23 @@ const styles = StyleSheet.create({
   allergiesContainer:{
     display: 'flex',
     flexDirection: 'column',
+    gap: 5,
+    marginBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.primary,
   },
   allergiesTitle:{
     display: 'flex',
     flexDirection: 'row',
     marginBottom: '5%',
     gap: 20,
+  },
+  allergyContainer:{
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   editButton:{
     position: 'absolute',

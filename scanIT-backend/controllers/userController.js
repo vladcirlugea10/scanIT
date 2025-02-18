@@ -126,3 +126,40 @@ exports.addAllergy = async (req, res) => {
         res.status(500).json({message: 'Internal server error'});
     }
 }
+
+exports.removeAllergy = async (req, res) => {
+    try{
+        const { email, allergy } = req.body;
+
+        const user = await User.findOne({email: email});
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        if(!user.allergies || !user.allergies.includes(allergy)){
+            return res.status(400).json({message: 'Allergy not found!'});
+        }
+        user.allergies = user.allergies.filter((a) => a !== allergy);
+        await user.save();
+
+        res.status(200).json({message: 'Allergy removed successfully!'});
+    }catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
+exports.getUserData = async (req, res) => {
+    try{
+        const email = req.params.email;
+        console.log(email);
+        const user = await User.findOne({email: email});
+        console.log(user);
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        res.status(200).json(user);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}

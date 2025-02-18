@@ -17,6 +17,7 @@ interface AuthContextType {
     forgotPassword: (email: string) => Promise<any>;
     checkResetCode: (resetCode: string) => Promise<any>;
     changePassword: ({email, password, confirmPassword} : {email: string, password: string, confirmPassword: string}) => Promise<any>;
+    updateUserData: (userData: UserData) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -216,6 +217,10 @@ export const AuthProvider = ({children}: any) => {
         }
     }
 
+    const updateUserData = (userData: UserData) => {
+        setUser(userData);
+    }
+
     return(<AuthContext.Provider value={{
         token,
         isAuth,
@@ -229,6 +234,7 @@ export const AuthProvider = ({children}: any) => {
         forgotPassword,
         checkResetCode,
         changePassword,
+        updateUserData,
     }}>
         {children}
         </AuthContext.Provider>
