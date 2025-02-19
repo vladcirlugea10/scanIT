@@ -11,10 +11,10 @@ interface RegisterData{
     birthday?: string;
 }
 interface UserData{
-    id: string;
+    _id: string;
     email:string;
     userName: string;
-    firstName?: string | null;
+    firstName: string;
     lastName?: string | null;
     birthday?: string | null;
     height?: number | null;
@@ -22,5 +22,13 @@ interface UserData{
     allergies?: string[] | null;
     createdAt: Date;
 }
+interface UpdateData{
+    firstName?: string;
+    lastName?: string;
+    userName?: string;
+    email?: string;
+    height?: number;
+    weight?: number;
+}
 
-export type { LoginData, RegisterData, UserData };
+export type { LoginData, RegisterData, UserData, UpdateData };

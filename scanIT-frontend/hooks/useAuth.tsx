@@ -73,6 +73,7 @@ export const AuthProvider = ({children}: any) => {
             }
         }catch(error){
             console.log("Error on loadToken: ", error);
+            setIsAuth(false);
             throw error;
         }
     }

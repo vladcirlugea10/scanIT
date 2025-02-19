@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -13,10 +13,19 @@ import useUser from '@/hooks/useUser';
 
 const Profile = () => {
   const { isAuth, user, onLogout, token } = useAuth();
-  const { addAllergy, loading, error, getUserData, removeAllergy } = useUser(token);
+  const { addAllergy, loading, error, getUserData, editUser, removeAllergy } = useUser(token);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [showSelectBox, setShowSelectBox] = useState(false);
   const [selectedAllergy, setSelectedAllergy] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedUser, setEditedUser] = useState({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    userName: user?.userName || '',
+    email: user?.email || '',
+    height: user?.height?.toString() || '0',
+    weight: user?.weight?.toString() || '0',
+  });
 
   useEffect(() => {
     if(!isAuth){
@@ -25,7 +34,7 @@ const Profile = () => {
   }, [isAuth]);
 
   useEffect(() => {
-    getUserData();
+      getUserData();
   }, []);
 
   if(!isAuth){
@@ -61,32 +70,112 @@ const Profile = () => {
     }
   }
 
-  const handleEditProfile = () => {
-    console.log('Edit profile');
+  const handleEditProfile = async () => {
+    if(isEditing){
+      try{
+          const formattedUser = {
+            ...editedUser,
+            height: parseFloat(editedUser.height),
+            weight: parseFloat(editedUser.weight),
+          }
+          console.log('Edited user: ', formattedUser);
+          await editUser(formattedUser);
+      }catch(error){
+        console.log('Error editing profile: ', error);
+      }
+    }
+    setIsEditing(!isEditing);
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedUser({
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      userName: user?.userName || '',
+      email: user?.email || '',
+      height: user?.height?.toString() || '0',
+      weight: user?.weight?.toString() || '0',
+    })
   }
 
   const handleSelectBox = () => {
     setShowSelectBox(!showSelectBox);
   }
 
+  const dynamicStyles = StyleSheet.create({
+    input:{
+      fontSize: 20,
+      borderWidth: isEditing ? 1 : 0,
+      borderColor: colors.primary,
+      backgroundColor: isEditing ? colors.primary : 'transparent',
+      color: isEditing ? colors.secondary : colors.third,
+      height: 'auto',
+      width: 'auto',
+      paddingHorizontal: 10,
+    },
+  });
+
+  const showAlert = () => {
+    if(error){
+      Alert.alert(
+        'Error!',
+        error,
+        [
+          {
+            text: 'Ok',
+            style: 'cancel',
+          },
+        ],
+        {
+          cancelable: true,
+        },
+      );
+    }
+  };
+
+  if(loading){
+    return (
+      <View style={styles.mainContainer}>
+        <ActivityIndicator size='large' color={colors.primary} />
+      </View>
+    );
+  }
+
+  if(error){
+    showAlert();
+  }
+
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.title}>Personal information</Text>
+      <View style={styles.buttonContainer}>
+        { isEditing && <TouchableOpacity onPress={handleCancelEdit}> 
+            <MaterialCommunityIcons name='close-circle' size={40} color={colors.danger} />
+          </TouchableOpacity> 
+        }
+        <TouchableOpacity onPress={handleEditProfile} >
+                <MaterialCommunityIcons name={isEditing ? 'check-circle' : 'pencil-circle'} size={40} color={colors.primary} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.dataContainer}>
         <View style={styles.personalDataContainer}>
-          <Text>
+          <View style={styles.infoContainer}>
             <Text style={styles.subtitle}>Name: </Text>
-            <Text style={styles.text}>{user?.firstName} {user?.lastName}</Text>
-          </Text>
-          <Text>
+            <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.firstName} onChangeText={(text) => setEditedUser((prev) => ({...prev, firstName: text}))} />
+            { editedUser.lastName ? (<TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.lastName} onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))} />) :
+              isEditing ? (<TextInput style={dynamicStyles.input} editable={isEditing} value='' onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))}  />) : null
+            }
+          </View>
+          <View style={styles.infoContainer}>
             <Text style={styles.subtitle}>Username: </Text>
-            <Text style={styles.text}>{user?.userName}</Text>
-          </Text>
-          <Text>
+            <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.userName} onChangeText={(text) => setEditedUser((prev) => ({...prev, userName: text}))} />
+          </View>
+          <View style={styles.infoContainer}>
             <Text style={styles.subtitle}>Email: </Text>
-            <Text style={styles.text}>{user?.email}</Text>
-          </Text>
-          <Text>
+            <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.email} onChangeText={(text) => setEditedUser((prev) => ({...prev, email: text}))} />
+          </View>
+          <Text style={{marginBottom: '5%'}}>
             <Text style={styles.subtitle}>Member since: </Text>
             <Text style={styles.text}>{ user?.createdAt ? formatDateToString(new Date(user?.createdAt)) : ''} ({calculateDays(user?.createdAt)} days)</Text>
           </Text>
@@ -107,7 +196,7 @@ const Profile = () => {
             </View>
             { user?.allergies && user?.allergies.length > 0 ? user?.allergies?.map((allergy, index) => (
                 <View style={styles.allergyContainer} key={index}>
-                    <Text style={{marginLeft: '5%'}}>{allergy}</Text>
+                    <Text style={{marginLeft: '5%', color: colors.third}}>{allergy}</Text>
                     <TouchableOpacity>
                         <MaterialCommunityIcons name='minus-box' size={24} color={colors.danger} onPress={() => handleRemoveAllergy(allergy)} />
                     </TouchableOpacity>
@@ -115,19 +204,16 @@ const Profile = () => {
               )) : <Text style={{marginLeft: '5%'}} >You don't have any alleries!</Text>
             }
           </View>
-          <View style={styles.allergiesTitle}>
-            <Text>
-              <Text style={styles.subtitle}>Height: </Text>
-              <Text style={styles.text}>{user?.height} cm</Text>
-            </Text>
-            <Text>
-              <Text style={styles.subtitle}>Weight: </Text>
-              <Text style={styles.text}>{user?.weight} kg</Text>
-            </Text>
+          <View style={{display: 'flex', flexDirection: 'row', gap: "10%"}}>
+            <View style={styles.infoContainerRow}>
+              <Text style={styles.subtitle}>Height(cm): </Text>
+              <TextInput style={dynamicStyles.input} editable={isEditing} value={ editedUser.height ? editedUser.height : '0'} keyboardType='numeric' onChangeText={(text) => setEditedUser((prev) => ({...prev, height: text}))} />
+            </View>
+            <View style={styles.infoContainerRow}>
+              <Text style={styles.subtitle}>Weight(kg): </Text>
+              <TextInput style={dynamicStyles.input} editable={isEditing} value={ editedUser.weight ? editedUser.weight : '0'} keyboardType='numeric' onChangeText={(text) => setEditedUser((prev) => ({...prev, weight: text}))} />
+            </View>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile} >
-              <MaterialCommunityIcons name='pencil-circle' size={48} color={colors.primary} />
-          </TouchableOpacity>
         </View>
         <Text style={styles.title}>Your activity: </Text>
       </View>
@@ -157,6 +243,7 @@ const styles = StyleSheet.create({
   },
   text:{
     fontSize: 20,
+    color: colors.third,
   },
   dataContainer:{
     width: '90%',
@@ -164,13 +251,28 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 5,
-    marginTop: '5%',
+    marginTop: '2%',
   },
   personalDataContainer:{
     display: 'flex',
     flexDirection: 'column',
-    gap: 5,
     width: '100%',
+    gap: 5,
+  },
+  infoContainer:{
+    width: '100%',
+    height: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center'
+  },
+  infoContainerRow:{
+      height: 'auto',
+      display: 'flex',
+      flexDirection: 'row',
+      gap: 10,
+      alignItems: 'center'
   },
   allergiesContainer:{
     display: 'flex',
@@ -193,11 +295,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  editButton:{
+  buttonContainer:{
+    width: 'auto',
+    height: 'auto',
     position: 'absolute',
-    right: 0,
-    bottom: 0,
-  }
+    right: 15,
+    top: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+  },
 });
 
 export default Profile

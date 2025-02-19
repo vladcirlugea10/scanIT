@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react"
 import { useAuth } from "./useAuth";
+import { UpdateData } from "@/types/UserType";
 
 const useUser = (token: string | null | undefined) => {
     const [error, setError] = useState<string | null>(null);
@@ -16,7 +17,6 @@ const useUser = (token: string | null | undefined) => {
             setError("User not found");
             return;
         }
-        console.log(user.email);
         try{
             setLoading(true);
             clearError();
@@ -27,15 +27,40 @@ const useUser = (token: string | null | undefined) => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log(response.data);
             updateUserData(response.data);
             setLoading(false);
         } catch(error: any){
-            const errorMessage = error.message || "Error getting user data";
+            const errorMessage = error.response.data.message || error.message || "Error getting user data";
             setError(errorMessage);
             setLoading(false);
         }
     }, [user?.email, token, updateUserData]);
+
+    const editUser = async (userData: UpdateData) => {
+        if(!user?._id || !token){
+            setError("User not found");
+            console.log('User not found');
+            return;
+        }
+        try{
+            setLoading(true);
+            clearError();
+
+            const response = await axios.put(`http://${localIP}:5000/api/user/edit/${user._id}`, userData, {
+                headers: {
+                    'Token': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log('response:', response.data);
+            await getUserData();
+            setLoading(false);
+        } catch(error: any){
+            const errorMessage = error.response.data.message || error.message || "Error updating user data";
+            setError(errorMessage);
+            setLoading(false);
+        }
+    }
 
     const addAllergy = async (allergy: string) => {
         if(!user?.email){
@@ -58,7 +83,7 @@ const useUser = (token: string | null | undefined) => {
             setLoading(false);
             return response.data;
         } catch(error: any){
-            const errorMessage = error.message || "Error adding allergy";
+            const errorMessage = error.response.data.message || error.message || "Error adding allergy";
             setError(errorMessage);
             setLoading(false);
             throw error;
@@ -80,14 +105,14 @@ const useUser = (token: string | null | undefined) => {
             setLoading(false);
             return response.data;
         }catch(error: any){
-            const errorMessage = error.message || "Error removing allergy";
+            const errorMessage = error.response.data.message || error.message || "Error removing allergy";
             setError(errorMessage);
             setLoading(false);
             throw error;
         }
     }
 
-    return { error, loading, addAllergy, getUserData, removeAllergy };
+    return { error, loading, addAllergy, getUserData, removeAllergy, editUser };
 };
 
 export default useUser;

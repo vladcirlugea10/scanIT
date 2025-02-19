@@ -163,3 +163,27 @@ exports.getUserData = async (req, res) => {
         res.status(500).json({message: 'Internal server error'});
     }
 }
+
+exports.editUserData = async (req, res) => {
+    try{
+        const userId = req.params.userId;
+        console.log(userId);
+        const updateFields = req.body;
+
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        Object.keys(updateFields).forEach((field) => {
+            if(updateFields[field] !== undefined){
+                user[field] = updateFields[field];
+            }
+        });
+        await user.save();
+
+        res.status(200).json({message: 'User data updated successfully!', user: user});
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}

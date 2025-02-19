@@ -14,5 +14,8 @@ router.put('/add-allergy', verifyToken, userController.addAllergy);
 //Remove an allergy
 router.delete('/remove-allergy', verifyToken, userController.removeAllergy);
 
+//Get user data
 router.get('/:email', verifyToken, userController.getUserData);
+//Edit user data
+router.put('/edit/:userId', verifyToken, userController.editUserData);
 module.exports = router;

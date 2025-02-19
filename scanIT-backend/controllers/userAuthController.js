@@ -11,7 +11,7 @@ exports.registerUser = async (req, res) => {
             email: req.body.email,
             password: Crypto.AES.encrypt(req.body.password, process.env.PASS_SECRET).toString(),
             userName: req.body.userName,
-            firstName: req.body.firstName ? req.body.firstName : null,
+            firstName: req.body.firstName,
             lastName: req.body.lastName ? req.body.lastName : null,
             birthday: req.body.birthday ? req.body.birthday : null,
             height: req.body.height ? req.body.height : null,

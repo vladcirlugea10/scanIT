@@ -70,7 +70,7 @@ const Register = () => {
               <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
             </View>
             <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username' autoCapitalize="none" />
-            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name(optional)' autoCapitalize="words" />
+            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
             <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
             <View>
               {showDate && <DateTimePicker value={new Date()} mode='date' display='spinner' onChange={(event, selectedDate) => {

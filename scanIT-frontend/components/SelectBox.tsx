@@ -32,17 +32,19 @@ const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOpt
                 </View>
             </TouchableOpacity>
             { showOptions &&
-                <ScrollView style={{width: '100%', height: 'auto'}}>
-                    <View style={styles.optionsContainer}>
-                        {options.map((option, index) => (
-                            <TouchableOpacity style={styles.optionContainer} key={index} onPress={() => handleSelectOption(option)}>
-                                <View style={{alignContent: 'center', justifyContent: 'center'}}>
-                                    <Text style={styles.option}>{option}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </ScrollView>
+                <View style={styles.scrollContainer}>
+                    <ScrollView>
+                        <View style={styles.optionsContainer}>
+                            {options.map((option, index) => (
+                                <TouchableOpacity style={styles.optionContainer} key={index} onPress={() => handleSelectOption(option)}>
+                                    <View style={{alignContent: 'center', justifyContent: 'center'}}>
+                                        <Text style={styles.option}>{option}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </ScrollView>
+                </View>
             }
         </View>
     )
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
     title:{
         padding: 2,
         justifyContent: 'center',
+        alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
     },
@@ -71,7 +74,6 @@ const styles = StyleSheet.create({
     },
     optionsContainer:{
         width: '100%',
-        height: 'auto',
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: colors.primary,
@@ -87,6 +89,10 @@ const styles = StyleSheet.create({
     option:{
         height: 'auto',
         fontWeight: 'bold',
+    },
+    scrollContainer:{
+        width: '100%',
+        height: 250
     }
 });
 
