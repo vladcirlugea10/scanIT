@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useAuth } from "./useAuth";
 import { UpdateData } from "@/types/UserType";
 
@@ -8,7 +8,7 @@ const useUser = (token: string | null | undefined) => {
     const [loading, setLoading] = useState(false);
     const { user, updateUserData } = useAuth();
 
-    const localIP = "192.168.1.5";
+    const localIP = "192.168.1.102";
 
     const clearError = () => setError(null);
 
@@ -52,7 +52,6 @@ const useUser = (token: string | null | undefined) => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log('response:', response.data);
             await getUserData();
             setLoading(false);
         } catch(error: any){

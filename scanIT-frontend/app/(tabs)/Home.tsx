@@ -21,7 +21,6 @@ const Home = () => {
     const { getProduct, product, loading, notFound } = useOpenFoodFacts();
 
     const navigation = useNavigation<HomeNavProps>();
-    console.log(barcodeData);
 
     const showAlert = () =>
     Alert.alert(

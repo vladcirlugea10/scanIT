@@ -19,6 +19,7 @@ interface UserData{
     birthday?: string | null;
     height?: number | null;
     weight?: number | null;
+    gender?: string | null;
     allergies?: string[] | null;
     createdAt: Date;
 }
@@ -27,8 +28,10 @@ interface UpdateData{
     lastName?: string;
     userName?: string;
     email?: string;
+    birthday?: string;
     height?: number;
     weight?: number;
+    gender?: string;
 }
 
 export type { LoginData, RegisterData, UserData, UpdateData };

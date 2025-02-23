@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: false,
     },
+    gender: {
+        type: String,
+        required: false,
+    },
     allergies: [{
         type: String,
         required: false,

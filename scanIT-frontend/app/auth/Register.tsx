@@ -73,7 +73,7 @@ const Register = () => {
             <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
             <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
             <View>
-              {showDate && <DateTimePicker value={new Date()} mode='date' display='spinner' onChange={(event, selectedDate) => {
+              {showDate && <DateTimePicker value={new Date()} mode='date' display='spinner' maximumDate={new Date()} onChange={(event, selectedDate) => {
                 if(selectedDate){
                   setBirthday(selectedDate);
                 }

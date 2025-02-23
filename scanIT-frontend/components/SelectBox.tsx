@@ -33,7 +33,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOpt
             </TouchableOpacity>
             { showOptions &&
                 <View style={styles.scrollContainer}>
-                    <ScrollView>
+                    <ScrollView nestedScrollEnabled={true}>
                         <View style={styles.optionsContainer}>
                             {options.map((option, index) => (
                                 <TouchableOpacity style={styles.optionContainer} key={index} onPress={() => handleSelectOption(option)}>
@@ -52,7 +52,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOpt
 
 const styles = StyleSheet.create({
     mainContainer:{
-        flex: 1,
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -77,6 +77,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: colors.primary,
+        position: 'relative',
+        zIndex: 100,
     },
     optionContainer:{
         width: '100%',
@@ -91,8 +93,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     scrollContainer:{
+        position: 'absolute',
+        top: '100%',
         width: '100%',
-        height: 250
+        height: 250,
+        zIndex: 100,
     }
 });
 
