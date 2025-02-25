@@ -12,6 +12,8 @@ import BarcodeResults from './(tabs)/BarcodeResults';
 import Profile from './(tabs)/Profile';
 import AuthNavigator from './AuthNavigator';
 import { useTheme } from './ColorThemeContext';
+import PersonalInformation from './(tabs)/PersonalInformation';
+import AccountInformation from './(tabs)/AccountInformation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,6 +34,8 @@ const AppNavigator = () => {
                 }
               }}
             />
+            <Stack.Screen name='PersonalInformation' component={PersonalInformation} options={{header: () => <PageHeader title={"Personal Information"} backButton={true} />, headerBackVisible: false}} />
+            <Stack.Screen name='AccountInformation' component={AccountInformation} options={{header: () => <PageHeader title={"Account Information"} backButton={true} />, headerBackVisible: false}} />
             <Stack.Screen name='Auth' component={AuthNavigator} options={{headerShown: false}} />
         </Stack.Navigator>
     </NavigationContainer>
