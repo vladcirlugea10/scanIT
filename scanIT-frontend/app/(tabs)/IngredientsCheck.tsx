@@ -5,18 +5,45 @@ import { RootStackParamList } from '@/types/StackParamsList'
 import { GetAllergenIngredient } from '@/types/AllergenIngredient';
 import { getIngredientsAllergens, getIngredientsUnhealthy } from '@/database/local/sqLite';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '@/assets/colors';
 import IngredientModal from '../../components/IngredientModal';
 import MyButton from '@/components/MyButton';
+import { useTheme } from '../ColorThemeContext';
 
 type IngredientsCheckNavProps = { route: RouteProp<RootStackParamList, 'IngredientsCheck'> };
 
 const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     const { data } = route.params;
+    const { colors } = useTheme();
     const [foundAllergenIngredients, setFoundAllergenIngredients] = useState<GetAllergenIngredient[]>([]);
     const [foundUnhealthyIngredients, setFoundUnhealthyIngredients] = useState<GetAllergenIngredient[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState<GetAllergenIngredient | null>(null);
+
+    const styles = StyleSheet.create({
+      mainContainer: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 16,
+        backgroundColor: colors.secondary,
+      },
+      resultContainer:{
+        width: '85%',
+        height: '90%',
+        padding: 8,
+      },
+      allergenContainer: {
+        width: '100%',
+        height: '50%',
+        gap: 8,
+      },
+      subtitle: {
+       fontSize: 25, 
+       borderBottomWidth: 2, 
+       borderTopColor: 'black',
+      }
+  });
 
     useEffect(() => {
         handleCheckIngredients();
@@ -104,31 +131,5 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    mainContainer: {
-      width: '100%',
-      height: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 16,
-      backgroundColor: colors.secondary,
-    },
-    resultContainer:{
-      width: '85%',
-      height: '90%',
-      padding: 8,
-    },
-    allergenContainer: {
-      width: '100%',
-      height: '50%',
-      gap: 8,
-    },
-    subtitle: {
-     fontSize: 25, 
-     borderBottomWidth: 2, 
-     borderTopColor: 'black',
-    }
-});
 
 export default IngredientsCheck

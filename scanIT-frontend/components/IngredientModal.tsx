@@ -1,6 +1,7 @@
 import { View, Text, Modal, StyleSheet } from 'react-native'
 import React from 'react'
 import MyButton from '@/components/MyButton';
+import { useTheme } from '@/app/ColorThemeContext';
 
 interface IngredientModalProps {
     visible: boolean;
@@ -13,6 +14,22 @@ interface IngredientModalProps {
 }
 
 const IngredientModal: React.FC<IngredientModalProps> = ({visible, onClose, ingredient}) => {
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        modalContainer: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        },
+        modalContent: {
+          width: '80%',
+          padding: 20,
+          backgroundColor: 'white',
+          borderRadius: 10,
+        },
+      });
+
     if (!ingredient) return null;
     return (
         <Modal visible={visible} transparent={true} animationType='slide'>
@@ -27,20 +44,5 @@ const IngredientModal: React.FC<IngredientModalProps> = ({visible, onClose, ingr
         </Modal>
     );
 };
-
-const styles = StyleSheet.create({
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-      width: '80%',
-      padding: 20,
-      backgroundColor: 'white',
-      borderRadius: 10,
-    },
-  });
 
 export default IngredientModal

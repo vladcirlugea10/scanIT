@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { formatDateToString } from '@/utils/date'
+import { useTheme } from '../ColorThemeContext'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -25,6 +26,74 @@ const Register = () => {
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [showPass, setShowPass] = useState(false);
   const [showDate, setShowDate] = useState(false);
+  const { colors } = useTheme();
+  const styles = StyleSheet.create({
+    mainContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.secondary
+    },
+    formContainer:{
+        width: '100%',
+        height: '100%',
+        backgroundColor: colors.white,
+        marginTop: '60%',
+        gap: 30,
+        padding: '10%',
+        display: 'flex',
+        flexDirection: 'column',
+      },
+      title:{
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: colors.third,
+        marginBottom: '5%',
+      },
+      inputContainer:{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
+      },
+      input:{
+        borderWidth: 1,
+        borderColor: colors.third,
+        fontWeight: 'bold',
+        color: colors.primary,
+      },
+      dateContainer:{
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+      },
+      button:{
+        width: '100%',
+      },
+      buttonContainer:{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+      },
+      text:{
+        color: colors.third,
+        fontWeight: 'bold',
+        fontSize: 15,
+      },
+      errorText:{
+        fontWeight: 'bold',
+        color: colors.danger,
+      },
+      passwordContainer:{
+        position: 'relative',
+        width: '100%',
+      },
+      eyeIcon:{
+        position: 'absolute',
+        right: 10,
+        top: '25%',
+        color: colors.primary,
+      },
+  });
 
   const { onRegister, error, clearError, loading } = useAuth();
 
@@ -94,73 +163,5 @@ const Register = () => {
     </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.secondary
-  },
-  formContainer:{
-      width: '100%',
-      height: '100%',
-      backgroundColor: colors.white,
-      marginTop: '60%',
-      gap: 30,
-      padding: '10%',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    title:{
-      fontSize: 30,
-      fontWeight: 'bold',
-      color: colors.third,
-      marginBottom: '5%',
-    },
-    inputContainer:{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 20,
-    },
-    input:{
-      borderWidth: 1,
-      borderColor: colors.third,
-      fontWeight: 'bold',
-      color: colors.primary,
-    },
-    dateContainer:{
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-    },
-    button:{
-      width: '100%',
-    },
-    buttonContainer:{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10,
-    },
-    text:{
-      color: colors.third,
-      fontWeight: 'bold',
-      fontSize: 15,
-    },
-    errorText:{
-      fontWeight: 'bold',
-      color: colors.danger,
-    },
-    passwordContainer:{
-      position: 'relative',
-      width: '100%',
-    },
-    eyeIcon:{
-      position: 'absolute',
-      right: 10,
-      top: '25%',
-      color: colors.primary,
-    },
-})
 
 export default Register

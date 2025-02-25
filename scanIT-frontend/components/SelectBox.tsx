@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import { colors } from '@/assets/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '@/app/ColorThemeContext';
 
 type SelectBoxProps = {
     title?: string;
@@ -13,6 +13,57 @@ type SelectBoxProps = {
 
 const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOption, setSelectedOption}) => {
     const [showOptions, setShowOptions] = useState(false);
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        mainContainer:{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.secondary,
+            borderWidth: 1,
+            borderColor: colors.third,
+        },
+        title:{
+            padding: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'row',
+        },
+        textTitle:{
+            fontWeight: 'bold',
+            color: colors.primary,
+        },
+        optionsContainer:{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: colors.primary,
+            position: 'relative',
+            zIndex: 100,
+        },
+        optionContainer:{
+            width: '100%',
+            height: 'auto',
+            padding: 5,
+            alignItems: 'center',
+            borderWidth: 1,
+            borderBottomColor: colors.third,
+        },
+        option:{
+            height: 'auto',
+            fontWeight: 'bold',
+        },
+        scrollContainer:{
+            position: 'absolute',
+            top: '100%',
+            width: '100%',
+            height: 250,
+            zIndex: 100,
+        }
+    });
 
     const handleShowOptions = () => {
         setShowOptions(!showOptions);
@@ -49,56 +100,5 @@ const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOpt
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    mainContainer:{
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: colors.secondary,
-        borderWidth: 1,
-        borderColor: colors.third,
-    },
-    title:{
-        padding: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'row',
-    },
-    textTitle:{
-        fontWeight: 'bold',
-        color: colors.primary,
-    },
-    optionsContainer:{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: colors.primary,
-        position: 'relative',
-        zIndex: 100,
-    },
-    optionContainer:{
-        width: '100%',
-        height: 'auto',
-        padding: 5,
-        alignItems: 'center',
-        borderWidth: 1,
-        borderBottomColor: colors.third,
-    },
-    option:{
-        height: 'auto',
-        fontWeight: 'bold',
-    },
-    scrollContainer:{
-        position: 'absolute',
-        top: '100%',
-        width: '100%',
-        height: 250,
-        zIndex: 100,
-    }
-});
 
 export default SelectBox

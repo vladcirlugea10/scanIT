@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, StyleSheet, Image, ActivityIndicator, Alert, Switch } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
@@ -6,9 +6,9 @@ import MyButton from '@/components/MyButton'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import * as ImageManipulator from 'expo-image-manipulator'
-import { colors } from '@/assets/colors'
 import { RootStackParamList } from '@/types/StackParamsList'
 import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
+import { useTheme } from '../ColorThemeContext'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -19,8 +19,58 @@ const Home = () => {
     const [barcodeData, setBarcodeData] = useState<string | undefined>(undefined);
     const cameraRef = useRef<CameraView>(null);
     const { getProduct, product, loading, notFound } = useOpenFoodFacts();
+    const { colors } = useTheme();
 
     const navigation = useNavigation<HomeNavProps>();
+
+    const styles = StyleSheet.create({
+        mainContainer: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.secondary
+        },
+        dataContainer:{
+            gap: 10,
+            width: '80%',
+            height: '90%',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        cameraContainer: {
+            width: '100%',
+            height: '85%',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        camera: {
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+        },
+        buttonContainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'flex-start'
+        },
+        button: {
+            width: 60,
+            height: 30,
+            borderRadius: 10,
+            padding: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'grey'
+        },
+        buttonText: {
+            fontSize: 12,
+            fontWeight: 'light'
+        },
+        selectedModeButton: {
+            backgroundColor: colors.primary,
+        }
+    });
 
     const showAlert = () =>
     Alert.alert(
@@ -125,7 +175,7 @@ const Home = () => {
             </View>
         );
     }
-
+    
     return (
         <View style={styles.mainContainer}>
             <StatusBar style='light' backgroundColor='black' />
@@ -144,54 +194,5 @@ const Home = () => {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: colors.secondary
-    },
-    dataContainer:{
-        gap: 10,
-        width: '80%',
-        height: '90%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cameraContainer: {
-        width: '100%',
-        height: '85%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    camera: {
-        width: '100%',
-        height: '100%',
-        overflow: 'hidden',
-    },
-    buttonContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start'
-    },
-    button: {
-        width: 60,
-        height: 30,
-        borderRadius: 10,
-        padding: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'grey'
-    },
-    buttonText: {
-        fontSize: 12,
-        fontWeight: 'light'
-    },
-    selectedModeButton: {
-        backgroundColor: colors.primary,
-    }
-});
 
 export default Home

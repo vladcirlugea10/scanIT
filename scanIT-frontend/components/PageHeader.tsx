@@ -1,6 +1,5 @@
-import { View, Text, Image, StyleSheet, TouchableHighlight, TouchableWithoutFeedback, Pressable } from 'react-native'
+import { View, Text, Image, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
-import { colors } from '@/assets/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from './BackButton';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,11 +7,40 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types/StackParamsList';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/app/ColorThemeContext';
 
 const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) => {
 
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const { isAuth } = useAuth();
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        safeArea: {
+            backgroundColor: colors.third,
+        },
+        titleContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        header: {
+            width: '100%',
+            height: 70,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingHorizontal: 10,
+            backgroundColor: colors.third,
+        },    
+        headerText: {
+            color: colors.secondary,
+            fontSize: 30,
+        },
+        headerLogo: {
+            width: 80,
+            height: 80,
+        }
+    });
 
     const handleAuth = () => {
         if(isAuth){
@@ -38,33 +66,5 @@ const PageHeader = ({title, backButton}: {title: string, backButton: boolean}) =
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-    safeArea: {
-        backgroundColor: colors.third,
-    },
-    titleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    header: {
-        width: '100%',
-        height: 70,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 10,
-        backgroundColor: colors.third,
-    },    
-    headerText: {
-        color: colors.secondary,
-        fontSize: 30,
-    },
-    headerLogo: {
-        width: 80,
-        height: 80,
-    }
-});
 
 export default PageHeader

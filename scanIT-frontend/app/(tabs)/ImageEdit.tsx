@@ -5,15 +5,44 @@ import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/nati
 import * as ImageManipulator from 'expo-image-manipulator';
 import ImageCropper from '@/components/ImageCropper';
 import { RootStackParamList } from '@/types/StackParamsList';
-import { colors } from '@/assets/colors';
+import { useTheme } from '../ColorThemeContext';
 
 type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
 
 const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {photoUri} = route.params;
+  const { colors } = useTheme();
   const [isCropping, setIsCropping] = useState(true);
   const [croppedImage, setCroppedImage] = useState("");
+  const styles = StyleSheet.create({
+    mainContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 16,
+      backgroundColor: colors.secondary
+    },
+    imageContainer:{
+      width: '85%',
+      height: '80%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    buttonContainer: {
+      width: '100%',
+      height: '10%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 50,
+      overflow: 'hidden',
+      resizeMode: 'contain',
+    },
+  })
 
   const handleCropImage = async (cropArea: {originX: number, originY: number, width: number, height: number} ) => {
     const editedResult = await ImageManipulator.manipulateAsync(photoUri, [{crop: cropArea}], {compress: 1, format: ImageManipulator.SaveFormat.JPEG});
@@ -42,34 +71,5 @@ const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-    backgroundColor: colors.secondary
-  },
-  imageContainer:{
-    width: '85%',
-    height: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    height: '10%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 50,
-    overflow: 'hidden',
-    resizeMode: 'contain',
-  },
-})
 
 export default ImageEdit

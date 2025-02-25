@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert, ScrollView, Switch } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/StackParamsList';
-import { colors } from '@/assets/colors';
 import MyButton from '@/components/MyButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SelectBox from '@/components/SelectBox';
@@ -12,6 +11,7 @@ import { AllergenGroups } from '@/types/AllergenIngredient';
 import useUser from '@/hooks/useUser';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { calculateCalories } from '@/utils/calloriesCalculator';
+import { useTheme } from '../ColorThemeContext';
 
 const Profile = () => {
   const { isAuth, user, onLogout, token } = useAuth();
@@ -31,6 +31,97 @@ const Profile = () => {
     height: user?.height?.toString() || '0',
     weight: user?.weight?.toString() || '0',
     gender: user?.gender || '',
+  });
+
+  const { colors, theme, toggleTheme } = useTheme();
+  const styles = StyleSheet.create({
+    mainContainer: {
+      flex: 1,
+      backgroundColor: colors.secondary,
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '5%',
+    },
+    title:{
+      fontSize: 25,
+      fontWeight: 'bold',
+      borderBottomWidth: 2,
+      borderBottomColor: colors.primary,
+    },
+    subtitle:{
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.primary,
+    },
+    text:{
+      fontSize: 20,
+      color: colors.third,
+    },
+    dataContainer:{
+      width: '90%',
+      height: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 5,
+      marginTop: '2%',
+    },
+    personalDataContainer:{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      gap: 5,
+    },
+    infoContainer:{
+      width: '100%',
+      height: 'auto',
+      display: 'flex',
+      flexDirection: 'row',
+      gap: 10,
+      alignItems: 'center'
+    },
+    infoContainerRow:{
+        height: 'auto',
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 10,
+        alignItems: 'center'
+    },
+    allergiesContainer:{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 5,
+      marginBottom: 10,
+      borderBottomWidth: 2,
+      borderBottomColor: colors.primary,
+    },
+    allergiesTitle:{
+      display: 'flex',
+      flexDirection: 'row',
+      marginBottom: '5%',
+      gap: 20,
+    },
+    allergyContainer:{
+      display: 'flex',
+      flexDirection: 'row',
+      gap: 10,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    buttonContainer:{
+      width: 'auto',
+      height: 'auto',
+      position: 'absolute',
+      right: 10,
+      top: 10,
+      display: 'flex',
+      flexDirection: 'row',
+      gap: 10,
+    },
+    icon:{
+      position: 'absolute',
+      right: '25%',
+      top: '25%'
+    }
   });
 
   useEffect(() => {
@@ -255,100 +346,11 @@ const Profile = () => {
           </View>
           <Text style={styles.title}>Your activity: </Text>
         </View>
+        <Switch value={theme === 'dark'} onValueChange={toggleTheme} />
         <MyButton title='Logout' onPress={handleLogout} containerStyle={{backgroundColor: colors.danger, marginTop: "5%"}} />
       </View>
     </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    backgroundColor: colors.secondary,
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '5%',
-  },
-  title:{
-    fontSize: 25,
-    fontWeight: 'bold',
-    borderBottomWidth: 2,
-    borderBottomColor: colors.primary,
-  },
-  subtitle:{
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  text:{
-    fontSize: 20,
-    color: colors.third,
-  },
-  dataContainer:{
-    width: '90%',
-    height: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 5,
-    marginTop: '2%',
-  },
-  personalDataContainer:{
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    gap: 5,
-  },
-  infoContainer:{
-    width: '100%',
-    height: 'auto',
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'center'
-  },
-  infoContainerRow:{
-      height: 'auto',
-      display: 'flex',
-      flexDirection: 'row',
-      gap: 10,
-      alignItems: 'center'
-  },
-  allergiesContainer:{
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 5,
-    marginBottom: 10,
-    borderBottomWidth: 2,
-    borderBottomColor: colors.primary,
-  },
-  allergiesTitle:{
-    display: 'flex',
-    flexDirection: 'row',
-    marginBottom: '5%',
-    gap: 20,
-  },
-  allergyContainer:{
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  buttonContainer:{
-    width: 'auto',
-    height: 'auto',
-    position: 'absolute',
-    right: 10,
-    top: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 10,
-  },
-  icon:{
-    position: 'absolute',
-    right: '25%',
-    top: '25%'
-  }
-});
 
 export default Profile

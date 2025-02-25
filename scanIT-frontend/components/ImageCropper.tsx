@@ -1,7 +1,7 @@
 import { View, Dimensions, PanResponder, Image, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import MyButton from './MyButton';
-import { colors } from '@/assets/colors';
+import { useTheme } from '@/app/ColorThemeContext';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -23,6 +23,46 @@ const ImageCropper: React.FC<ImageCropperProps> = ({imageUri, onCropComplete}) =
         height: 0,
         x: 0,
         y: 0
+    });
+
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.secondary,
+        },
+        imageContainer: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: screenWidth * 0.85,
+            height: '80%',
+        },
+        completeButton: {
+            marginTop: 10,
+            width: 150
+        },
+        image: {
+            position: 'absolute',
+            resizeMode: 'contain',
+        },
+        cropArea: {
+            borderWidth: 2,
+            borderColor: colors.primary,
+            position: 'absolute',
+            backgroundColor: 'rgba(255, 255, 255, 0.2)'
+        },
+        cropButton: {
+            width: 20,
+            height: 20,
+            backgroundColor: colors.primary,
+            position: 'absolute',
+            borderRadius: 10,
+            borderWidth: 2,
+            borderColor: colors.secondary,
+            opacity: 0.7
+        }
     });
 
     useEffect(() => {
@@ -171,44 +211,5 @@ const ImageCropper: React.FC<ImageCropperProps> = ({imageUri, onCropComplete}) =
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: colors.secondary,
-    },
-    imageContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: screenWidth * 0.85,
-        height: '80%',
-    },
-    completeButton: {
-        marginTop: 10,
-        width: 150
-    },
-    image: {
-        position: 'absolute',
-        resizeMode: 'contain',
-    },
-    cropArea: {
-        borderWidth: 2,
-        borderColor: colors.primary,
-        position: 'absolute',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)'
-    },
-    cropButton: {
-        width: 20,
-        height: 20,
-        backgroundColor: colors.primary,
-        position: 'absolute',
-        borderRadius: 10,
-        borderWidth: 2,
-        borderColor: colors.secondary,
-        opacity: 0.7
-    }
-});
 
 export default ImageCropper;
