@@ -9,9 +9,11 @@ interface ProfileSectionCardProps{
     iconName?: string;
     iconSize?: number;
     textColor?: string;
+    containerStyle?: object;
+    textStyle?: object;
 }
 
-const ProfileSectionCard = ({onPress, title, iconName, iconSize, textColor} : ProfileSectionCardProps) => {
+const ProfileSectionCard = ({onPress, title, iconName, iconSize, textColor, containerStyle, textStyle} : ProfileSectionCardProps) => {
     const { colors } = useTheme();
     const styles = StyleSheet.create({
         mainContainer:{
@@ -36,9 +38,9 @@ const ProfileSectionCard = ({onPress, title, iconName, iconSize, textColor} : Pr
 
     return (
         <TouchableOpacity onPress={onPress}>
-            <View style={styles.mainContainer}>
+            <View style={[styles.mainContainer, containerStyle]}>
                 { iconName && <Ionicons name={iconName} size={iconSize} color={textColor} /> }
-                <Text style={styles.title}>{title}</Text>
+                <Text style={[styles.title, textStyle]}>{title}</Text>
             </View>
         </TouchableOpacity>
     )

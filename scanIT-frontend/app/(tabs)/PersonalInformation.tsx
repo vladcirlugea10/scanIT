@@ -3,10 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/StackParamsList';
-import MyButton from '@/components/MyButton';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SelectBox from '@/components/SelectBox';
-import { calculateDays, formatDateToString, calculateAge } from '@/utils/date';
+import { formatDateToString, calculateAge } from '@/utils/date';
 import { AllergenGroups } from '@/types/AllergenIngredient';
 import useUser from '@/hooks/useUser';
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -14,7 +13,7 @@ import { calculateCalories } from '@/utils/calloriesCalculator';
 import { useTheme } from '../ColorThemeContext';
 
 const PersonalInformation = () => {
-  const { isAuth, user, onLogout, token } = useAuth();
+  const { isAuth, user, token } = useAuth();
   const { addAllergy, loading, error, getUserData, editUser, removeAllergy } = useUser(token);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [showSelectBox, setShowSelectBox] = useState(false);
@@ -138,13 +137,6 @@ const PersonalInformation = () => {
     }
   }, [selectedGender]);
 
-  const handleLogout = async () => {
-    if(onLogout){
-      await onLogout();
-      navigation.navigate("Home");
-    }
-  }
-
   const handleAddAllergy = async () => {
     if(selectedAllergy){
       try{
@@ -254,7 +246,6 @@ const PersonalInformation = () => {
   }
 
   return (
-    <ScrollView>
       <View style={styles.mainContainer}>
         <Text style={styles.title}>Personal information</Text>
         <View style={styles.buttonContainer}>
@@ -276,14 +267,6 @@ const PersonalInformation = () => {
               }
             </View>
             <View style={styles.infoContainer}>
-              <Text style={styles.subtitle}>Username: </Text>
-              <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.userName} onChangeText={(text) => setEditedUser((prev) => ({...prev, userName: text}))} />
-            </View>
-            <View style={styles.infoContainer}>
-              <Text style={styles.subtitle}>Email: </Text>
-              <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.email} onChangeText={(text) => setEditedUser((prev) => ({...prev, email: text}))} />
-            </View>
-            <View style={styles.infoContainer}>
               <Text style={styles.subtitle}>Birthday</Text>
               <TextInput style={dynamicStyles.input} editable={isEditing} value={ editedUser?.birthday ? (editedUser?.birthday) : ''} />
               { !isEditing && editedUser.birthday && <Text style={styles.text}>({calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-')))} years old)</Text>}
@@ -295,10 +278,6 @@ const PersonalInformation = () => {
                 setShowDatePicker(false);
               }} /> }
             </View>
-            <Text style={{marginBottom: '5%'}}>
-              <Text style={styles.subtitle}>Member since: </Text>
-              <Text style={styles.text}>{ user?.createdAt ? formatDateToString(new Date(user?.createdAt)) : ''} ({calculateDays(user?.createdAt)} days)</Text>
-            </Text>
             <View style={styles.allergiesContainer}>
               <View style={styles.allergiesTitle}> 
                   <Text style={styles.subtitle}>Allergies: </Text>
@@ -345,9 +324,7 @@ const PersonalInformation = () => {
               </Text>
           </View>
         </View>
-        <MyButton title='Logout' onPress={handleLogout} containerStyle={{backgroundColor: colors.danger, marginTop: "5%"}} />
       </View>
-    </ScrollView>
   )
 }
 

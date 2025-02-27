@@ -8,7 +8,7 @@ const useUser = (token: string | null | undefined) => {
     const [loading, setLoading] = useState(false);
     const { user, updateUserData } = useAuth();
 
-    const localIP = "192.168.1.102";
+    const localIP = "192.168.1.7";
 
     const clearError = () => setError(null);
 
