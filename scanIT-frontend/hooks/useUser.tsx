@@ -1,14 +1,12 @@
-import axios from "axios";
 import { useCallback, useState } from "react"
 import { useAuth } from "./useAuth";
 import { UpdateData } from "@/types/UserType";
+import { _delete, _get, _put } from "@/utils/api";
 
 const useUser = (token: string | null | undefined) => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const { user, updateUserData } = useAuth();
-
-    const localIP = "192.168.1.7";
 
     const clearError = () => setError(null);
 
@@ -21,12 +19,7 @@ const useUser = (token: string | null | undefined) => {
             setLoading(true);
             clearError();
 
-            const response = await axios.get(`http://${localIP}:5000/api/user/${user.email}`, {
-                headers: {
-                    'Token': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await _get(`/user/${user.email}`, { headers: { 'Token': `Bearer ${token}` } });
             updateUserData(response.data);
             setLoading(false);
         } catch(error: any){
@@ -46,12 +39,8 @@ const useUser = (token: string | null | undefined) => {
             setLoading(true);
             clearError();
 
-            const response = await axios.put(`http://${localIP}:5000/api/user/edit/${user._id}`, userData, {
-                headers: {
-                    'Token': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await _put(`/user/edit/${user._id}`, userData, { headers: { 'Token': `Bearer ${token}` }});
+            console.log(response.data);
             await getUserData();
             setLoading(false);
         } catch(error: any){
@@ -70,12 +59,7 @@ const useUser = (token: string | null | undefined) => {
             setLoading(true);
             clearError();
 
-            const response = await axios.put(`http://${localIP}:5000/api/user/add-allergy`, {email: user.email, allergy}, {
-                headers: {
-                    'Token': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await _put('/user/add-allergy', { email: user.email, allergy }, { headers: { 'Token': `Bearer ${token}` }}); 
 
             await getUserData();
             console.log(response.data);
@@ -93,13 +77,7 @@ const useUser = (token: string | null | undefined) => {
         setLoading(true);
         clearError();
         try{
-            const response = await axios.delete(`http://${localIP}:5000/api/user/remove-allergy`, {
-                headers: {
-                    'Token': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                data: { email: user?.email, allergy }
-            });
+            const response = await _delete('/user/remove-allergy', { email: user?.email, allergy }, { headers: { 'Token': `Bearer ${token}` }});
             await getUserData();
             setLoading(false);
             return response.data;

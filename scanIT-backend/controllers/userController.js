@@ -27,13 +27,13 @@ exports.checkCode = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try{
-        const { email, newPassword, confirmNewPassword } = req.body;
+        const { email, password, confirmPassword } = req.body;
 
-        if(newPassword !== confirmNewPassword){
+        if(password !== confirmPassword){
             return res.status(400).json({message: 'Passwords do not match!'});
         }
 
-        if(newPassword.length < 6){
+        if(password.length < 6){
             return res.status(400).json({message: 'Password must be at least 6 characters long!'});
         }
 
@@ -42,11 +42,11 @@ exports.changePassword = async (req, res) => {
             return res.status(400).json({message: 'User not found!'});
         }
 
-        if(Crypto.AES.decrypt(user.password, process.env.PASS_SECRET).toString(Crypto.enc.Utf8) === req.body.newPassword){
+        if(Crypto.AES.decrypt(user.password, process.env.PASS_SECRET).toString(Crypto.enc.Utf8) === req.body.password){
             return res.status(400).json({message: 'Can\'t use the old password!'});
         }
 
-        user.password = Crypto.AES.encrypt(newPassword, process.env.PASS_SECRET).toString();
+        user.password = Crypto.AES.encrypt(password, process.env.PASS_SECRET).toString();
         await user.save();
 
         res.status(200).json({message: 'Password changed successfully!'});        

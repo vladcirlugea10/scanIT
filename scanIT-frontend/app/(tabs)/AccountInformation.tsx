@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from '../ColorThemeContext';
 import { useAuth } from '@/hooks/useAuth';
