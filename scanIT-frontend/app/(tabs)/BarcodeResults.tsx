@@ -1,14 +1,18 @@
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
 import { useTheme } from '../ColorThemeContext';
+import useUser from '@/hooks/useUser';
+import { useAuth } from '@/hooks/useAuth';
 
 type BarcodeResultsProps = { route: RouteProp<RootStackParamList, 'BarcodeResults'> };
 
 const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   const { product } = route.params;
   const { colors } = useTheme();
+  const { token } = useAuth();
+  const { addProduct } = useUser(token);
   const energykcal = product.nutriments["energy-kcal"];
   const energykcal100g = product.nutriments["energy-kcal_100g"];
   const energykcalunit = product.nutriments["energy-kcal_unit"];
@@ -97,6 +101,18 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
     }
     return imageURL;
   }
+
+  useEffect(() => {
+    console.log("aici:",product);
+    const newProduct: ScannedProduct = {
+      barcode: product._id,
+      name: product.product_name,
+      brand: product.brands,
+      image: product.image_url,
+      nutriscore: product.nutriscore_grade,
+    }
+    addProduct(newProduct);
+  }, []);
 
   return (
     <ScrollView style={styles.scrollContainer}>

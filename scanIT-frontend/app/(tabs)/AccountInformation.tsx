@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from '../ColorThemeContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -125,6 +125,12 @@ const AccountInformation = () => {
           position: 'absolute',
           right: '25%',
           top: '25%'
+        },
+        productContainer:{
+
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
         }
     });
 
@@ -234,6 +240,20 @@ const AccountInformation = () => {
                 <Text style={styles.subtitle}>Member since: </Text>
                 <Text style={styles.text}>{ user?.createdAt ? formatDateToString(new Date(user?.createdAt)) : ''} ({calculateDays(user?.createdAt)} days)</Text>
             </Text>
+            <Text style={styles.subtitle}>Last scanned products: </Text>
+            <View style={styles.productContainer}>
+                {user?.scannedProducts && user.scannedProducts.length > 0 ? 
+                  (
+                    user.scannedProducts.map((product, index) => (
+                      <View key={index} style={styles.infoContainerRow}>
+                        <Text style={styles.text}>{product.name} - {product.brand} - {product.nutriscore.toUpperCase()}</Text>
+                        <Image source={{uri: product.image}} style={{width: 50, height: 50}} />
+                      </View>
+                    ))
+                  ) : 
+                  null
+                }
+            </View>
           </View>
         </View>
       </View>

@@ -148,6 +148,30 @@ exports.removeAllergy = async (req, res) => {
     }
 }
 
+exports.addScannedProduct = async (req, res) => {
+    try{
+        const { email, product } = req.body;
+
+        const user = await User.findOne({ email: email });
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+
+        const newProduct = { barcode: product.barcode, name: product.name, brand: product.brand, image: product.image, nutriscore: product.nutriscore };
+        user.scannedProducts.unshift(newProduct);
+
+        if(user.scannedProducts.length > 5){
+            user.scannedProducts.pop();
+        }
+
+        await user.save();
+        res.status(200).json({message: 'Product added successfully!'});
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
 exports.getUserData = async (req, res) => {
     try{
         const email = req.params.email;

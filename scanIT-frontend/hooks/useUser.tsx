@@ -89,7 +89,23 @@ const useUser = (token: string | null | undefined) => {
         }
     }
 
-    return { error, loading, addAllergy, getUserData, removeAllergy, editUser };
+    const addProduct = async (product: ScannedProduct) => {
+        setLoading(true);
+        clearError();
+        try{
+            const response = await _put('/user/add-scanned-product', { email: user?.email, product }, { headers: { 'Token': `Bearer ${token}` }});
+            await getUserData();
+            setLoading(false);
+            return response.data;
+        }catch(error: any){
+            const errorMessage = error.response.data.message || error.message || "Error adding product";
+            setError(errorMessage);
+            setLoading(false);
+            throw error;
+        }
+    }
+
+    return { error, loading, addAllergy, getUserData, removeAllergy, editUser, addProduct };
 };
 
 export default useUser;

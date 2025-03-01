@@ -21,6 +21,7 @@ interface UserData{
     weight?: number | null;
     gender?: string | null;
     allergies?: string[] | null;
+    scannedProducts?: ScannedProduct[] | null;
     createdAt: Date;
 }
 interface UpdateData{
