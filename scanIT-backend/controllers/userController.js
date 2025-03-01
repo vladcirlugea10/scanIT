@@ -27,13 +27,13 @@ exports.checkCode = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try{
-        const { email, newPassword, confirmNewPassword } = req.body;
+        const { email, password, confirmPassword } = req.body;
 
-        if(newPassword !== confirmNewPassword){
+        if(password !== confirmPassword){
             return res.status(400).json({message: 'Passwords do not match!'});
         }
 
-        if(newPassword.length < 6){
+        if(password.length < 6){
             return res.status(400).json({message: 'Password must be at least 6 characters long!'});
         }
 
@@ -42,11 +42,11 @@ exports.changePassword = async (req, res) => {
             return res.status(400).json({message: 'User not found!'});
         }
 
-        if(Crypto.AES.decrypt(user.password, process.env.PASS_SECRET).toString(Crypto.enc.Utf8) === req.body.newPassword){
+        if(Crypto.AES.decrypt(user.password, process.env.PASS_SECRET).toString(Crypto.enc.Utf8) === req.body.password){
             return res.status(400).json({message: 'Can\'t use the old password!'});
         }
 
-        user.password = Crypto.AES.encrypt(newPassword, process.env.PASS_SECRET).toString();
+        user.password = Crypto.AES.encrypt(password, process.env.PASS_SECRET).toString();
         await user.save();
 
         res.status(200).json({message: 'Password changed successfully!'});        
@@ -97,6 +97,115 @@ exports.forgotPasswordEmail = async (req, res) => {
 
         res.json({message: 'Reset code sent to email!'});
 
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
+exports.addAllergy = async (req, res) => {
+    try{
+        const { email, allergy } = req.body;
+
+        const user = await User.findOne({email: email});
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        if(user.allergies && user.allergies.includes(allergy)){
+            return res.status(400).json({message: 'Allergy already existst!'});
+        }
+        if(!user.allergies){
+            user.allergies = [];
+        }
+        user.allergies.push(allergy);
+        await user.save();
+
+        res.status(200).json({message: 'Allergy added successfully!'});
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
+exports.removeAllergy = async (req, res) => {
+    try{
+        const { email, allergy } = req.body;
+
+        const user = await User.findOne({email: email});
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        if(!user.allergies || !user.allergies.includes(allergy)){
+            return res.status(400).json({message: 'Allergy not found!'});
+        }
+        user.allergies = user.allergies.filter((a) => a !== allergy);
+        await user.save();
+
+        res.status(200).json({message: 'Allergy removed successfully!'});
+    }catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
+exports.addScannedProduct = async (req, res) => {
+    try{
+        const { email, product } = req.body;
+
+        const user = await User.findOne({ email: email });
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+
+        const newProduct = { barcode: product.barcode, name: product.name, brand: product.brand, image: product.image, nutriscore: product.nutriscore };
+        user.scannedProducts.unshift(newProduct);
+
+        if(user.scannedProducts.length > 5){
+            user.scannedProducts.pop();
+        }
+
+        await user.save();
+        res.status(200).json({message: 'Product added successfully!'});
+    } catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
+exports.getUserData = async (req, res) => {
+    try{
+        const email = req.params.email;
+        console.log(email);
+        const user = await User.findOne({email: email});
+        console.log(user);
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        res.status(200).json(user);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Internal server error'});
+    }
+}
+
+exports.editUserData = async (req, res) => {
+    try{
+        const userId = req.params.userId;
+        console.log(userId);
+        const updateFields = req.body;
+
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({message: 'User not found!'});
+        }
+        Object.keys(updateFields).forEach((field) => {
+            if(updateFields[field] !== undefined){
+                user[field] = updateFields[field];
+            }
+        });
+        await user.save();
+
+        res.status(200).json({message: 'User data updated successfully!', user: user});
     } catch(error){
         console.log(error);
         res.status(500).json({message: 'Internal server error'});

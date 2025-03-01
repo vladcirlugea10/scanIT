@@ -7,6 +7,8 @@ export type RootStackParamList = {
     IngredientsCheck: { data: OCRResult};
     BarcodeResults: { product: Product };
     Profile: undefined;
+    PersonalInformation: undefined;
+    AccountInformation: undefined;
     Auth: undefined;
 };
 

@@ -65,3 +65,11 @@ interface Nutriment {
     sugars_100g: number;
     sugars_unit: string;
 }
+
+interface ScannedProduct {
+    barcode: string;
+    name: string;
+    brand: string;
+    image: string;
+    nutriscore: string;
+}

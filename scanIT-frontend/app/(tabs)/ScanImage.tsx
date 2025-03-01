@@ -1,18 +1,37 @@
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
 import React, { useEffect } from 'react'
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
-import { colors } from '@/assets/colors';
 import MyButton from '@/components/MyButton';
 import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from '@/types/StackParamsList';
 import useImageOCR from '@/hooks/useImageOCR';
+import { useTheme } from '../ColorThemeContext';
 
 type ScanImageNavProps = { route: RouteProp<RootStackParamList, 'ScanImage'> };
 
 const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { photoUri } = route.params;
+    const { colors } = useTheme();
     const { scanImage, loading, data } = useImageOCR();
+
+    const styles = StyleSheet.create({
+      mainContainer: {
+          width: '100%',
+          height: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+          backgroundColor: colors.secondary,
+        },
+        resultContainer:{
+          width: '85%',
+          height: '50%',
+          padding: 16,
+          borderTopWidth: 2,
+          borderTopColor: 'black',
+        },
+  })
 
     useEffect(() => {
         handleScan();
@@ -60,23 +79,5 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    mainContainer: {
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 16,
-        backgroundColor: colors.secondary,
-      },
-      resultContainer:{
-        width: '85%',
-        height: '50%',
-        padding: 16,
-        borderTopWidth: 2,
-        borderTopColor: 'black',
-      },
-})
 
 export default ScanImage

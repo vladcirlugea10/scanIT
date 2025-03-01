@@ -11,11 +11,12 @@ exports.registerUser = async (req, res) => {
             email: req.body.email,
             password: Crypto.AES.encrypt(req.body.password, process.env.PASS_SECRET).toString(),
             userName: req.body.userName,
-            firstName: req.body.firstName ? req.body.firstName : null,
+            firstName: req.body.firstName,
             lastName: req.body.lastName ? req.body.lastName : null,
             birthday: req.body.birthday ? req.body.birthday : null,
             height: req.body.height ? req.body.height : null,
             weight: req.body.weight ? req.body.weight : null,
+            gender: req.body.gender ? req.body.gender : null,
             allergies: req.body.allergies ? req.body.allergies : null,
         });
 
@@ -33,6 +34,7 @@ exports.registerUser = async (req, res) => {
             birthday: user.birthday,
             height: user.height,
             weight: user.weight,
+            gender: user.gender,
             allergies: user.allergies,
             createdAt: user.createdAt,
         }, process.env.JWT_SECRET, { expiresIn: '5d' });
@@ -76,6 +78,7 @@ exports.loginUser = async (req, res) => {
             birthday: user.birthday,
             height: user.height,
             weight: user.weight,
+            gender: user.gender,
             allergies: user.allergies,
             createdAt: user.createdAt,
         }, process.env.JWT_SECRET, { expiresIn: '5d' });

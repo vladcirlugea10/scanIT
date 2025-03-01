@@ -11,16 +11,28 @@ interface RegisterData{
     birthday?: string;
 }
 interface UserData{
-    id: string;
+    _id: string;
     email:string;
     userName: string;
-    firstName?: string | null;
+    firstName: string;
     lastName?: string | null;
     birthday?: string | null;
     height?: number | null;
     weight?: number | null;
+    gender?: string | null;
     allergies?: string[] | null;
-    createdAt: string;
+    scannedProducts?: ScannedProduct[] | null;
+    createdAt: Date;
+}
+interface UpdateData{
+    firstName?: string;
+    lastName?: string;
+    userName?: string;
+    email?: string;
+    birthday?: string;
+    height?: number;
+    weight?: number;
+    gender?: string;
 }
 
-export type { LoginData, RegisterData, UserData };
+export type { LoginData, RegisterData, UserData, UpdateData };

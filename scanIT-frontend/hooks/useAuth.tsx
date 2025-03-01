@@ -3,6 +3,7 @@ import { LoginData, RegisterData, UserData } from "@/types/UserType";
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import * as SecureStorage from "expo-secure-store";
+import { _post, _put } from "@/utils/api";
 
 interface AuthContextType {
     token?: string | null;
@@ -17,6 +18,7 @@ interface AuthContextType {
     forgotPassword: (email: string) => Promise<any>;
     checkResetCode: (resetCode: string) => Promise<any>;
     changePassword: ({email, password, confirmPassword} : {email: string, password: string, confirmPassword: string}) => Promise<any>;
+    updateUserData: (userData: UserData) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,7 +37,6 @@ export const AuthProvider = ({children}: any) => {
     const [user, setUser] = useState<UserData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const localIP = "192.168.1.8"; // Change this to your local IP
 
     useEffect(() => {
         loadToken();
@@ -72,6 +73,7 @@ export const AuthProvider = ({children}: any) => {
             }
         }catch(error){
             console.log("Error on loadToken: ", error);
+            setIsAuth(false);
             throw error;
         }
     }
@@ -91,11 +93,7 @@ export const AuthProvider = ({children}: any) => {
         try {
             setLoading(true);
             clearError();
-            const response = await axios.post(`http://${localIP}:5000/api/auth/register`, registerData, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await _post("/auth/register", registerData);
             console.log("Response: ", response.data);
 
             const newToken = response.data.token;
@@ -121,11 +119,7 @@ export const AuthProvider = ({children}: any) => {
         try{
             setLoading(true);
             clearError();
-            const response = await axios.post(`http://${localIP}:5000/api/auth/login`, loginData, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await _post("/auth/login", loginData);
             console.log("Response: ", response.data);
             const newToken = response.data.token;
             if(!newToken){
@@ -164,11 +158,7 @@ export const AuthProvider = ({children}: any) => {
     const forgotPassword = async (email: string) => {
         try{
             setLoading(true);
-            const response = await axios.post(`http://${localIP}:5000/api/user/forgot-password`, { email }, {
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
+            const response = await _post("/user/forgot-password", { email });
             setLoading(false);
             return response.data;
         }catch(error: any){
@@ -182,11 +172,7 @@ export const AuthProvider = ({children}: any) => {
     const checkResetCode = async (resetCode: string) => {
         try{
             setLoading(true);
-            const response = await axios.post(`http://${localIP}:5000/api/user/check-code`, { resetCode }, {
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
+            const response = await _post("/user/check-code", { resetCode });
             setLoading(false);
             return response.data;
         }catch(error: any){
@@ -200,11 +186,7 @@ export const AuthProvider = ({children}: any) => {
     const changePassword = async ({email, password, confirmPassword} : {email: string, password: string, confirmPassword: string}) => {
         try{
             setLoading(true);
-            const response = await axios.put(`http://${localIP}:5000/api/user/change-password`, { email, newPassword: password, confirmNewPassword: confirmPassword }, {
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
+            const response = await _put("/user/change-password", { email, password, confirmPassword });
             setLoading(false);
             return response.data;
         }catch(error: any){
@@ -214,6 +196,10 @@ export const AuthProvider = ({children}: any) => {
             setError(errorMessage);
             throw error;
         }
+    }
+
+    const updateUserData = (userData: UserData) => {
+        setUser(userData);
     }
 
     return(<AuthContext.Provider value={{
@@ -229,6 +215,7 @@ export const AuthProvider = ({children}: any) => {
         forgotPassword,
         checkResetCode,
         changePassword,
+        updateUserData,
     }}>
         {children}
         </AuthContext.Provider>

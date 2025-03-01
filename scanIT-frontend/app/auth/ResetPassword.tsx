@@ -6,6 +6,7 @@ import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/nati
 import { AuthStackParams } from '@/types/StackParamsList'
 import { useAuth } from '@/hooks/useAuth'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useTheme } from '../ColorThemeContext'
 
 type ResetPasswordProps = { route: RouteProp<AuthStackParams, 'ResetPassword'> };
 
@@ -17,7 +18,60 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
     const [showPass, setShowPass] = useState(false);
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const { changePassword, error, clearError, loading } = useAuth();
+    const { colors } = useTheme();
     const navigation = useNavigation<NavigationProp<AuthStackParams>>();
+    const styles = StyleSheet.create({
+      mainContainer: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: colors.secondary,
+      },
+      formContainer:{
+          width: '100%',
+          height: '80%',
+          backgroundColor: colors.white,
+          marginTop: '40%',
+          gap: 30,
+          padding: '10%',
+          display: 'flex',
+          flexDirection: 'column',
+        },
+        title:{
+          fontSize: 30,
+          fontWeight: 'bold',
+          color: colors.third,
+          borderBottomWidth: 2,
+          borderBottomColor: colors.primary,
+        },
+        input:{
+          borderWidth: 1,
+          borderColor: colors.third,
+          fontWeight: 'bold',
+          color: colors.primary,
+        },
+        button:{
+          width: '100%',
+        },
+        successText:{
+          color: colors.success,
+          fontWeight: 'bold',
+        },
+        errorText:{
+          color: 'red',
+          fontWeight: 'bold',
+        },
+        passwordContainer:{
+          position: 'relative',
+          width: '100%',
+        },
+        eyeIcon:{
+          position: 'absolute',
+          right: 10,
+          top: '25%',
+          color: colors.primary,
+        },
+  });
     
     useEffect(() => {
         return () => clearError();
@@ -62,58 +116,5 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: colors.secondary,
-    },
-    formContainer:{
-        width: '100%',
-        height: '80%',
-        backgroundColor: colors.white,
-        marginTop: '40%',
-        gap: 30,
-        padding: '10%',
-        display: 'flex',
-        flexDirection: 'column',
-      },
-      title:{
-        fontSize: 30,
-        fontWeight: 'bold',
-        color: colors.third,
-        borderBottomWidth: 2,
-        borderBottomColor: colors.primary,
-      },
-      input:{
-        borderWidth: 1,
-        borderColor: colors.third,
-        fontWeight: 'bold',
-        color: colors.primary,
-      },
-      button:{
-        width: '100%',
-      },
-      successText:{
-        color: colors.success,
-        fontWeight: 'bold',
-      },
-      errorText:{
-        color: 'red',
-        fontWeight: 'bold',
-      },
-      passwordContainer:{
-        position: 'relative',
-        width: '100%',
-      },
-      eyeIcon:{
-        position: 'absolute',
-        right: 10,
-        top: '25%',
-        color: colors.primary,
-      },
-})
 
 export default ResetPassword

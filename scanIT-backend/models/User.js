@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const productSchema = require('./Product');
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -17,7 +18,8 @@ const userSchema = new mongoose.Schema({
     },
     firstName: {
         type: String,
-        required: false,
+        required: true,
+        unique: false,
     },
     lastName: {
         type: String,
@@ -35,11 +37,25 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: false,
     },
+    gender: {
+        type: String,
+        required: false,
+    },
     allergies: [{
         type: String,
         required: false,
-    }]
+    }],
+    scannedProducts: {
+        type: [productSchema],
+        default: [],
+        validate: [arrayLimit, '{PATH} exceeds the limit of 5'],
+    }
+    
 }, {timestamps: true});
+
+function arrayLimit(val){
+    return val.length <= 5;
+}
 
 const User = mongoose.model('User', userSchema);
 

@@ -1,16 +1,82 @@
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
-import { colors } from '@/assets/colors';
+import { useTheme } from '../ColorThemeContext';
+import useUser from '@/hooks/useUser';
+import { useAuth } from '@/hooks/useAuth';
 
 type BarcodeResultsProps = { route: RouteProp<RootStackParamList, 'BarcodeResults'> };
 
 const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   const { product } = route.params;
+  const { colors } = useTheme();
+  const { token } = useAuth();
+  const { addProduct } = useUser(token);
   const energykcal = product.nutriments["energy-kcal"];
   const energykcal100g = product.nutriments["energy-kcal_100g"];
   const energykcalunit = product.nutriments["energy-kcal_unit"];
+
+  const styles = StyleSheet.create({
+    mainContainer: {
+      width: '100%',
+      height: '100%',
+      display: "flex",
+      flexDirection: "column",
+      gap: 10,
+      backgroundColor: colors.secondary,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+    },
+    scrollContainer: {
+      flexGrow: 1,
+      backgroundColor: colors.secondary,
+    },
+    title: {
+      fontSize: 30,
+      fontWeight: 'bold',
+    },
+    subtitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    text: {
+      fontSize: 16,
+    },
+    imagesContainer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      gap: 10,
+      paddingTop: 10,
+      borderTopWidth: 5,
+      borderTopColor: colors.primary,
+    },
+    image: {
+      width: "30%",
+      height: 100,
+      marginBottom: 10,
+    },
+    tableHeader: {
+      marginTop: 10,
+      gap: 5,
+    },
+    headerText: {
+      flex: 1,
+      textAlign: 'center',
+      fontWeight: 'bold'
+    },
+    tableRow: {
+      flex: 1, 
+      flexDirection: 'row', 
+      justifyContent: 'space-between', 
+      borderBottomWidth: 2,
+    },
+    rowText: {
+      flex: 1,
+      textAlign: 'center',
+    }
+  });
 
   const getNutriscoreImage = (nutriscore: string) => {
     let imageURL: string;
@@ -35,6 +101,18 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
     }
     return imageURL;
   }
+
+  useEffect(() => {
+    console.log("aici:",product);
+    const newProduct: ScannedProduct = {
+      barcode: product._id,
+      name: product.product_name,
+      brand: product.brands,
+      image: product.image_url,
+      nutriscore: product.nutriscore_grade,
+    }
+    addProduct(newProduct);
+  }, []);
 
   return (
     <ScrollView style={styles.scrollContainer}>
@@ -115,66 +193,5 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
     </ScrollView>
   )
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    width: '100%',
-    height: '100%',
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-    backgroundColor: colors.secondary,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    backgroundColor: colors.secondary,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  text: {
-    fontSize: 16,
-  },
-  imagesContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: 10,
-    paddingTop: 10,
-    borderTopWidth: 5,
-    borderTopColor: colors.primary,
-  },
-  image: {
-    width: "30%",
-    height: 100,
-    marginBottom: 10,
-  },
-  tableHeader: {
-    marginTop: 10,
-    gap: 5,
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    fontWeight: 'bold'
-  },
-  tableRow: {
-    flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    borderBottomWidth: 2,
-  },
-  rowText: {
-    flex: 1,
-    textAlign: 'center',
-  }
-});
 
 export default BarcodeResults

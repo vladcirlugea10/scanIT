@@ -4,6 +4,7 @@ import AppNavigator from './AppNavigator'
 import { registerRootComponent } from 'expo'
 import { initDB } from '@/database/local/sqLite';
 import { AuthProvider } from '@/hooks/useAuth';
+import { ThemeProvider } from './ColorThemeContext';
 
 const App = () => {
   const initDatabase = async () => {
@@ -20,9 +21,11 @@ const App = () => {
   }, []);
 
   return (
-    <AuthProvider>
-      <AppNavigator />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppNavigator />
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 
