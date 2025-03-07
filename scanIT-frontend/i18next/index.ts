@@ -6,7 +6,7 @@ import translationEN from './locales/en-US/translation.json';
 import translationRO from './locales/ro-RO/translation.json';
 
 const resources = {
-    "en-US": { translation: translationEN },
+    "en-UK": { translation: translationEN },
     "ro-RO": { translation: translationRO },
 };
 
@@ -16,7 +16,7 @@ const initI18next = async () => {
         if(Localization.getLocales()[0].languageCode === 'ro'){
             selectedLanguage = 'ro-RO';
         }else{
-            selectedLanguage = 'en-US';
+            selectedLanguage = 'en-UK';
         }
     }
     console.log("locale:", Localization.getLocales()[0].languageCode);
