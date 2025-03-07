@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { RootStackParamList } from '@/types/StackParamsList';
 import useImageOCR from '@/hooks/useImageOCR';
 import { useTheme } from '../ColorThemeContext';
+import { useTranslation } from 'react-i18next';
 
 type ScanImageNavProps = { route: RouteProp<RootStackParamList, 'ScanImage'> };
 
@@ -13,6 +14,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const { photoUri } = route.params;
     const { colors } = useTheme();
+    const { t } = useTranslation();
     const { scanImage, loading, data } = useImageOCR();
 
     const styles = StyleSheet.create({
@@ -51,7 +53,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         return(
           <View style={styles.mainContainer}>
             <ActivityIndicator size='large' color={colors.primary} />
-            <Text>Scanning image...</Text>
+            <Text>{t('scanningImage')}...</Text>
           </View>
         )
     }
@@ -60,12 +62,12 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         return(
           <View style={styles.mainContainer}>
             <Text style={{fontSize: 25, fontWeight: 700}}>
-              Product ingredients list:
+              {t('productIngredientList')}:
             </Text>
             <View style={styles.resultContainer}>
               <Text style={{fontSize: 16}}>{data.text.join(" ")}</Text>
             </View>
-            <MyButton title='Check ingredients' onPress={handleCheckIngredients} containerStyle={{width: "45%"}} />
+            <MyButton title={t('checkIngredients')} onPress={handleCheckIngredients} containerStyle={{width: "45%"}} />
           </View>
         )
     }
@@ -74,7 +76,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         return(
           <View style={styles.mainContainer}>
             <Ionicons name='alert-circle-outline' size={50} color={colors.warning} />
-            <Text>Something went wrong! Please try again!</Text>
+            <Text>{t('somethingWentWrong')}! {t('pleaseTryAgain')}!</Text>
           </View>
         )
     }

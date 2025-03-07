@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const localIP = "192.168.1.7"
+const localIP = "192.168.1.4";
 const API_URL = `http://${localIP}:5000/api`;
 
 const apiClient = axios.create({

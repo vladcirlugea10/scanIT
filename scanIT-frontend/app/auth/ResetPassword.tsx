@@ -7,6 +7,7 @@ import { AuthStackParams } from '@/types/StackParamsList'
 import { useAuth } from '@/hooks/useAuth'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '../ColorThemeContext'
+import { useTranslation } from 'react-i18next'
 
 type ResetPasswordProps = { route: RouteProp<AuthStackParams, 'ResetPassword'> };
 
@@ -19,6 +20,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const { changePassword, error, clearError, loading } = useAuth();
     const { colors } = useTheme();
+    const { t } = useTranslation(); 
     const navigation = useNavigation<NavigationProp<AuthStackParams>>();
     const styles = StyleSheet.create({
       mainContainer: {
@@ -99,19 +101,19 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
   return (
     <View style={styles.mainContainer}>
         <View style={styles.formContainer}>
-            <Text style={styles.title}>Enter a new password</Text>
+            <Text style={styles.title}>{t('enterANewPassword')}</Text>
             <View style={styles.passwordContainer}>
-                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='New password' secureTextEntry={!showPass} autoCapitalize='none' />
+                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder={t('newPassword')} secureTextEntry={!showPass} autoCapitalize='none' />
                 <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
             </View>
             <View style={styles.passwordContainer}>
-                <TextInput style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword} placeholder='Confirm new password' secureTextEntry={!showConfirmPass} autoCapitalize='none' />
+                <TextInput style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword} placeholder={t('confirmNewPassword')} secureTextEntry={!showConfirmPass} autoCapitalize='none' />
                 <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowConfirmPass} />
             </View>
             {loading && <ActivityIndicator size='large' color={colors.primary} />}
             {error && <Text style={styles.errorText}>{error}</Text>}
-            {success && <Text style={styles.successText}>Password changed successfully! Redirecting...</Text>}
-            <MyButton containerStyle={styles.button} title='Submit' onPress={handleSubmit} />
+            {success && <Text style={styles.successText}>{t('passwordChangedSuccessfully')}! {t('redirecting')}...</Text>}
+            <MyButton containerStyle={styles.button} title={t('submit')} onPress={handleSubmit} />
         </View>
     </View>
   )

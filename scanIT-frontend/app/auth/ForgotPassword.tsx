@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParams } from '@/types/StackParamsList';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../ColorThemeContext';
+import { useTranslation } from 'react-i18next';
 
 type ForgotPasswordProps = NativeStackNavigationProp<AuthStackParams, 'ForgotPassword'>;
 
@@ -15,6 +16,7 @@ const ForgotPassword = () => {
   const [code, setCode] = useState('');
   const { forgotPassword, checkResetCode, loading, error, clearError } = useAuth();
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<ForgotPasswordProps>();
   const styles = StyleSheet.create({
     mainContainer:{
@@ -87,21 +89,21 @@ const ForgotPassword = () => {
     step === 1 ? (
       <View style={styles.mainContainer}>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Enter your account's email to receive the reset code.</Text>
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Your email' keyboardType="email-address" autoCapitalize='none' />
+          <Text style={styles.title}>{t('enterAValidEmailToResetThePassword')}.</Text>
+          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder={t('yourEmail')} keyboardType="email-address" autoCapitalize='none' />
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
           {error && <Text style={styles.errorText}>{error}</Text>}
-          <MyButton containerStyle={styles.button} title='Send reset link' onPress={handleForgotPass} />
+          <MyButton containerStyle={styles.button} title={t('sendResetLink')} onPress={handleForgotPass} />
         </View>
       </View>
     ) : (
       <View style={styles.mainContainer}>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Enter the 6 digit code</Text>
-          <TextInput style={styles.input} value={code} onChangeText={setCode} placeholder='Code' keyboardType='numeric' />
+          <Text style={styles.title}>{t('enterThe6DigitCode')}</Text>
+          <TextInput style={styles.input} value={code} onChangeText={setCode} placeholder={t('code')} keyboardType='numeric' />
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
           {error && <Text style={styles.errorText}>{error}</Text>}
-          <MyButton containerStyle={styles.button} title='Submit' onPress={handleCheckCode} />
+          <MyButton containerStyle={styles.button} title={t('submit')} onPress={handleCheckCode} />
         </View>
       </View>
     )
