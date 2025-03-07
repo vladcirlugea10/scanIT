@@ -68,7 +68,7 @@ const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
         <Image source={{uri: croppedImage || photoUri}} style={styles.image} />                           
       </View>
       <View style={styles.buttonContainer}>
-        <MyButton title={t('scanImage')} onPress={handleScanImage} containerStyle={{width: 130}} />
+        <MyButton title={t('scanImage')} onPress={handleScanImage} containerStyle={{width: "auto"}} />
       </View>
     </View>
   )

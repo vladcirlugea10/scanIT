@@ -262,16 +262,16 @@ const PersonalInformation = () => {
         <View style={styles.dataContainer}>
           <View style={styles.personalDataContainer}>
             <View style={styles.infoContainer}>
-              <Text style={styles.subtitle}>{t('name')} </Text>
+              <Text style={styles.subtitle}>{t('name')}:</Text>
               <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.firstName} onChangeText={(text) => setEditedUser((prev) => ({...prev, firstName: text}))} />
               { editedUser.lastName ? (<TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.lastName} onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))} />) :
                 isEditing ? (<TextInput style={dynamicStyles.input} editable={isEditing} value='' onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))}  />) : null
               }
             </View>
             <View style={styles.infoContainer}>
-              <Text style={styles.subtitle}>{t('birthday')}</Text>
+              <Text style={styles.subtitle}>{t('birthday')}:</Text>
               <TextInput style={dynamicStyles.input} editable={isEditing} value={ editedUser?.birthday ? (editedUser?.birthday) : ''} />
-              { !isEditing && editedUser.birthday && <Text style={styles.text}>({calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-')))} years old)</Text>}
+              { !isEditing && editedUser.birthday && <Text style={styles.text}>({calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-')))} {t('yearsOld')})</Text>}
               { isEditing && <MaterialCommunityIcons style={styles.icon} name='calendar' size={24} color={colors.primary} onPress={handleShowDatePicker} /> }
               { showDatePicker && <DateTimePicker value={editedUser.birthday ? new Date(editedUser.birthday.split('-').reverse().join('-')) : new Date()} mode='date' display='spinner' maximumDate={new Date()} onChange={(event, selectedDate) => {
                 if(selectedDate){
@@ -305,7 +305,7 @@ const PersonalInformation = () => {
                 )) : <Text style={{marginLeft: '5%'}} >{t('youDontHaveAnyAllergies')}</Text>
               }
             </View>
-            <View style={{display: 'flex', flexDirection: 'row', gap: "10%"}}>
+            <View style={{display: 'flex', flexDirection: 'row', gap: "8%"}}>
               <View style={styles.infoContainerRow}>
                 <Text style={styles.subtitle}>{t('height')}(cm): </Text>
                 <TextInput style={dynamicStyles.input} editable={isEditing} value={ editedUser.height ? editedUser.height : '0'} keyboardType='numeric' onChangeText={(text) => setEditedUser((prev) => ({...prev, height: text}))} />

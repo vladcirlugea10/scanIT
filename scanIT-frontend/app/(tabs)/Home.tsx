@@ -57,7 +57,7 @@ const Home = () => {
             justifyContent: 'flex-start'
         },
         button: {
-            width: 60,
+            width: 'auto',
             height: 30,
             borderRadius: 10,
             padding: 5,
@@ -170,7 +170,7 @@ const Home = () => {
                         <Image source={{uri: photo.uri}} style={styles.camera} />
                     </View>
                     <View style={{display: "flex", flexDirection:"row", gap: 50}}>
-                        <MyButton title={t('advance')} onPress={handleScan} iconName='checkmark-outline' />
+                        <MyButton title={t('advance')} onPress={handleScan} iconName='checkmark-outline' textStyle={{fontSize: 16}} />
                         <MyButton title={t('redo')} onPress={() => setPhoto(undefined)} iconName='close-outline'/>
                     </View>
                 </View>
