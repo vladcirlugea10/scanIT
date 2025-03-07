@@ -9,6 +9,7 @@ import * as ImageManipulator from 'expo-image-manipulator'
 import { RootStackParamList } from '@/types/StackParamsList'
 import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
 import { useTheme } from '../ColorThemeContext'
+import { useTranslation } from "react-i18next";
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -20,6 +21,7 @@ const Home = () => {
     const cameraRef = useRef<CameraView>(null);
     const { getProduct, product, loading, notFound } = useOpenFoodFacts();
     const { colors } = useTheme();
+    const { t } = useTranslation();
 
     const navigation = useNavigation<HomeNavProps>();
 
@@ -183,6 +185,7 @@ const Home = () => {
                 <View style={styles.buttonContainer}>
                     <MyButton title='Barcode' onPress={() => {setBarcodeData(undefined); setSelectedMode('barcode')}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                     <MyButton title='Photo' onPress={() => {setSelectedMode('photo')}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
+                    <Text>{t('login')}</Text>
                 </View>
                 <View style={styles.cameraContainer}>
                     <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {

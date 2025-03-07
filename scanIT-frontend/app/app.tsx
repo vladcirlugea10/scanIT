@@ -5,6 +5,7 @@ import { registerRootComponent } from 'expo'
 import { initDB } from '@/database/local/sqLite';
 import { AuthProvider } from '@/hooks/useAuth';
 import { ThemeProvider } from './ColorThemeContext';
+import '@/i18next';
 
 const App = () => {
   const initDatabase = async () => {
