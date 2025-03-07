@@ -10,6 +10,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { formatDateToString } from '@/utils/date'
 import { useTheme } from '../ColorThemeContext'
+import { useTranslation } from 'react-i18next'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -26,7 +27,10 @@ const Register = () => {
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [showPass, setShowPass] = useState(false);
   const [showDate, setShowDate] = useState(false);
+
   const { colors } = useTheme();
+  const { t } = useTranslation();
+
   const styles = StyleSheet.create({
     mainContainer: {
       flex: 1,
@@ -131,16 +135,16 @@ const Register = () => {
     <ScrollView>
       <View style={styles.mainContainer}>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Create an account</Text>
+          <Text style={styles.title}>{t('createAnAccount')}</Text>
           <View style={styles.inputContainer}>
             <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
             <View style={styles.passwordContainer}>
-              <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='Password' autoCapitalize="none" secureTextEntry={!showPass} />
+              <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
               <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
             </View>
-            <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder='Username' autoCapitalize="none" />
-            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder='First name' autoCapitalize="words" />
-            <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder='Last name(optional)' autoCapitalize="words" />
+            <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder={t('username')} autoCapitalize="none" />
+            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder={t('firstName')} autoCapitalize="words" />
+            <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder={t('lastName(optional)')} autoCapitalize="words" />
             <View>
               {showDate && <DateTimePicker value={new Date()} mode='date' display='spinner' maximumDate={new Date()} onChange={(event, selectedDate) => {
                 if(selectedDate){
@@ -148,15 +152,15 @@ const Register = () => {
                 }
                 setShowDate(false);
               }} />}
-              <TextInput style={styles.input} value={formatDateToString(birthday)} placeholder='Birthday(optional)' editable={false} />
+              <TextInput style={styles.input} value={formatDateToString(birthday)} placeholder={t('birthdat(optional)')} editable={false} />
               <MaterialCommunityIcons name='calendar' size={24} style={styles.eyeIcon} onPress={handleShowDate} />
             </View>
           </View>
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
           {error && <Text style={styles.errorText}>{error}</Text>}
           <View style={styles.buttonContainer}>
-            <MyButton title='Register' onPress={onSubmit} containerStyle={styles.button} />
-            <Text style={styles.text} onPress={() => navigation.navigate('Login')} >Already have an account?</Text>
+            <MyButton title={t('register')} onPress={onSubmit} containerStyle={styles.button} />
+            <Text style={styles.text} onPress={() => navigation.navigate('Login')} >{t('alreadyHaveAnAccount')}?</Text>
           </View>
         </View>
       </View>

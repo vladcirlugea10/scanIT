@@ -8,12 +8,14 @@ import { Ionicons } from '@expo/vector-icons';
 import IngredientModal from '../../components/IngredientModal';
 import MyButton from '@/components/MyButton';
 import { useTheme } from '../ColorThemeContext';
+import { useTranslation } from 'react-i18next';
 
 type IngredientsCheckNavProps = { route: RouteProp<RootStackParamList, 'IngredientsCheck'> };
 
 const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     const { data } = route.params;
     const { colors } = useTheme();
+    const { t } = useTranslation();
     const [foundAllergenIngredients, setFoundAllergenIngredients] = useState<GetAllergenIngredient[]>([]);
     const [foundUnhealthyIngredients, setFoundUnhealthyIngredients] = useState<GetAllergenIngredient[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
@@ -88,7 +90,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     if(foundAllergenIngredients.length === 0 && foundUnhealthyIngredients.length === 0){
         return(
           <View style={styles.mainContainer}>
-            <Text style={{fontSize: 25, fontWeight: 700}}>No bad ingredients found!</Text>
+            <Text style={{fontSize: 25, fontWeight: 700}}>{t('noBadIngredientsFound')}!</Text>
             <Ionicons name='checkmark-circle-outline' size={50} color={colors.success} />
           </View>
         )
@@ -101,7 +103,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
               <View style={styles.allergenContainer}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Ionicons name='warning-outline' size={40} color={colors.danger} />
-                  <Text style={styles.subtitle}>Allergen Ingredients:</Text>
+                  <Text style={styles.subtitle}>{t('allergenIngredients')}:</Text>
                 </View>
                 {foundAllergenIngredients.length > 0 ? foundAllergenIngredients.map((ingredient) => (
                   <View key={ingredient.id} style={{flexDirection: 'row', alignContent: "center"}}>
@@ -110,12 +112,12 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                   </View>
                 ))
                 : (
-                  <Text>No allergen ingredients found!</Text>
+                  <Text>{t('noAllergenIngredientsFound')}!</Text>
                 )}
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Ionicons name='alert-circle-outline' size={40} color={colors.warning} />
-                  <Text style={styles.subtitle}>Unhealthy Ingredients:</Text>
+                  <Text style={styles.subtitle}>{t('unhealthyIngredients')}:</Text>
               </View>
               {foundUnhealthyIngredients.length > 0 ? foundUnhealthyIngredients.map((ingredient) => (
                 <View key={ingredient.id} style={{flexDirection: 'column'}}>
@@ -123,7 +125,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                 </View>
               )) 
               : 
-                <Text>No unhealthy ingredients found!</Text>
+                <Text>{t('noUnhealthyIngredientsFound')}!</Text>
               }
             </View>
             <IngredientModal visible={modalVisible} onClose={handleCloseModal} ingredient={selectedIngredient} />

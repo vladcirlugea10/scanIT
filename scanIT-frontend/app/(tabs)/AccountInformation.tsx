@@ -7,10 +7,12 @@ import { calculateDays, formatDateToString } from '@/utils/date';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/StackParamsList';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 const AccountInformation = () => {
     const { colors } = useTheme();
     const { user, isAuth, token } = useAuth();
+    const { t } = useTranslation();
     const { getUserData, editUser, error, loading } = useUser(token);
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [isEditing, setIsEditing] = useState(false);
@@ -168,7 +170,7 @@ const AccountInformation = () => {
     const showAlert = () => {
         if(error){
           Alert.alert(
-            'Error!',
+            t('error'),
             error,
             [
               {
@@ -209,7 +211,7 @@ const AccountInformation = () => {
 
     return (
       <View style={styles.mainContainer}>
-        <Text style={styles.title}>Account information</Text>
+        <Text style={styles.title}>{t('accountInformation')}</Text>
         <View style={styles.buttonContainer}>
           { isEditing && <TouchableOpacity onPress={handleCancelEdit}> 
               <MaterialCommunityIcons name='close-circle' size={40} color={colors.danger} />
@@ -222,14 +224,14 @@ const AccountInformation = () => {
         <View style={styles.dataContainer}>
           <View style={styles.personalDataContainer}>
             <View style={styles.infoContainer}>
-              <Text style={styles.subtitle}>Name: </Text>
+              <Text style={styles.subtitle}>{t('name')}: </Text>
               <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.firstName} onChangeText={(text) => setEditedUser((prev) => ({...prev, firstName: text}))} />
               { editedUser.lastName ? (<TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.lastName} onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))} />) :
                 isEditing ? (<TextInput style={dynamicStyles.input} editable={isEditing} value='' onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))}  />) : null
               }
             </View>
             <View style={styles.infoContainer}>
-                <Text style={styles.subtitle}>Username: </Text>
+                <Text style={styles.subtitle}>{t('username')}: </Text>
                 <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.userName} onChangeText={(text) => setEditedUser((prev) => ({...prev, userName: text}))} />
             </View>
             <View style={styles.infoContainer}>
@@ -237,10 +239,10 @@ const AccountInformation = () => {
                 <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.email} onChangeText={(text) => setEditedUser((prev) => ({...prev, email: text}))} />
             </View>
             <Text style={{marginBottom: '5%'}}>
-                <Text style={styles.subtitle}>Member since: </Text>
+                <Text style={styles.subtitle}>{t('memberSince')}: </Text>
                 <Text style={styles.text}>{ user?.createdAt ? formatDateToString(new Date(user?.createdAt)) : ''} ({calculateDays(user?.createdAt)} days)</Text>
             </Text>
-            <Text style={styles.subtitle}>Last scanned products: </Text>
+            <Text style={styles.subtitle}>{t('lastScannedProducts')}: </Text>
             <View style={styles.productContainer}>
                 {user?.scannedProducts && user.scannedProducts.length > 0 ? 
                   (

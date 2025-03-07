@@ -9,6 +9,7 @@ import * as ImageManipulator from 'expo-image-manipulator'
 import { RootStackParamList } from '@/types/StackParamsList'
 import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
 import { useTheme } from '../ColorThemeContext'
+import { useTranslation } from "react-i18next";
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -20,6 +21,7 @@ const Home = () => {
     const cameraRef = useRef<CameraView>(null);
     const { getProduct, product, loading, notFound } = useOpenFoodFacts();
     const { colors } = useTheme();
+    const { t } = useTranslation();
 
     const navigation = useNavigation<HomeNavProps>();
 
@@ -55,7 +57,7 @@ const Home = () => {
             justifyContent: 'flex-start'
         },
         button: {
-            width: 60,
+            width: 'auto',
             height: 30,
             borderRadius: 10,
             padding: 5,
@@ -74,7 +76,7 @@ const Home = () => {
 
     const showAlert = () =>
     Alert.alert(
-        'Product not found!',
+        t('product not found'),
         'A product with this barcode couldn\'t be found! Please try again!',
         [
             {
@@ -144,8 +146,8 @@ const Home = () => {
     if(!permission?.granted){
         return(
             <View style={styles.mainContainer}>
-                <Text>Permission to use camera required!</Text>
-                <MyButton title='Request camera permission' onPress={requestPermission} />
+                <Text>{t('permission to use camera required')}</Text>
+                <MyButton title={t('request camera permission')} onPress={requestPermission} />
             </View>
         )
     }
@@ -154,7 +156,7 @@ const Home = () => {
         return(
             <View style={styles.mainContainer}>
                 <ActivityIndicator size='large' color={colors.primary} />
-                <Text>Searching for product...</Text>
+                <Text>{t('searchingProduct')}</Text>
             </View>
         )
     }
@@ -168,8 +170,8 @@ const Home = () => {
                         <Image source={{uri: photo.uri}} style={styles.camera} />
                     </View>
                     <View style={{display: "flex", flexDirection:"row", gap: 50}}>
-                        <MyButton title='Advance' onPress={handleScan} iconName='checkmark-outline' />
-                        <MyButton title='Redo' onPress={() => setPhoto(undefined)} iconName='close-outline'/>
+                        <MyButton title={t('advance')} onPress={handleScan} iconName='checkmark-outline' textStyle={{fontSize: 16}} />
+                        <MyButton title={t('redo')} onPress={() => setPhoto(undefined)} iconName='close-outline'/>
                     </View>
                 </View>
             </View>
@@ -181,8 +183,8 @@ const Home = () => {
             <StatusBar style='light' backgroundColor='black' />
             <View style={styles.dataContainer} >
                 <View style={styles.buttonContainer}>
-                    <MyButton title='Barcode' onPress={() => {setBarcodeData(undefined); setSelectedMode('barcode')}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
-                    <MyButton title='Photo' onPress={() => {setSelectedMode('photo')}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
+                    <MyButton title={t('barcode')} onPress={() => {setBarcodeData(undefined); setSelectedMode('barcode')}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
+                    <MyButton title={t('photo')} onPress={() => {setSelectedMode('photo')}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                 </View>
                 <View style={styles.cameraContainer}>
                     <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {

@@ -6,6 +6,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import ImageCropper from '@/components/ImageCropper';
 import { RootStackParamList } from '@/types/StackParamsList';
 import { useTheme } from '../ColorThemeContext';
+import { useTranslation } from 'react-i18next';
 
 type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
 
@@ -13,6 +14,7 @@ const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {photoUri} = route.params;
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const [isCropping, setIsCropping] = useState(true);
   const [croppedImage, setCroppedImage] = useState("");
   const styles = StyleSheet.create({
@@ -66,7 +68,7 @@ const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
         <Image source={{uri: croppedImage || photoUri}} style={styles.image} />                           
       </View>
       <View style={styles.buttonContainer}>
-        <MyButton title='Scan image' onPress={handleScanImage} containerStyle={{width: 130}} />
+        <MyButton title={t('scanImage')} onPress={handleScanImage} containerStyle={{width: "auto"}} />
       </View>
     </View>
   )

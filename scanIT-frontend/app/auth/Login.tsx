@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/hooks/useAuth';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../ColorThemeContext';
+import { useTranslation } from 'react-i18next';
 
 type LoginNavProps = NativeStackNavigationProp<AuthStackParams, 'Login'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -18,6 +19,7 @@ const Login = () => {
 
   const { onLogin, error, clearError, loading } = useAuth();
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const navigation = useNavigation<LoginNavProps>();
   const parentNavigation = useNavigation<ParentNavigationProps>();
@@ -111,20 +113,20 @@ const Login = () => {
     <ScrollView>
       <View style={styles.mainContainer}>
           <View style={styles.formContainer}>
-            <Text style={styles.title}>Welcome back!</Text>
+            <Text style={styles.title}>{t('welcomeBack')}!</Text>
             <View style={styles.inputContainer}>
-              <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='email' keyboardType="email-address" autoCapitalize="none" />
+              <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
               <View style={styles.passwordContainer}>
-                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder='password' autoCapitalize="none" secureTextEntry={!showPass} />
+                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
                 <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
               </View>
               {loading && <ActivityIndicator size='large' color={colors.primary} />}
               {error && <Text style={styles.errorText}>{error}</Text>}
             </View>
             <View style={styles.buttonContainer}>
-              <MyButton title='Login' onPress={onSubmit} containerStyle={styles.button} />
-              <Text style={styles.text} onPress={() => navigation.navigate('ForgotPassword')}>Forgot password?</Text>
-              <Text style={styles.text} onPress={() => navigation.navigate('Register')}>Create an account</Text>
+              <MyButton title={t('login')} onPress={onSubmit} containerStyle={styles.button} />
+              <Text style={styles.text} onPress={() => navigation.navigate('ForgotPassword')}>{t('forgotPassword')}?</Text>
+              <Text style={styles.text} onPress={() => navigation.navigate('Register')}>{t('createAnAccount')}</Text>
             </View>
           </View>
       </View>

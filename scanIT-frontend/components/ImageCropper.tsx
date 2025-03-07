@@ -2,6 +2,8 @@ import { View, Dimensions, PanResponder, Image, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import MyButton from './MyButton';
 import { useTheme } from '@/app/ColorThemeContext';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -26,6 +28,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({imageUri, onCropComplete}) =
     });
 
     const { colors } = useTheme();
+    const { t } = useTranslation();
+
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -207,7 +211,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({imageUri, onCropComplete}) =
                     <View {...handleImageCropping('bottomRight').panHandlers} style={[styles.cropButton, {bottom: -10, right: -10}]} />
                 </View>
             </View>
-            <MyButton title='Complete crop' onPress={handleCompleteCrop} containerStyle={styles.completeButton} />
+            <MyButton title={t('completeCrop')} onPress={handleCompleteCrop} containerStyle={styles.completeButton} />
         </View>
     );
 };
