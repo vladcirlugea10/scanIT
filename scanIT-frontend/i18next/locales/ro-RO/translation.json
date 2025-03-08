@@ -5,6 +5,7 @@
   "allergenIngredients": "Ingrediente alergene",
   "allergies": "Alergii",
   "alreadyHaveAnAccount": "Ai deja un cont",
+  "aProductWithThisBarcodeCouldntBeFound": "Un produs cu acest cod de bare nu a putut fi găsit! Te rog să reîncerci!",
   "availableLanguages": "Limbi disponibile",
   "barcode": "Cod de bare",
   "birthdat(optional)": "Data de naștere(opțional)",

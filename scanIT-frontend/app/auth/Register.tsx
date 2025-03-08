@@ -11,6 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { formatDateToString } from '@/utils/date'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
+import ShakingErrorText from '@/components/ShakingErrorText'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -157,10 +158,10 @@ const Register = () => {
             </View>
           </View>
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
-          {error && <Text style={styles.errorText}>{error}</Text>}
+          {error && <ShakingErrorText text={error} />}
           <View style={styles.buttonContainer}>
             <MyButton title={t('register')} onPress={onSubmit} containerStyle={styles.button} />
-            <Text style={styles.text} onPress={() => navigation.navigate('Login')} >{t('alreadyHaveAnAccount')}?</Text>
+            <Text style={styles.text} onPress={() => {navigation.navigate('Login'); clearError();}} >{t('alreadyHaveAnAccount')}?</Text>
           </View>
         </View>
       </View>

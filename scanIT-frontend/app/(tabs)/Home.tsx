@@ -77,7 +77,7 @@ const Home = () => {
     const showAlert = () =>
     Alert.alert(
         t('product not found'),
-        'A product with this barcode couldn\'t be found! Please try again!',
+        t('aProductWithThisBarcodeCouldntBeFound'),
         [
             {
                 text: 'Ok',
