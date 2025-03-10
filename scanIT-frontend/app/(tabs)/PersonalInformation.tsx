@@ -77,14 +77,13 @@ const PersonalInformation = () => {
       height: 'auto',
       display: 'flex',
       flexDirection: 'row',
-      gap: 10,
+      gap: 5,
       alignItems: 'center'
     },
     infoContainerRow:{
         height: 'auto',
         display: 'flex',
         flexDirection: 'row',
-        gap: 10,
         alignItems: 'center'
     },
     allergiesContainer:{
@@ -299,11 +298,11 @@ const PersonalInformation = () => {
               <View style={styles.allergiesTitle}> 
                   <Text style={styles.subtitle}>{t('allergies')}: </Text>
                   <TouchableOpacity>
-                      { showSelectBox ? <MaterialCommunityIcons name='minus-box' size={24} color={colors.third} onPress={handleSelectBox} /> : <MaterialCommunityIcons name='plus-box' size={24} color={colors.third} onPress={handleSelectBox} /> }
+                      { showSelectBox ? <MaterialCommunityIcons name='minus-box' size={24} color={colors.danger} onPress={handleSelectBox} /> : <MaterialCommunityIcons name='plus-box' size={24} color={colors.third} onPress={handleSelectBox} /> }
                   </TouchableOpacity>
                   { showSelectBox && 
                       <View style={{position: 'absolute', display: 'flex', right: 0, flexDirection: 'row', gap: 10}}>
-                          <SelectBox style={{width: 130}} title={t('selectAnAllergy')} options={AllergenGroups} selectedOption={selectedAllergy} setSelectedOption={setSelectedAllergy} />
+                          <SelectBox style={{width: 'auto'}} title={t('selectAnAllergy')} options={AllergenGroups} selectedOption={selectedAllergy} setSelectedOption={setSelectedAllergy} />
                           <TouchableOpacity>
                               <MaterialCommunityIcons name='check' size={24} color={colors.primary} onPress={handleAddAllergy} />
                           </TouchableOpacity>
@@ -320,7 +319,7 @@ const PersonalInformation = () => {
                 )) : <Text style={{marginLeft: '5%'}} >{t('youDontHaveAnyAllergies')}</Text>
               }
             </View>
-            <View style={{display: 'flex', flexDirection: 'row', gap: "8%"}}>
+            <View style={{display: 'flex', flexDirection: 'row', gap: "5%"}}>
               <View style={styles.infoContainerRow}>
                 <Text style={styles.subtitle}>{t('height')}(cm): </Text>
                 <TextInput style={dynamicStyles.input} editable={isEditing} value={ editedUser.height ? editedUser.height : '0'} keyboardType='numeric' onChangeText={(text) => setEditedUser((prev) => ({...prev, height: text}))} />
