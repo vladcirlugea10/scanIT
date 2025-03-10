@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TextInput, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { colors } from '@/assets/colors'
 import MyButton from '@/components/MyButton'
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
 import { AuthStackParams } from '@/types/StackParamsList'

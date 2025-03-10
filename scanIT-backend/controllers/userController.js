@@ -194,6 +194,13 @@ exports.editUserData = async (req, res) => {
         console.log(userId);
         const updateFields = req.body;
 
+        if(updateFields.height && (updateFields.height < 50 || updateFields.height > 300)){
+            return res.status(400).json({message: 'Invalid height!'});
+        }
+        if(updateFields.weight && (updateFields.weight < 10 || updateFields.weight > 400)){
+            return res.status(400).json({message: 'Invalid weight!'});
+        }
+
         const user = await User.findById(userId);
         if(!user){
             return res.status(404).json({message: 'User not found!'});

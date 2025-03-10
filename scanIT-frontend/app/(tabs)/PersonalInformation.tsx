@@ -337,7 +337,7 @@ const PersonalInformation = () => {
             </View>
               <Text>
                 <Text style={styles.text}>{t('yourAverageDailyCaloriesIntake')}: </Text>
-                <Text style={styles.subtitle}>{calculateCalories(editedUser?.weight, editedUser?.height, calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-'))), editedUser.gender)}</Text>
+                <Text style={styles.subtitle}>{calculateCalories(parseInt(editedUser?.weight), parseInt(editedUser?.height), calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-'))) || 0, editedUser.gender)}</Text>
               </Text>
           </View>
         </View>

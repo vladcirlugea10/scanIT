@@ -20,7 +20,7 @@ export const calculateDays = (date: Date | undefined) => {
     return diffDays;
 }
 
-export const calculateAge = (date: Date | undefined) => {
+export const calculateAge = (date: Date) => {
     if(!date){
         return;
     }
