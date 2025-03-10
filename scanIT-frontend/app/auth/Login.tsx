@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
+import ShakingErrorText from '@/components/ShakingErrorText';
 
 type LoginNavProps = NativeStackNavigationProp<AuthStackParams, 'Login'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -121,12 +122,12 @@ const Login = () => {
                 <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
               </View>
               {loading && <ActivityIndicator size='large' color={colors.primary} />}
-              {error && <Text style={styles.errorText}>{error}</Text>}
+              {error && <ShakingErrorText text={error} />}
             </View>
             <View style={styles.buttonContainer}>
               <MyButton title={t('login')} onPress={onSubmit} containerStyle={styles.button} />
-              <Text style={styles.text} onPress={() => navigation.navigate('ForgotPassword')}>{t('forgotPassword')}?</Text>
-              <Text style={styles.text} onPress={() => navigation.navigate('Register')}>{t('createAnAccount')}</Text>
+              <Text style={styles.text} onPress={() => {navigation.navigate('ForgotPassword'); clearError()}}>{t('forgotPassword')}?</Text>
+              <Text style={styles.text} onPress={() => {navigation.navigate('Register'); clearError()}}>{t('createAnAccount')}</Text>
             </View>
           </View>
       </View>

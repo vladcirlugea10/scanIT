@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator, Alert, Switch } from 'react-native'
+import { View, Text, StyleSheet, Image, ActivityIndicator, Alert } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
@@ -77,7 +77,7 @@ const Home = () => {
     const showAlert = () =>
     Alert.alert(
         t('product not found'),
-        'A product with this barcode couldn\'t be found! Please try again!',
+        t('aProductWithThisBarcodeCouldntBeFound'),
         [
             {
                 text: 'Ok',

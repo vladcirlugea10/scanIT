@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TextInput, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { colors } from '@/assets/colors'
 import MyButton from '@/components/MyButton'
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
 import { AuthStackParams } from '@/types/StackParamsList'
@@ -8,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
+import ShakingErrorText from '@/components/ShakingErrorText'
 
 type ResetPasswordProps = { route: RouteProp<AuthStackParams, 'ResetPassword'> };
 
@@ -111,7 +111,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
                 <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowConfirmPass} />
             </View>
             {loading && <ActivityIndicator size='large' color={colors.primary} />}
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            {error && <ShakingErrorText text={error} />}
             {success && <Text style={styles.successText}>{t('passwordChangedSuccessfully')}! {t('redirecting')}...</Text>}
             <MyButton containerStyle={styles.button} title={t('submit')} onPress={handleSubmit} />
         </View>

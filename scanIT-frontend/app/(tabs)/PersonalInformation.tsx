@@ -126,6 +126,21 @@ const PersonalInformation = () => {
   });
 
   useEffect(() => {
+    if (user) {
+      setEditedUser({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        userName: user.userName || '',
+        email: user.email || '',
+        birthday: user.birthday || '',
+        height: user.height?.toString() || '0',
+        weight: user.weight?.toString() || '0',
+        gender: user.gender || '',
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
     if(!isAuth){
       navigation.navigate('Auth');
     } else{
@@ -322,7 +337,7 @@ const PersonalInformation = () => {
             </View>
               <Text>
                 <Text style={styles.text}>{t('yourAverageDailyCaloriesIntake')}: </Text>
-                <Text style={styles.subtitle}>{calculateCalories(editedUser?.weight, editedUser?.height, calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-'))), editedUser.gender)}</Text>
+                <Text style={styles.subtitle}>{calculateCalories(parseInt(editedUser?.weight), parseInt(editedUser?.height), calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-'))) || 0, editedUser.gender)}</Text>
               </Text>
           </View>
         </View>

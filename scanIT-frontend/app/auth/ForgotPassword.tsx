@@ -7,6 +7,7 @@ import { AuthStackParams } from '@/types/StackParamsList';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
+import ShakingErrorText from '@/components/ShakingErrorText';
 
 type ForgotPasswordProps = NativeStackNavigationProp<AuthStackParams, 'ForgotPassword'>;
 
@@ -92,7 +93,7 @@ const ForgotPassword = () => {
           <Text style={styles.title}>{t('enterAValidEmailToResetThePassword')}.</Text>
           <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder={t('yourEmail')} keyboardType="email-address" autoCapitalize='none' />
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
-          {error && <Text style={styles.errorText}>{error}</Text>}
+          {error && <ShakingErrorText text={error} />}
           <MyButton containerStyle={styles.button} title={t('sendResetLink')} onPress={handleForgotPass} />
         </View>
       </View>
@@ -102,7 +103,7 @@ const ForgotPassword = () => {
           <Text style={styles.title}>{t('enterThe6DigitCode')}</Text>
           <TextInput style={styles.input} value={code} onChangeText={setCode} placeholder={t('code')} keyboardType='numeric' />
           {loading && <ActivityIndicator size='large' color={colors.primary} />}
-          {error && <Text style={styles.errorText}>{error}</Text>}
+          {error && <ShakingErrorText text={error} />}
           <MyButton containerStyle={styles.button} title={t('submit')} onPress={handleCheckCode} />
         </View>
       </View>

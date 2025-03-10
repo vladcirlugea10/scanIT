@@ -1,5 +1,5 @@
 export const calculateCalories = (weight: number, height: number, age: number, gender: string) => {
-    if(!weight || (weight === 0) || !height || (height === 0) || !age || !gender){
+    if(!weight || (weight === 0) || !height || (height === 0) || (age === 0) || !gender){
         return;
     }
     if(gender === 'Male'){
