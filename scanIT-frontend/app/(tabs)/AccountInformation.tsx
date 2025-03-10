@@ -186,6 +186,21 @@ const AccountInformation = () => {
     };
 
     useEffect(() => {
+        if (user) {
+          setEditedUser({
+            firstName: user.firstName || '',
+            lastName: user.lastName || '',
+            userName: user.userName || '',
+            email: user.email || '',
+            birthday: user.birthday || '',
+            height: user.height?.toString() || '0',
+            weight: user.weight?.toString() || '0',
+            gender: user.gender || '',
+          });
+        }
+    }, [user]);
+
+    useEffect(() => {
         if(!isAuth){
           navigation.navigate('Auth');
         } else{
