@@ -10,6 +10,7 @@ export type RootStackParamList = {
     PersonalInformation: undefined;
     AccountInformation: undefined;
     ChangeLanguage: undefined;
+    AddProduct: undefined;
     Auth: undefined;
 };
 

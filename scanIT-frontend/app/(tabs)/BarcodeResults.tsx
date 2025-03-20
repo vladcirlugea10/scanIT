@@ -6,6 +6,7 @@ import { useTheme } from '../ColorThemeContext';
 import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { LayoutAnimationType } from 'react-native-reanimated';
 
 type BarcodeResultsProps = { route: RouteProp<RootStackParamList, 'BarcodeResults'> };
 
@@ -133,6 +134,11 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Image source={{ uri: getNutriscoreImage(product.nutriscore_grade)}} style={{width: 200, height: 100}} />
         </View>
+        <Text style={styles.subtitle}>Product has {product.additives_n} additives: </Text>
+        { product.additives_tags && product.additives_tags.map((additive, index) => {
+            return <Text style={styles.text} key={index}>{additive}</Text>
+          })
+        }
         <Text style={styles.subtitle}>{t('nutritionalValues')}</Text>
 
         <View style={styles.tableHeader}>

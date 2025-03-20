@@ -16,6 +16,8 @@ router.delete('/remove-allergy', verifyToken, userController.removeAllergy);
 
 //Add a scanned product
 router.put('/add-scanned-product', verifyToken, userController.addScannedProduct);
+//Add a new product
+router.put('/add-new-product', verifyToken, userController.addNewProduct);
 
 //Get user data
 router.get('/:email', verifyToken, userController.getUserData);

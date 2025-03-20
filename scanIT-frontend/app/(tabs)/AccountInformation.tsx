@@ -63,6 +63,11 @@ const AccountInformation = () => {
           fontSize: 20,
           color: colors.third,
         },
+        textForPressing:{
+          color: colors.third,
+          fontWeight: 'bold',
+          fontSize: 15,
+        },
         dataContainer:{
           width: '90%',
           height: 'auto',
@@ -270,6 +275,9 @@ const AccountInformation = () => {
                   ) : 
                   null
                 }
+              <TouchableOpacity>
+                <Text style={styles.textForPressing} onPress={() => navigation.navigate('AddProduct')} >{t("couldntFindAproduct")}? {t("addItHere")}!</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
