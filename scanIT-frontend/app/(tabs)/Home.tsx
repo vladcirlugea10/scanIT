@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, StyleSheet, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
@@ -6,10 +6,12 @@ import MyButton from '@/components/MyButton'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import * as ImageManipulator from 'expo-image-manipulator'
+import * as ImagePicker from 'expo-image-picker'
 import { RootStackParamList } from '@/types/StackParamsList'
 import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from "react-i18next";
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -137,6 +139,27 @@ const Home = () => {
         }
     };
 
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: false,
+            aspect: [3, 4],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const resizedPhoto = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 1500, height: 2000 } }],
+                { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+            );
+            setPhoto(resizedPhoto);
+            if(photo){
+                navigation.navigate('ImageEdit', { photoUri: photo.uri });
+            }
+        }
+    }
+
     const handleScan = () => {
         if(photo){
             navigation.navigate('ImageEdit', { photoUri: photo.uri });
@@ -190,6 +213,9 @@ const Home = () => {
                     <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {
                         setBarcodeData(data);
                     }} />
+                    <TouchableOpacity style={{position: 'absolute', bottom: 20, left: 20}}>
+                        <MaterialCommunityIcons name='plus' size={30} color={colors.primary} onPress={pickImage} />
+                    </TouchableOpacity>
                 </View>
                 { selectedMode === 'photo' ? <MyButton iconName='camera' iconColor={colors.secondary} iconSize={30} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} /> : null }
             </View>
