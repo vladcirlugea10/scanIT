@@ -22,7 +22,7 @@ const useOpenFoodFacts = () => {
             setProduct(null);
             setNotFound(false);
             try{
-                const response = await axios.get(`https://world.openfoodfacts.net/api/v2/product/${barcode}`);
+                const response = await axios.get(`https://ro.openfoodfacts.net/api/v2/product/${barcode}`);
                 const data = await response.data.status;
     
                 if(data === 1){
