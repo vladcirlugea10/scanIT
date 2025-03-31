@@ -11,6 +11,7 @@ import { formatDateToString } from '@/utils/date'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
 import ShakingErrorText from '@/components/ShakingErrorText'
+import { createGlobalStyles } from '@/assets/styles'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -29,6 +30,7 @@ const Register = () => {
   const [showDate, setShowDate] = useState(false);
 
   const { colors } = useTheme();
+  const globalStyles = createGlobalStyles(colors);
   const { t } = useTranslation();
 
   const styles = StyleSheet.create({
@@ -77,11 +79,6 @@ const Register = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: 10,
-      },
-      text:{
-        color: colors.third,
-        fontWeight: 'bold',
-        fontSize: 15,
       },
       errorText:{
         fontWeight: 'bold',
@@ -160,7 +157,7 @@ const Register = () => {
           {error && <ShakingErrorText text={error} />}
           <View style={styles.buttonContainer}>
             <MyButton title={t('register')} onPress={onSubmit} containerStyle={styles.button} />
-            <Text style={styles.text} onPress={() => {navigation.navigate('Login'); clearError();}} >{t('alreadyHaveAnAccount')}?</Text>
+            <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('Login'); clearError();}} >{t('alreadyHaveAnAccount')}?</Text>
           </View>
         </View>
       </View>

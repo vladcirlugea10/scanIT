@@ -12,6 +12,8 @@ const useOpenFoodFacts = () => {
     const [notFound, setNotFound] = useState(false);
     const [barcode, setBarcode] = useState("");
 
+    const clearError = () => setError(null);
+
     useEffect(() => {
         const fetchProduct = async () => {
             if(!barcode){
@@ -19,6 +21,7 @@ const useOpenFoodFacts = () => {
             }
 
             setLoading(true);
+            clearError();
             setProduct(null);
             setNotFound(false);
             try{
@@ -68,6 +71,7 @@ const useOpenFoodFacts = () => {
         console.log("barcode",product.barcode);
 
         setLoading(true);
+        clearError();
         try{
             const response = await _post('/open-food-facts/add-new-product', product, { headers: { 'Token': `Bearer ${token}` }});
             const data = await response.data;
@@ -81,7 +85,27 @@ const useOpenFoodFacts = () => {
         }
     }
 
-    return { loading, error, getProduct, product, notFound, addProduct };
+    const editProduct = async (product: EditProduct) => {
+        if(!product){
+            return;
+        }
+
+        setLoading(true);
+        clearError();
+        try{
+            const response = await _post('/open-food-facts/edit-product', product, { headers: { 'Token': `Bearer ${token}` }});
+            const data = await response.data;
+            return data;
+        } catch(error: any){
+            const errorMessage = error.response.data.message || error.message || "Error editing product";
+            setError(errorMessage);
+            throw error;
+        } finally{
+            setLoading(false);
+        }  
+    }
+
+    return { loading, error, getProduct, product, notFound, addProduct, editProduct };
 };
 
 export default useOpenFoodFacts

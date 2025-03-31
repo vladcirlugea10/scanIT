@@ -26,6 +26,8 @@
   "darkMode": "Dark mode",
   "description": "Description",
   "editImage": "Edit image",
+  "editExistingProduct": "Edit an existing product",
+  "editProduct": "Edit product",
   "energy": "Energy",
   "enterANewPassword": "Enter a new password",
   "enterAValidEmailToResetThePassword": "Enter a valid email to reset the password",

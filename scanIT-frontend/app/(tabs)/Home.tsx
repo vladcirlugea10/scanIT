@@ -84,6 +84,10 @@ const Home = () => {
             {
                 text: 'Ok',
                 style: 'cancel',
+            },
+            {
+                text: t("addItHere"),
+                onPress: () => navigation.navigate("AddProduct"),
             }
         ],
         {

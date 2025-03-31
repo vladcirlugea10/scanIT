@@ -26,6 +26,8 @@
   "darkMode": "Mod întunecat",
   "description": "Descriere",
   "editImage": "Editează imaginea",
+  "editExistingProduct": "Editează un produs existent",
+  "editProduct": "Editează produsul",
   "energy": "Energie",
   "enterANewPassword": "Introdu noua parolă",
   "enterAValidEmailToResetThePassword": "Introdu un email valid pentru a reseta parola",

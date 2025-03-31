@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema({
     addedProductsBarcodes: [{
         type: String,
         required: false,
+    }],
+    editedProductsBarcodes: [{
+        type: String,
+        required: false,
     }]
     
 }, {timestamps: true});
