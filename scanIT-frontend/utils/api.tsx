@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getExpoServerIP } from "@/utils/expo_server";
 
-const localIP = "192.168.1.104";
+const localIP = "192.168.1.101";
 const API_URL = `http://${localIP}:5000/api`;
 
 const apiClient = axios.create({

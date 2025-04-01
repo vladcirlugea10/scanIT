@@ -67,7 +67,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
             <View style={styles.resultContainer}>
               <Text style={{fontSize: 16}}>{data.text.join(" ")}</Text>
             </View>
-            <MyButton title={t('checkIngredients')} onPress={handleCheckIngredients} containerStyle={{width: "45%"}} />
+            <MyButton title={t('checkIngredients')} onPress={handleCheckIngredients} containerStyle={{width: "auto"}} />
           </View>
         )
     }

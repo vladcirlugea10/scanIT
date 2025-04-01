@@ -105,7 +105,40 @@ const useUser = (token: string | null | undefined) => {
         }
     }
 
-    return { error, loading, addAllergy, getUserData, removeAllergy, editUser, addProduct };
+    const addNewProduct = async (barcode: string) => {
+        setLoading(true);
+        clearError();
+        try{
+            const response = await _put('/user/add-new-product', { email: user?.email, barcode: barcode }, { headers: { 'Token': `Bearer ${token}` }});
+            await getUserData();
+            setLoading(false);
+            return response.data;
+        }catch(error: any){
+            const errorMessage = error.response.data.message || error.message || "Error adding new product";
+            setError(errorMessage);
+            setLoading(false);
+            throw error;
+        }
+    }
+
+    const addEditedProduct = async (barcode: string) => {
+        setLoading(true);
+        console.log("in hook:", barcode);
+        clearError();
+        try{
+            const response = await _put('/user/add-edited-product', { email: user?.email, barcode: barcode }, { headers: { 'Token': `Bearer ${token}` }});
+            await getUserData();
+            setLoading(false);
+            return response.data;
+        }catch(error: any){
+            const errorMessage = error.response.data.message || error.message || "Error adding edited product";
+            setError(errorMessage);
+            setLoading(false);
+            throw error;
+        }
+    }
+
+    return { error, loading, addAllergy, getUserData, removeAllergy, editUser, addProduct, addNewProduct, addEditedProduct };
 };
 
 export default useUser;

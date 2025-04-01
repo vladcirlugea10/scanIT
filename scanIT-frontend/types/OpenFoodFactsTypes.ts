@@ -1,6 +1,7 @@
 interface Product {
     _id: string;
     product_name: string;
+    product_name_en: string;
     brands: string;
     categories: string;
     image_url: string;
@@ -9,7 +10,7 @@ interface Product {
     countries: string;
     stores: string;
     ingredients_text: string;
-    additives: string;
+    additives_n: number;
     additives_tags: string[];
     allergens: string;
     allergens_tags: string[];
@@ -34,6 +35,63 @@ interface Product {
             thumb: { [key: string]: string };
         };
     };
+}
+
+interface AddProduct {
+    barcode: string;
+    product_name: string;
+    brands: string;
+    categories: string;
+    countries: string;
+    stores: string;
+    ingredients_text: string;
+    carbohydrates: number;
+    carbohydrates_100g: number;
+    energy: number;
+    "energy-kcal": number;
+    "energy-kcal_100g": number;
+    energy_100g: number;
+    fat: number;
+    fat_100g: number;
+    proteins: number;
+    proteins_100g: number;
+    salt: number;
+    salt_100g: number;
+    saturated_fat: number;
+    saturated_fat_100g: number;
+    sodium: number;
+    sodium_100g: number;
+    sugars: number;
+    sugars_100g: number;
+    
+}
+
+interface EditProduct {
+    barcode: string;
+    product_name: string;
+    brands: string;
+    categories: string;
+    countries: string;
+    stores: string;
+    ingredients_text: string;
+    carbohydrates: number;
+    carbohydrates_100g: number;
+    energy: number;
+    "energy-kcal": number;
+    "energy-kcal_100g": number;
+    energy_100g: number;
+    fat: number;
+    fat_100g: number;
+    proteins: number;
+    proteins_100g: number;
+    salt: number;
+    salt_100g: number;
+    saturated_fat: number;
+    saturated_fat_100g: number;
+    sodium: number;
+    sodium_100g: number;
+    sugars: number;
+    sugars_100g: number;
 }
 
 interface Nutriment {

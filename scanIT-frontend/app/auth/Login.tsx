@@ -9,6 +9,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
 import ShakingErrorText from '@/components/ShakingErrorText';
+import { createGlobalStyles } from '@/assets/styles';
 
 type LoginNavProps = NativeStackNavigationProp<AuthStackParams, 'Login'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -20,6 +21,7 @@ const Login = () => {
 
   const { onLogin, error, clearError, loading } = useAuth();
   const { colors } = useTheme();
+  const globalStyles = createGlobalStyles(colors);
   const { t } = useTranslation();
 
   const navigation = useNavigation<LoginNavProps>();
@@ -66,11 +68,6 @@ const Login = () => {
       display: 'flex',
       flexDirection: 'column',
       gap: 10,
-    },
-    text:{
-      color: colors.third,
-      fontWeight: 'bold',
-      fontSize: 15,
     },
     passwordContainer:{
       position: 'relative',
@@ -126,8 +123,8 @@ const Login = () => {
             </View>
             <View style={styles.buttonContainer}>
               <MyButton title={t('login')} onPress={onSubmit} containerStyle={styles.button} />
-              <Text style={styles.text} onPress={() => {navigation.navigate('ForgotPassword'); clearError()}}>{t('forgotPassword')}?</Text>
-              <Text style={styles.text} onPress={() => {navigation.navigate('Register'); clearError()}}>{t('createAnAccount')}</Text>
+              <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('ForgotPassword'); clearError()}}>{t('forgotPassword')}?</Text>
+              <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('Register'); clearError()}}>{t('createAnAccount')}</Text>
             </View>
           </View>
       </View>

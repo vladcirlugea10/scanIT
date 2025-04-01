@@ -49,7 +49,15 @@ const userSchema = new mongoose.Schema({
         type: [productSchema],
         default: [],
         validate: [arrayLimit, '{PATH} exceeds the limit of 5'],
-    }
+    },
+    addedProductsBarcodes: [{
+        type: String,
+        required: false,
+    }],
+    editedProductsBarcodes: [{
+        type: String,
+        required: false,
+    }]
     
 }, {timestamps: true});
 

@@ -16,6 +16,8 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/userAuth'));
 //user
 app.use('/api/user', require('./routes/user'));
+//open food facts
+app.use('/api/open-food-facts', require('./routes/openFoodFacts'));
 
 const uploadImage = multer({storage: multer.memoryStorage()});
 
@@ -60,7 +62,7 @@ app.post('/api/ocr', uploadImage.single('image'), async(req, res) => {
 // });
 
 const port = process.env.PORT || 5000;
-const localIP = '192.168.1.104';
+const localIP = '192.168.1.101';
 app.listen(port, localIP, () => {
     console.log(`Server running at http://${localIP}:${port}`);
 });

@@ -8,6 +8,8 @@ const useImageOCR = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<OCRResult>({text: []});
 
+    const URL = "https://3c31-84-232-135-16.ngrok-free.app";
+
     const scanImage = async (image: Image) => {
         setLoading(true);
         setData({text: []});
@@ -20,7 +22,7 @@ const useImageOCR = () => {
                 name: 'image.jpg',
             });
             
-            const response = await axios.post(`http://192.168.1.4:5001/ocr`, formData, {
+            const response = await axios.post(`${URL}/ocr`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

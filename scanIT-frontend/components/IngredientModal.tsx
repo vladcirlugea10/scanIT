@@ -1,7 +1,9 @@
-import { View, Text, Modal, StyleSheet } from 'react-native'
+import { View, Text, Modal } from 'react-native'
 import React from 'react'
 import MyButton from '@/components/MyButton';
 import { useTheme } from '@/app/ColorThemeContext';
+import { useTranslation } from 'react-i18next';
+import { createGlobalStyles } from '@/assets/styles';
 
 interface IngredientModalProps {
     visible: boolean;
@@ -15,30 +17,19 @@ interface IngredientModalProps {
 
 const IngredientModal: React.FC<IngredientModalProps> = ({visible, onClose, ingredient}) => {
     const { colors } = useTheme();
-    const styles = StyleSheet.create({
-        modalContainer: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        },
-        modalContent: {
-          width: '80%',
-          padding: 20,
-          backgroundColor: 'white',
-          borderRadius: 10,
-        },
-      });
+    const { t } = useTranslation();
+    
+    const globalStyles = createGlobalStyles(colors);
 
     if (!ingredient) return null;
     return (
         <Modal visible={visible} transparent={true} animationType='slide'>
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <Text>Name: {ingredient.name}</Text>
-                    <Text>Group: {ingredient.group}</Text>
-                    <Text>Description: {ingredient.description}</Text>
-                    <MyButton title='Close' onPress={onClose} />
+            <View style={globalStyles.modalContainer}>
+                <View style={globalStyles.modalContent}>
+                    <Text>{t("name")}: {ingredient.name}</Text>
+                    <Text>{t("group")}: {ingredient.group}</Text>
+                    <Text>{t("description")}: {ingredient.description}</Text>
+                    <MyButton title={t("close")} onPress={onClose} />
                 </View>
             </View>
         </Modal>
