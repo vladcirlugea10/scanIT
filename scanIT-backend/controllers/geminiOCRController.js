@@ -36,7 +36,7 @@ exports.scanImage = async (req, res) => {
             },
             timeout: 20000,
         });
-
+        console.log("Gemini API Response:", response.data);
         const extractedText = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "No text found!";
 
         return res.status(200).json({success: true, text: extractedText});

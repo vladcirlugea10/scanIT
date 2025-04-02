@@ -1,17 +1,18 @@
 import { useState } from "react";
 import Image from "@/types/Image";
 import OCRResult from "@/types/OCRTypes";
-import * as FileSystem from "expo-file-system";
 import { _post } from "@/utils/api";
 
 const useImageOCR = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<OCRResult>({ text: [] });
 
+    const URL = "https://09ad-84-232-135-16.ngrok-free.app";
+
     const scanImage = async (image: Image) => {
         setLoading(true);
         setData({ text: [] });
-
+        console.log("GEMINI HERE");
         try {
             const formData = new FormData();
             formData.append('image', {
@@ -42,11 +43,28 @@ const useImageOCR = () => {
         }
     };
 
-    const convertImageToBase64 = async (imageUri: string): Promise<string> => {
-        return await FileSystem.readAsStringAsync(imageUri, { encoding: FileSystem.EncodingType.Base64 });
+    const scanImageOffline = async (image: Image) => {
+        setLoading(true);
+        setData({text: []});
+        console.log("EASYOCR HERE");
+        try{
+            const formData = new FormData();
+            formData.append('image', {
+                uri: image.uri,
+                type: 'image/jpg',
+                name: 'image.jpg',
+            });
+
+            const response = await _post(`${URL}/ocr`, formData, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 20000 }); 
+            setData(response.data);
+        } catch(error){
+            console.log(error);
+        } finally{
+            setLoading(false);
+        }
     };
 
-    return { loading, scanImage, data };
+    return { loading, scanImage, scanImageOffline, data };
 };
 
 export default useImageOCR;
