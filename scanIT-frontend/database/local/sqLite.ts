@@ -107,7 +107,9 @@ const addBulkUnhealthyIngredients = async (ingredients: AllergenIngredient[]) =>
 
 const populateDB = async () => {
     await (await db).execAsync(
-        `CREATE TABLE IF NOT EXISTS ingredients_allergens (
+        `DROP TABLE IF EXISTS ingredients_allergens;
+        DROP TABLE IF EXISTS ingredients_unhealthy;
+        CREATE TABLE IF NOT EXISTS ingredients_allergens (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             "group" TEXT,

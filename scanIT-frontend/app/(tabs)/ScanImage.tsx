@@ -16,6 +16,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     const { colors } = useTheme();
     const { t } = useTranslation();
     const { scanImage, loading, data } = useImageOCR();
+    console.log(data);
 
     const styles = StyleSheet.create({
       mainContainer: {

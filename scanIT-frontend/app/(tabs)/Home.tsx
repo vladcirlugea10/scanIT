@@ -12,6 +12,7 @@ import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from "react-i18next";
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { shareDatabaseFile } from '@/database/local/sqLite'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
