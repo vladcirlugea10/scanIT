@@ -2,6 +2,8 @@ import { _get, _post } from "@/utils/api";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
+import * as SecureStore from 'expo-secure-store';
+import countryMap from "@/assets/data/countries";
 
 const useOpenFoodFacts = () => {
     const { token } = useAuth();
@@ -11,6 +13,7 @@ const useOpenFoodFacts = () => {
     const [product, setProduct] = useState<Product | null>(null);
     const [notFound, setNotFound] = useState(false);
     const [barcode, setBarcode] = useState("");
+    const [country, setCountry] = useState("");
 
     const clearError = () => setError(null);
 
@@ -19,13 +22,15 @@ const useOpenFoodFacts = () => {
             if(!barcode){
                 return;
             }
-
+            const selectedCountry = await SecureStore.getItemAsync('selectedCountry');
+            const countryCode = selectedCountry ? countryMap[selectedCountry] : country ? Object.keys(countryMap) : 'world';
+            console.log("Selected country code: ", countryCode);
             setLoading(true);
             clearError();
             setProduct(null);
             setNotFound(false);
             try{
-                const response = await axios.get(`https://ro.openfoodfacts.net/api/v2/product/${barcode}`);
+                const response = await axios.get(`https://${countryCode}.openfoodfacts.net/api/v2/product/${barcode}`);
                 const data = await response.data.status;
     
                 if(data === 1){
@@ -47,8 +52,9 @@ const useOpenFoodFacts = () => {
         fetchProduct();
     }, [barcode]);
 
-    const getProduct = async (barcode: string) => {
+    const getProduct = async (barcode: string, country?: string) => {
         setBarcode(barcode);
+        setCountry(country || "");
 
         return new Promise<void>((resolve) => {
             setTimeout(() => {
