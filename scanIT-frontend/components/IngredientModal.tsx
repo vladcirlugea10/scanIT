@@ -26,9 +26,18 @@ const IngredientModal: React.FC<IngredientModalProps> = ({visible, onClose, ingr
         <Modal visible={visible} transparent={true} animationType='slide'>
             <View style={globalStyles.modalContainer}>
                 <View style={globalStyles.modalContent}>
-                    <Text>{t("name")}: {ingredient.name}</Text>
-                    <Text>{t("group")}: {ingredient.group}</Text>
-                    <Text>{t("description")}: {ingredient.description}</Text>
+                    <View style={[globalStyles.horizontalInputContainer, {alignItems: "baseline"}] }>
+                        <Text style={globalStyles.subtitle}>{t("name")}:</Text>
+                        <Text>{ingredient.name}</Text>
+                    </View>
+                    <View style={[globalStyles.horizontalInputContainer, {alignItems: "baseline"}] }>
+                        <Text style={globalStyles.subtitle}>{t("group")}:</Text>
+                        <Text>{ingredient.group}</Text>
+                    </View>
+                    <View style={[globalStyles.horizontalInputContainer, {alignItems: "baseline"}] }>
+                        <Text style={globalStyles.subtitle}>{t("description")}:</Text>
+                        <Text>{ingredient.description}</Text>
+                    </View>
                     <MyButton title={t("close")} onPress={onClose} />
                 </View>
             </View>

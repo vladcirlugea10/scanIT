@@ -11,6 +11,8 @@ const app = express();
 dotenv.config();
 app.use(cors());
 app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 //authentication
 app.use('/api/auth', require('./routes/userAuth'));
@@ -18,6 +20,8 @@ app.use('/api/auth', require('./routes/userAuth'));
 app.use('/api/user', require('./routes/user'));
 //open food facts
 app.use('/api/open-food-facts', require('./routes/openFoodFacts'));
+//gemini OCR
+app.use('/api/gemini-ocr', require('./routes/geminiOCR'));
 
 const uploadImage = multer({storage: multer.memoryStorage()});
 
@@ -62,7 +66,7 @@ app.post('/api/ocr', uploadImage.single('image'), async(req, res) => {
 // });
 
 const port = process.env.PORT || 5000;
-const localIP = '192.168.1.101';
+const localIP = '192.168.1.3';
 app.listen(port, localIP, () => {
     console.log(`Server running at http://${localIP}:${port}`);
 });

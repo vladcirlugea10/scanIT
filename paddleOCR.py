@@ -1,4 +1,4 @@
-from paddleocr import PaddleOCR
+import easyocr
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -6,7 +6,8 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-ocr = PaddleOCR(use_angle_cls=True, det=False, lang="ro")
+# Initialize EasyOCR reader (Romanian and English language support)
+reader = easyocr.Reader(['ro', 'en'])
 
 @app.route('/ocr', methods=['POST'])
 def ocr_img():
@@ -23,18 +24,14 @@ def ocr_img():
         img_path = './uploaded_img.jpg'
         file.save(img_path)
 
-        result = ocr.ocr(img_path, cls=True)
-        text_output = []
-        
-        if result and result[0]:
-            for line in result[0]:
-                words = line[1][0].split()
-                text_output.extend(words)
+        # Perform OCR using EasyOCR
+        result = reader.readtext(img_path)
+        text_output = [entry[1] for entry in result]  # Extract detected text
         
         try:
-            os.remove(img_path)
-        except:
-            pass
+            os.remove(img_path)  # Clean up the image file
+        except Exception as e:
+            print(f"Error deleting file: {str(e)}")
             
         return jsonify({'text': text_output}), 200
         

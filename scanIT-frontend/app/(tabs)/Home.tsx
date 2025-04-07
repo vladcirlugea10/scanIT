@@ -12,6 +12,8 @@ import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from "react-i18next";
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import SelectBox from '@/components/SelectBox'
+import countryMap from '@/assets/data/countries'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -20,6 +22,8 @@ const Home = () => {
     const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>(undefined);
     const [selectedMode, setSelectedMode] = useState<'barcode' | 'photo'>('photo');
     const [barcodeData, setBarcodeData] = useState<string | undefined>(undefined);
+    const [country, setCountry] = useState('');
+
     const cameraRef = useRef<CameraView>(null);
     const { getProduct, product, loading, notFound } = useOpenFoodFacts();
     const { colors } = useTheme();
@@ -104,10 +108,12 @@ const Home = () => {
     );
 
     useEffect(() => {
-        if(selectedMode === 'barcode' && barcodeData){
+        if(selectedMode === 'barcode' && barcodeData && country){
+            getProduct(barcodeData, country);
+        } else if(selectedMode === 'barcode' && barcodeData){
             getProduct(barcodeData);
         }
-    }, [barcodeData]);
+    }, [barcodeData, country]);
 
     useEffect(() => {
         if(product){
@@ -170,6 +176,11 @@ const Home = () => {
         }
     }
 
+    const handleSelectedCountry = async (country: string) => {
+            console.log("Selected country: ", country);
+            setCountry(country);
+    }
+
     if(!permission?.granted){
         return(
             <View style={styles.mainContainer}>
@@ -213,6 +224,7 @@ const Home = () => {
                     <MyButton title={t('barcode')} onPress={() => {setBarcodeData(undefined); setSelectedMode('barcode')}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                     <MyButton title={t('photo')} onPress={() => {setSelectedMode('photo')}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                 </View>
+                { selectedMode === 'barcode' && <SelectBox title={t("location")} options={Object.keys(countryMap)} selectedOption={country} setSelectedOption={handleSelectedCountry} /> }
                 <View style={styles.cameraContainer}>
                     <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {
                         setBarcodeData(data);

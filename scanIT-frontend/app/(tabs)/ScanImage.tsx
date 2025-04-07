@@ -1,5 +1,5 @@
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
 import MyButton from '@/components/MyButton';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { RootStackParamList } from '@/types/StackParamsList';
 import useImageOCR from '@/hooks/useImageOCR';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
+import NetInfo from '@react-native-community/netinfo';
 
 type ScanImageNavProps = { route: RouteProp<RootStackParamList, 'ScanImage'> };
 
@@ -15,7 +16,11 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     const { photoUri } = route.params;
     const { colors } = useTheme();
     const { t } = useTranslation();
-    const { scanImage, loading, data } = useImageOCR();
+    const { scanImage, scanImageOffline, loading, data } = useImageOCR();
+    console.log(data);
+
+    const [isConnected, setIsConnected] = useState<boolean | null>(null);
+    const [scanMethod, setScanMethod] = useState<string | null>(null);
 
     const styles = StyleSheet.create({
       mainContainer: {
@@ -36,13 +41,47 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
   })
 
     useEffect(() => {
-        handleScan();
-    }, [photoUri]);
+      const checkConnection = async () => {
+        const netInfo = await NetInfo.fetch();
+        setIsConnected(netInfo.isConnected || false);
+        console.log("Connection status:", isConnected);
+      };
+
+      checkConnection();
+
+      const unsubscribe = NetInfo.addEventListener(state => {
+        setIsConnected(state.isConnected);
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }, []);
+
+    useEffect(() => {
+        if(isConnected !== null){
+          handleScan();
+        }
+    }, [photoUri, isConnected]);
 
     const handleScan = async() => {
-        if(photoUri){
-            await scanImage ({uri: photoUri});
-        } 
+        if(!photoUri) return;
+
+        try{
+            if(isConnected){
+              setScanMethod('online');
+              await scanImage({uri: photoUri});
+            } else {
+              setScanMethod('offline');
+              await scanImageOffline({uri: photoUri});
+            }
+        }catch(error){
+            console.error("Error during scan:", error);
+            if(isConnected && scanMethod === 'online'){
+              setScanMethod('offline (fallback)');
+              await scanImageOffline({uri: photoUri});
+            }
+        }
     }
 
     const handleCheckIngredients = () => {

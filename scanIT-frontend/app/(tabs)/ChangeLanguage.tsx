@@ -1,12 +1,18 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '../ColorThemeContext';
 import * as SecureStore from 'expo-secure-store';
+import SelectBox from '@/components/SelectBox';
+import countryMap from '@/assets/data/countries';
+import Toast from 'react-native-toast-message';
 
 const ChangeLanguage = () => {
     const { t, i18n } = useTranslation();
     const { colors } = useTheme();
+
+    const [selectedCountry, setSelectedCountry] = useState('');
+    const countryOptions = Object.keys(countryMap);
 
     const styles = StyleSheet.create({
         mainContainer:{
@@ -35,14 +41,31 @@ const ChangeLanguage = () => {
         }
     });
 
+    const showToast = () => {
+        Toast.show({
+            type: 'success',
+            text1: t("languageChanged"),
+        });
+    }
+
     const handleLanguageChange = async (language: string) => {
         await SecureStore.setItemAsync('selectedLanguage', language);
         i18n.changeLanguage(language);
+        showToast();
         console.log("Language changed to: ", language);
+    }
+
+    const handleSelectedCountry = async (country: string) => {
+        console.log("Selected country: ", country);
+        setSelectedCountry(country);
+        await SecureStore.setItemAsync('selectedCountry', country);
+        console.log("Country code saved: ", country);
     }
 
     return (
         <View style={styles.mainContainer}>
+            <SelectBox title={t("location")} options={countryOptions} selectedOption={selectedCountry} setSelectedOption={handleSelectedCountry} style={{width: '100%'}}/>
+            <Text>{t("currentCountrySelected")}: {}</Text>
             <Text style={styles.text} >{t("availableLanguages")}: </Text>
             <View style={styles.languagesContainer}>
                 <TouchableOpacity onPress={() => handleLanguageChange('en-UK')}>

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
@@ -9,6 +9,8 @@ import IngredientModal from '../../components/IngredientModal';
 import MyButton from '@/components/MyButton';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/hooks/useAuth';
+import useUser from '@/hooks/useUser';
 
 type IngredientsCheckNavProps = { route: RouteProp<RootStackParamList, 'IngredientsCheck'> };
 
@@ -16,6 +18,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     const { data } = route.params;
     const { colors } = useTheme();
     const { t } = useTranslation();
+    const { user } = useAuth();
     const [foundAllergenIngredients, setFoundAllergenIngredients] = useState<GetAllergenIngredient[]>([]);
     const [foundUnhealthyIngredients, setFoundUnhealthyIngredients] = useState<GetAllergenIngredient[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
@@ -66,19 +69,28 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
         const unhealthy: GetAllergenIngredient[] = await getIngredientsUnhealthy();
         const foundAllergen: GetAllergenIngredient[] = [];
         const foundUnhealthy: GetAllergenIngredient[] = [];
-  
         if(allergens.length > 0){
           allergens.map((ingredient) => {
-            if(data.text.includes(ingredient.name)){
-              foundAllergen.push(ingredient);
-            }
+            data.text.map((text) => {
+              if(text.includes(ingredient.name.toLowerCase())){
+                console.log("ingredient", ingredient.name.toLowerCase());
+                if(!foundAllergen.includes(ingredient)){
+                  foundAllergen.push(ingredient); 
+                }
+              }
+            })
           })
         }
         if(unhealthy.length > 0){
           unhealthy.map((ingredient) => {
-            if(data.text.includes(ingredient.name)){
-              foundUnhealthy.push(ingredient);
-            }
+            data.text.map((text) => {
+              if(text.includes(ingredient.name.toLowerCase())){
+                console.log("ingredient", ingredient.name.toLowerCase());
+                if(!foundUnhealthy.includes(ingredient)){
+                  foundUnhealthy.push(ingredient); 
+                }
+              }
+            })
           })
         }
         setFoundAllergenIngredients(foundAllergen);
@@ -106,9 +118,12 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                   <Text style={styles.subtitle}>{t('allergenIngredients')}:</Text>
                 </View>
                 {foundAllergenIngredients.length > 0 ? foundAllergenIngredients.map((ingredient) => (
-                  <View key={ingredient.id} style={{flexDirection: 'row', alignContent: "center"}}>
+                  <View key={ingredient.id} style={{display: "flex", flexDirection: 'row', alignItems: "center", justifyContent: "center"}}>
+                    { user && user.allergies && user.allergies.includes(ingredient.group) && <Text style={{color: colors.warning}}>{t('youAre')} {t('allergicTo')}: </Text> }
                     <Text style={{color: colors.danger}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
-                    <MyButton title='' onPress={() => handleOpenModal(ingredient)} containerStyle={{justifyContent: "center", alignItems: "center", width: 40, height: 40, backgroundColor: colors.secondary}} iconName='add-outline' iconSize={15} iconColor={colors.danger} />
+                    <TouchableOpacity onPress={() => handleOpenModal(ingredient)}>
+                      <Ionicons name='add-circle-outline' size={32} color={colors.danger} />
+                    </TouchableOpacity>
                   </View>
                 ))
                 : (

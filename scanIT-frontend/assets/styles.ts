@@ -49,7 +49,7 @@ export const createGlobalStyles = (colors: any) =>
         },
         modalContent: {
             width: '80%',
-            padding: 20,
+            padding: 10,
             gap: 20,
             backgroundColor: 'white',
             borderRadius: 10,

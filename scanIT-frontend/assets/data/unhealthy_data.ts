@@ -1,4 +1,4 @@
-import AllergenIngredient from "@/types/AllergenIngredient";
+import { AllergenIngredient } from "@/types/AllergenIngredient";
 
 const unhealthyIngredients: AllergenIngredient[] = [
     { name: 'acesulfam de potasiu', group: 'Îndulcitor', description: 'Acesulfamul de potasiu(E950) este un aditiv alimentar sintetic cu rol de îndulcitor. Este de circa 200 de ori mai dulce decât zahărul, comparând cantităţi egale din cele două produse. Acest aditiv este utilizat în general în bauturi carbogazoase dietetice, deserturi sau lactate. În timp ce anumite studii spun ca are potențial cancerigen, alte studii spun ca acesulfamul de potasiu se elimină nemodificat prin urină.'},
