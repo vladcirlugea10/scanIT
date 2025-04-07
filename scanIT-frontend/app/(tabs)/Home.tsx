@@ -224,7 +224,7 @@ const Home = () => {
                     <MyButton title={t('barcode')} onPress={() => {setBarcodeData(undefined); setSelectedMode('barcode')}} containerStyle={[styles.button, selectedMode === 'barcode' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                     <MyButton title={t('photo')} onPress={() => {setSelectedMode('photo')}} containerStyle={[styles.button, selectedMode === 'photo' && styles.selectedModeButton]} textStyle={[styles.buttonText]} />
                 </View>
-                <SelectBox title={t("location")} options={Object.keys(countryMap)} selectedOption={country} setSelectedOption={handleSelectedCountry} />
+                { selectedMode === 'barcode' && <SelectBox title={t("location")} options={Object.keys(countryMap)} selectedOption={country} setSelectedOption={handleSelectedCountry} /> }
                 <View style={styles.cameraContainer}>
                     <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {
                         setBarcodeData(data);

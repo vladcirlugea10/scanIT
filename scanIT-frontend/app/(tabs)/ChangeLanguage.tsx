@@ -5,6 +5,7 @@ import { useTheme } from '../ColorThemeContext';
 import * as SecureStore from 'expo-secure-store';
 import SelectBox from '@/components/SelectBox';
 import countryMap from '@/assets/data/countries';
+import Toast from 'react-native-toast-message';
 
 const ChangeLanguage = () => {
     const { t, i18n } = useTranslation();
@@ -40,9 +41,17 @@ const ChangeLanguage = () => {
         }
     });
 
+    const showToast = () => {
+        Toast.show({
+            type: 'success',
+            text1: t("languageChanged"),
+        });
+    }
+
     const handleLanguageChange = async (language: string) => {
         await SecureStore.setItemAsync('selectedLanguage', language);
         i18n.changeLanguage(language);
+        showToast();
         console.log("Language changed to: ", language);
     }
 

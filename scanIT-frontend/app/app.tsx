@@ -6,6 +6,7 @@ import { initDB } from '@/database/local/sqLite';
 import { AuthProvider } from '@/hooks/useAuth';
 import { ThemeProvider } from './ColorThemeContext';
 import '@/i18next';
+import Toast from 'react-native-toast-message';
 
 const App = () => {
   const initDatabase = async () => {
@@ -26,6 +27,7 @@ const App = () => {
       <AuthProvider>
         <AppNavigator />
       </AuthProvider>
+      <Toast />
     </ThemeProvider>
   );
 };

@@ -9,6 +9,8 @@ import IngredientModal from '../../components/IngredientModal';
 import MyButton from '@/components/MyButton';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/hooks/useAuth';
+import useUser from '@/hooks/useUser';
 
 type IngredientsCheckNavProps = { route: RouteProp<RootStackParamList, 'IngredientsCheck'> };
 
@@ -16,6 +18,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
     const { data } = route.params;
     const { colors } = useTheme();
     const { t } = useTranslation();
+    const { user } = useAuth();
     const [foundAllergenIngredients, setFoundAllergenIngredients] = useState<GetAllergenIngredient[]>([]);
     const [foundUnhealthyIngredients, setFoundUnhealthyIngredients] = useState<GetAllergenIngredient[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
@@ -116,6 +119,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                 </View>
                 {foundAllergenIngredients.length > 0 ? foundAllergenIngredients.map((ingredient) => (
                   <View key={ingredient.id} style={{display: "flex", flexDirection: 'row', alignItems: "center", justifyContent: "center"}}>
+                    { user && user.allergies && user.allergies.includes(ingredient.group) && <Text style={{color: colors.warning}}>{t('youAre')} {t('allergicTo')}: </Text> }
                     <Text style={{color: colors.danger}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
                     <TouchableOpacity onPress={() => handleOpenModal(ingredient)}>
                       <Ionicons name='add-circle-outline' size={32} color={colors.danger} />

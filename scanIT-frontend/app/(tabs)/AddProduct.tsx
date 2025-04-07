@@ -1,4 +1,4 @@
-import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from '../ColorThemeContext'
 import MyButton from '@/components/MyButton';
@@ -226,6 +226,7 @@ const AddProduct = () => {
         { productState === "Product already exists" ? 
           <>
             <ShakingErrorText text={productState} />
+            { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
             <TouchableOpacity onPress={() => navigation.navigate("EditProduct", { barcode: barcode, product: product })}>
                 <Text style={globalStyles.textForPressing}>{t("editProduct")}</Text>
             </TouchableOpacity>
