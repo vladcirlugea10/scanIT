@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, TextInput, Keyboard, ScrollView, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import MyButton from '@/components/MyButton';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParams, RootStackParamList } from '@/types/StackParamsList';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/hooks/useAuth';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../ColorThemeContext';
@@ -20,7 +20,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
 
-  const { onLogin, error, clearError, loading } = useAuth();
+  const { onLogin, error, clearError, loading, isAuth } = useAuth();
   const { colors } = useTheme();
   const globalStyles = createGlobalStyles(colors);
   const { t } = useTranslation();
@@ -108,6 +108,14 @@ const Login = () => {
   const handleShowPass = () => {
     setShowPass(!showPass);
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      if(isAuth){
+        parentNavigation.navigate('Profile');
+      }
+    }, [isAuth])
+  )
 
   const handleGoogleLogin = async () => {
     if (request) {
