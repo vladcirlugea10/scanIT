@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const productSchema = require('./Product');
 
 const userSchema = new mongoose.Schema({
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true,
+    },
     email: {
         type: String,
         required: true,

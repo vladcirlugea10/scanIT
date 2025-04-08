@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, Keyboard, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Keyboard, ScrollView, ActivityIndicator, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import MyButton from '@/components/MyButton';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,6 +10,7 @@ import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
 import ShakingErrorText from '@/components/ShakingErrorText';
 import { createGlobalStyles } from '@/assets/styles';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 
 type LoginNavProps = NativeStackNavigationProp<AuthStackParams, 'Login'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -23,6 +24,7 @@ const Login = () => {
   const { colors } = useTheme();
   const globalStyles = createGlobalStyles(colors);
   const { t } = useTranslation();
+  const { promptAsync, request } = useGoogleAuth();
 
   const navigation = useNavigation<LoginNavProps>();
   const parentNavigation = useNavigation<ParentNavigationProps>();
@@ -107,6 +109,15 @@ const Login = () => {
     setShowPass(!showPass);
   }
 
+  const handleGoogleLogin = async () => {
+    if (request) {
+      const result = await promptAsync();
+      console.log("Google login result:", result);
+    } else {
+      console.log("Request not ready yet.");
+    }
+  }
+
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
@@ -125,6 +136,12 @@ const Login = () => {
               <MyButton title={t('login')} onPress={onSubmit} containerStyle={styles.button} />
               <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('ForgotPassword'); clearError()}}>{t('forgotPassword')}?</Text>
               <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('Register'); clearError()}}>{t('createAnAccount')}</Text>
+            </View>
+            <View style={{display: 'flex', flexDirection: 'row', gap: 10, marginTop: 20}}>
+              <Text>{t('authWith')}</Text>
+              <TouchableOpacity onPress={handleGoogleLogin}>
+                <Image source={require('@/assets/images/google.png')} style={{width: 30, height: 30}} />
+              </TouchableOpacity>
             </View>
           </View>
       </View>

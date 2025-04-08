@@ -51,7 +51,9 @@
       },
       "eas": {
         "projectId": "f818c370-1822-4dd8-9e69-9c694911e36d"
-      }
+      },
+      "GOOGLE_CLIENT_ID_ANDROID": "757957068975-q0eju3tghvnjt5if7ebvtg83m0f02qqp.apps.googleusercontent.com",
+      "GOOGLE_CLIENT_ID_IOS": "757957068975-atudkjtnontgijt96t2jop41bap9vdjr.apps.googleusercontent.com"
     },
     "owner": "mrv07"
   }

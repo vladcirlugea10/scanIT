@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Crypto = require("crypto-js");
 const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require('google-auth-library');
 
 exports.registerUser = async (req, res) => {
     try {
@@ -88,5 +89,61 @@ exports.loginUser = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({message: 'Internal server error'});
+    }
+}
+
+exports.googleAuth = async (req, res) => {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+    const { idToken } = req.body;
+    if (!idToken) {
+        return res.status(400).json({ message: 'No idToken provided!' });
+    }
+
+    try{
+        const ticket = await client.verifyIdToken({
+            idToken,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const { sub: googleId, email, name } = payload;
+
+        let user = await User.findOne({ email });
+        if (!user){
+            user = await User.create({
+                googleId,
+                email,
+                password: '',
+                userName: email.split('@')[0],
+                firstName: name.split(' ')[0],
+                lastName: name.split(' ')[1] || null,
+                birthday: req.body.birthday ? req.body.birthday : null,
+                height: req.body.height ? req.body.height : null,
+                weight: req.body.weight ? req.body.weight : null,
+                gender: req.body.gender ? req.body.gender : null,
+                allergies: req.body.allergies ? req.body.allergies : null,
+            });
+        } else if(!user.googleId){
+            user.googleId = googleId;
+            await user.save();
+        }
+        const token = jwt.sign({ 
+            id: user._id,
+            email: user.email,
+            userName: user.userName,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            birthday: user.birthday,
+            height: user.height,
+            weight: user.weight,
+            gender: user.gender,
+            allergies: user.allergies,
+            createdAt: user.createdAt,
+        }, process.env.JWT_SECRET, { expiresIn: '5d' });
+
+        res.json({ token, user });
+    }catch(error){
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
 }
