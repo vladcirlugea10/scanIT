@@ -99,7 +99,7 @@ exports.googleAuth = async (req, res) => {
     if (!idToken) {
         return res.status(400).json({ message: 'No idToken provided!' });
     }
-
+    
     try{
         const ticket = await client.verifyIdToken({
             idToken,

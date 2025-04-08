@@ -1,6 +1,6 @@
 import axios from "axios";
 import { LoginData, RegisterData, UserData } from "@/types/UserType";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import * as SecureStorage from "expo-secure-store";
 import { _post, _put } from "@/utils/api";
@@ -203,7 +203,7 @@ export const AuthProvider = ({children}: any) => {
         setUser(userData);
     }
 
-    const onGoogleLogin = async (idToken: string): Promise<void> => {
+    const onGoogleLogin = useCallback( async (idToken: string): Promise<void> => {
         try{
             setLoading(true);
             clearError();
@@ -225,7 +225,7 @@ export const AuthProvider = ({children}: any) => {
             setLoading(false);
             throw error;
         }
-    };
+    },[]);
 
     return(<AuthContext.Provider value={{
         token,
