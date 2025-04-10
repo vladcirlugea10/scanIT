@@ -30,6 +30,7 @@ export const createGlobalStyles = (colors: any) =>
         input: {
             borderWidth: 1,
             width: "100%",
+            height: "auto"
         },
         subtitle: {
             fontSize: 20,

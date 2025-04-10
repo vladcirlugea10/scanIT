@@ -10,8 +10,8 @@ export const useGoogleAuth = () => {
     const { onGoogleLogin } = useAuth();
 
     const [request, response, promptAsync] = Google.useAuthRequest({
-        androidClientId: Constants.expoConfig?.extra.GOOGLE_CLIENT_ID_ANDROID,
-        iosClientId: Constants.expoConfig?.extra.GOOGLE_CLIENT_ID_IOS,
+        androidClientId: Constants.expoConfig?.extra?.GOOGLE_CLIENT_ID_ANDROID,
+        iosClientId: Constants.expoConfig?.extra?.GOOGLE_CLIENT_ID_IOS,
         scopes: ["profile", "email"],
     });
 
