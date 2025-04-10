@@ -1,6 +1,6 @@
 import axios from "axios";
 import { LoginData, RegisterData, UserData } from "@/types/UserType";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import * as SecureStorage from "expo-secure-store";
 import { _post, _put } from "@/utils/api";
@@ -19,6 +19,7 @@ interface AuthContextType {
     checkResetCode: (resetCode: string) => Promise<any>;
     changePassword: ({email, password, confirmPassword} : {email: string, password: string, confirmPassword: string}) => Promise<any>;
     updateUserData: (userData: UserData) => void;
+    onGoogleLogin: (idToken: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -202,6 +203,30 @@ export const AuthProvider = ({children}: any) => {
         setUser(userData);
     }
 
+    const onGoogleLogin = useCallback( async (idToken: string): Promise<void> => {
+        try{
+            setLoading(true);
+            clearError();
+            const response = await _post("/auth/google", { idToken });
+            const newToken = response.data.token;
+            if(!newToken){
+                throw new Error("Token not found");
+            }
+
+            decodeToken(newToken);
+            setToken(newToken);
+            await saveToken(newToken);
+            setIsAuth(true);
+            setLoading(false);
+        }catch(error: any){
+            console.log("Error on Google login: ", error);
+            const errorMessage = error.response?.data?.message || error.message || 'An error ocurred on Google login';
+            setError(errorMessage);
+            setLoading(false);
+            throw error;
+        }
+    },[]);
+
     return(<AuthContext.Provider value={{
         token,
         isAuth,
@@ -216,6 +241,7 @@ export const AuthProvider = ({children}: any) => {
         checkResetCode,
         changePassword,
         updateUserData,
+        onGoogleLogin,
     }}>
         {children}
         </AuthContext.Provider>
