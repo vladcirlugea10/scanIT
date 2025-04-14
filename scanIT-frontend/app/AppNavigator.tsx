@@ -18,6 +18,8 @@ import { useTranslation } from 'react-i18next';
 import ChangeLanguage from './(tabs)/ChangeLanguage';
 import AddProduct from './(tabs)/AddProduct';
 import EditProduct from './(tabs)/EditProduct';
+import AddedProducts from './(tabs)/AddedProducts';
+import EditedProducts from './(tabs)/EditedProducts';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -45,6 +47,8 @@ const AppNavigator = () => {
             <Stack.Screen name='ChangeLanguage' component={ChangeLanguage} options={{header: () => <PageHeader title={t('changeLanguage')} backButton={true} />, headerBackVisible: false}} />
             <Stack.Screen name='AddProduct' component={AddProduct} options={{header: () => <PageHeader title={t('addProduct')} backButton={true} />, headerBackVisible: false}} />
             <Stack.Screen name='EditProduct'component={EditProduct} options={{header: () => <PageHeader title={t('editProduct')} backButton={true} />, headerBackVisible: false}} />
+            <Stack.Screen name='AddedProducts' component={AddedProducts} options={{header: () => <PageHeader title={t('addedProducts')} backButton={true} />, headerBackVisible: false}} />
+            <Stack.Screen name='EditedProducts' component={EditedProducts} options={{header: () => <PageHeader title={t('editedProducts')} backButton={true} />, headerBackVisible: false}} />
             <Stack.Screen name='Auth' component={AuthNavigator} options={{headerShown: false}} />
         </Stack.Navigator>
     </NavigationContainer>

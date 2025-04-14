@@ -12,6 +12,8 @@ export type RootStackParamList = {
     ChangeLanguage: undefined;
     AddProduct: undefined;
     EditProduct: { barcode: string, product: Product | null };
+    AddedProducts: undefined;
+    EditedProducts: undefined;
     Auth: undefined;
 };
 

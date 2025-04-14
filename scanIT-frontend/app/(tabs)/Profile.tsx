@@ -61,6 +61,8 @@ const Profile = () => {
       <View style={styles.cardsContainer}>
         <ProfileSectionCard onPress={() => navigation.navigate('PersonalInformation')} title={t('personalInfo')} iconName='person' iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={() => navigation.navigate('AccountInformation')} title={t('accountInfo')} iconName='key' iconSize={24} textColor={colors.secondary} />
+        <ProfileSectionCard onPress={() => navigation.navigate('AddedProducts')} title={t('addedProducts')} iconName='add-circle' iconSize={24} textColor={colors.secondary} />
+        <ProfileSectionCard onPress={() => navigation.navigate('EditedProducts')} title={t('editedProducts')} iconName='create' iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={handleChangeColorScheme} title={theme === 'light' ? t('darkMode') : t('lightMode')} iconName={theme === 'light' ? 'moon' : 'sunny'} iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={() => console.log('Notifications')} title={t('notifications')} iconName='notifications' iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={() => navigation.navigate('ChangeLanguage')} title={t('languageAndLocation')} iconName='language' iconSize={24} textColor={colors.secondary} />
