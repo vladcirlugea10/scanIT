@@ -30,7 +30,7 @@ const useOpenFoodFacts = () => {
             setProduct(null);
             setNotFound(false);
             try{
-                const response = await axios.get(`https://${countryCode}.openfoodfacts.net/api/v2/product/${barcode}`);
+                const response = await axios.get(`https://${countryCode}.openfoodfacts.org/api/v2/product/${barcode}`);
                 const data = await response.data.status;
     
                 if(data === 1){
@@ -111,7 +111,7 @@ const useOpenFoodFacts = () => {
         setLoading(true);
         clearError();
         try {
-            const response = await axios.post(`http://192.168.1.3:5000/api/open-food-facts/add-product-image`, formData, {
+            const response = await axios.post(`http://192.168.1.4:5000/api/open-food-facts/add-product-image`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Token': `Bearer ${token}`

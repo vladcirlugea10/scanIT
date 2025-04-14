@@ -12,6 +12,7 @@ import { RootStackParamList } from '@/types/StackParamsList';
 import { createGlobalStyles } from '@/assets/styles';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
 const AddProduct = () => {
     const { colors } = useTheme();
@@ -77,6 +78,9 @@ const AddProduct = () => {
         await addImage(imageNutrition, newProduct.barcode, 'nutrition');
         console.log("Image nutrition added successfully");
       }
+
+      showToast();
+      navigation.navigate("AccountInformation");
     }
 
     const handleCheckBarcode = async () => {
@@ -127,6 +131,13 @@ const AddProduct = () => {
         }
       }
     };
+
+    const showToast = () => {
+            Toast.show({
+                type: 'success',
+                text1: t("productAdded"),
+            });
+    }
 
     if(checkedBarcode){
       return (
@@ -290,6 +301,7 @@ const AddProduct = () => {
                 </View>
               </View>
               { error ? <ShakingErrorText text={error} /> : null }
+              { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
               <MyButton title={t("submitProduct")} onPress={handleAddProduct} containerStyle={{width: "auto"}} />
             </View>
           </ScrollView>
