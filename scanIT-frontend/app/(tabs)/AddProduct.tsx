@@ -80,7 +80,9 @@ const AddProduct = () => {
       }
 
       showToast();
-      navigation.navigate("AccountInformation");
+      setTimeout(() => {
+        navigation.navigate("AccountInformation");
+      }, 2500);
     }
 
     const handleCheckBarcode = async () => {

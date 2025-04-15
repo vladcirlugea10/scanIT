@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import useUser from '@/hooks/useUser'
 import { useAuth } from '@/hooks/useAuth'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
@@ -7,12 +7,17 @@ import { RootStackParamList } from '@/types/StackParamsList'
 import { createGlobalStyles } from '@/assets/styles'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
 
 const AddedProducts = () => {
     const { token, user, isAuth } = useAuth();
     const { getUserData } = useUser(token);
     const { colors } = useTheme();
     const { t } = useTranslation();
+    const { getProduct, product, loading, notFound } = useOpenFoodFacts();
+
+    const [selectedBarcode, setSelectedBarcode] = useState<string | null>(null);
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const globalStyles = createGlobalStyles(colors);
@@ -50,15 +55,45 @@ const AddedProducts = () => {
         }
     }, [isAuth]);
 
+    useEffect(() => {
+        if (product && selectedBarcode) {
+            navigation.navigate('BarcodeResults', { product: product });
+            setSelectedBarcode(null);
+        }
+    }, [product]);
+
+    useEffect(() => {
+        if (notFound && selectedBarcode) {
+            alert(t('product not found'));
+            setSelectedBarcode(null);
+        }
+    }, [notFound]);
+
+    const handleDetailsPress = (barcode: string) => {
+        setSelectedBarcode(barcode);
+        getProduct(barcode);
+    };
+
     return (
         <View style={styles.mainContainer}>
-            <Text style={globalStyles.subtitle}>{t('yourAddedProducts')}: </Text>
+            <Text style={[globalStyles.subtitle, {color: colors.primary}]}>{t('yourAddedProducts')}: </Text>
             <View style={styles.productContainer}>
+                    <View style={styles.infoContainerRow}>
+                        <Text style={styles.text}>5485457410236</Text>
+                        <TouchableOpacity onPress={() => handleDetailsPress('4000522008535')} style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+                            <Text style={globalStyles.textForPressing}>{t("details")}</Text>
+                            <MaterialCommunityIcons name="plus-box" size={24} color={colors.third} />
+                        </TouchableOpacity>
+                    </View>
                 {user?.addedProductsBarcodes && user.addedProductsBarcodes.length > 0 ? 
                 (
                     user.addedProductsBarcodes.map((product, index) => (
                     <View key={index} style={styles.infoContainerRow}>
                         <Text style={styles.text}>{product}</Text>
+                        <TouchableOpacity onPress={() => handleDetailsPress(product)} style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+                            <Text style={globalStyles.textForPressing}>{t("details")}</Text>
+                            <MaterialCommunityIcons name="plus-box" size={24} color={colors.third} />
+                        </TouchableOpacity>
                     </View>
                     ))
                 ) : 

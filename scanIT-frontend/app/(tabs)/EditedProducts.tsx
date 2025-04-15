@@ -9,15 +9,17 @@ import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
 import BarcodeModal from '@/components/BarcodeModal'
 import useOpenFoodFacts from '@/hooks/useOpenFoodFacts'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const EditedProducts = () => {
     const { token, user, isAuth } = useAuth();
     const { getUserData } = useUser(token);
     const { colors } = useTheme();
     const { t } = useTranslation();
-    const { product, getProduct, notFound } = useOpenFoodFacts();
+    const { product, getProduct, notFound, loading } = useOpenFoodFacts();
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [selectedBarcode, setSelectedBarcode] = useState<string | null>(null);
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const globalStyles = createGlobalStyles(colors);
@@ -81,15 +83,38 @@ const EditedProducts = () => {
         }
     };
 
+    useEffect(() => {
+        if (product && selectedBarcode) {
+            navigation.navigate('BarcodeResults', { product: product });
+            setSelectedBarcode(null);
+        }
+    }, [product]);
+
+    useEffect(() => {
+        if (notFound && selectedBarcode) {
+            alert(t('product not found'));
+            setSelectedBarcode(null);
+        }
+    }, [notFound]);
+
+    const handleDetailsPress = (barcode: string) => {
+        setSelectedBarcode(barcode);
+        getProduct(barcode);
+    };
+
     return (
         <View style={styles.mainContainer}>
-            <Text style={globalStyles.subtitle}>{t('yourAddedProducts')}: </Text>
+            <Text style={[globalStyles.subtitle, {color: colors.primary}]}>{t('yourEditedProducts')}: </Text>
             <View style={styles.productContainer}>
                 {user?.addedProductsBarcodes && user.addedProductsBarcodes.length > 0 ? 
                 (
                     user.addedProductsBarcodes.map((product, index) => (
                     <View key={index} style={styles.infoContainerRow}>
                         <Text style={styles.text}>{product}</Text>
+                        <TouchableOpacity onPress={() => handleDetailsPress(product)} style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+                            <Text style={globalStyles.textForPressing}>{t("details")}</Text>
+                            <MaterialCommunityIcons name="plus-box" size={24} color={colors.third} />
+                        </TouchableOpacity>
                     </View>
                     ))
                 ) : 

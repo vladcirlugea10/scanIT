@@ -17,7 +17,9 @@ const PersonalInformation = () => {
   const { isAuth, user, token } = useAuth();
   const { addAllergy, loading, error, getUserData, editUser, removeAllergy } = useUser(token);
   const { t } = useTranslation();
+
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  
   const [showSelectBox, setShowSelectBox] = useState(false);
   const [selectedAllergy, setSelectedAllergy] = useState('');
   const [selectedGender, setSelectedGender] = useState('');
@@ -336,7 +338,7 @@ const PersonalInformation = () => {
             </View>
               <Text>
                 <Text style={styles.text}>{t('yourAverageDailyCaloriesIntake')}: </Text>
-                <Text style={styles.subtitle}>{calculateCalories(parseInt(editedUser?.weight), parseInt(editedUser?.height), calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-'))) || 0, editedUser.gender)}</Text>
+                <Text style={styles.subtitle}>{calculateCalories(parseInt(editedUser?.weight), parseInt(editedUser?.height), calculateAge(new Date(editedUser.birthday.split('-').reverse().join('-'))) || 0, editedUser.gender) ?? t('completeYourProfile')}</Text>
               </Text>
           </View>
         </View>

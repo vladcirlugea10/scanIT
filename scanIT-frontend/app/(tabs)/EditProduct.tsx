@@ -88,7 +88,9 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
         }
 
         showToast();
-        navigation.navigate("AccountInformation");
+        setTimeout(() => {
+            navigation.navigate("AccountInformation");
+          }, 2500);
     }
 
     const pickImage = async (type: string) => {
@@ -116,10 +118,10 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
     };
 
     const showToast = () => {
-            Toast.show({
-                type: 'success',
-                text1: t("productEdited"),
-            });
+        Toast.show({
+            type: 'success',
+            text1: t("productEdited"),
+        });
     }
 
     return (
