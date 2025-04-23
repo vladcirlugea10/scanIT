@@ -11,6 +11,7 @@
   "alreadyHaveAnAccount": "Already have an account",
   "aProductWithThisBarcodeCouldntBeFound": "A product with this barcode couldn't be found! Please try again!",
   "availableLanguages": "Available languages",
+  "authWith": "Sign in with",
   "barcode": "Barcode",
   "birthdat(optional)": "Birthday(optional)",
   "birthday": "Birthday",

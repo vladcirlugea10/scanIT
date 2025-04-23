@@ -78,13 +78,6 @@ const AddedProducts = () => {
         <View style={styles.mainContainer}>
             <Text style={[globalStyles.subtitle, {color: colors.primary}]}>{t('yourAddedProducts')}: </Text>
             <View style={styles.productContainer}>
-                    <View style={styles.infoContainerRow}>
-                        <Text style={styles.text}>5485457410236</Text>
-                        <TouchableOpacity onPress={() => handleDetailsPress('4000522008535')} style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
-                            <Text style={globalStyles.textForPressing}>{t("details")}</Text>
-                            <MaterialCommunityIcons name="plus-box" size={24} color={colors.third} />
-                        </TouchableOpacity>
-                    </View>
                 {user?.addedProductsBarcodes && user.addedProductsBarcodes.length > 0 ? 
                 (
                     user.addedProductsBarcodes.map((product, index) => (
