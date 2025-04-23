@@ -9,20 +9,16 @@ import { RootStackParamList } from '@/types/StackParamsList';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { createGlobalStyles } from '@/assets/styles';
-import BarcodeModal from '@/components/BarcodeModal';
-import useOpenFoodFacts from '@/hooks/useOpenFoodFacts';
 
 const AccountInformation = () => {
     const { colors } = useTheme();
     const { user, isAuth, token } = useAuth();
-    const { getProduct, notFound, loading: openFoodFactsLoading, product } = useOpenFoodFacts();
     const { t } = useTranslation();
     const { getUserData, editUser, error, loading } = useUser(token);
     
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const globalStyles = createGlobalStyles(colors);
     const [isEditing, setIsEditing] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
 
     const [editedUser, setEditedUser] = useState({
         firstName: user?.firstName || '',
@@ -174,32 +170,6 @@ const AccountInformation = () => {
         })
     };
 
-    const handleModal = () => {
-        setModalVisible(!modalVisible);
-    }
-
-    const checkBarcode = async (barcode: string) => {
-      try {
-        await getProduct(barcode);
-        if (notFound) {
-          Alert.alert(
-            t('error'),
-            t('productNotFound'),
-            [{ text: 'OK', style: 'cancel' }]
-          );
-        } else if (product) {
-          navigation.navigate("EditProduct", { barcode: barcode, product: product });
-        }
-      } catch (error) {
-        console.log('Error getting product: ', error);
-        Alert.alert(
-          t('error'),
-          t('errorFetchingProduct'),
-          [{ text: 'OK', style: 'cancel' }]
-        );
-      }
-    };
-
     const showAlert = () => {
         if(error){
           Alert.alert(
@@ -303,16 +273,9 @@ const AccountInformation = () => {
                   ) : 
                   null
                 }
-              <TouchableOpacity>
-                <Text style={globalStyles.textForPressing} onPress={() => navigation.navigate('AddProduct')} >{t("couldntFindAproduct")}? {t("addItHere")}!</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={globalStyles.textForPressing} onPress={handleModal} >{t("editExistingProduct")}</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </View>
-        <BarcodeModal visible={modalVisible} onClose={handleModal} onPressSubmit={checkBarcode} /> 
       </View>
     )
 }

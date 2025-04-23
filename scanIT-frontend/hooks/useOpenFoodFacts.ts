@@ -30,7 +30,7 @@ const useOpenFoodFacts = () => {
             setProduct(null);
             setNotFound(false);
             try{
-                const response = await axios.get(`https://${countryCode}.openfoodfacts.net/api/v2/product/${barcode}`);
+                const response = await axios.get(`https://${countryCode}.openfoodfacts.org/api/v2/product/${barcode}`);
                 const data = await response.data.status;
     
                 if(data === 1){
@@ -91,6 +91,43 @@ const useOpenFoodFacts = () => {
         }
     }
 
+    const addImage = async (image: string, barcode: string, imagefield: string) => {
+        if(!image || !barcode || !imagefield){
+            return;
+        }
+        console.log(`Uploading ${imagefield} image for barcode: ${barcode}`);
+        const formData = new FormData();
+        const filename = image.split('/').pop() || `image_${Date.now()}.jpg`;
+        const fileType = filename.split('.').pop() || 'jpg';
+
+        formData.append('barcode', barcode);
+        formData.append('imagefield', imagefield);
+        formData.append('image', {
+            uri: image,
+            name: filename,
+            type: `image/${fileType}`,
+        } as any);
+
+        setLoading(true);
+        clearError();
+        try {
+            const response = await axios.post(`http://192.168.1.5:5000/api/open-food-facts/add-product-image`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Token': `Bearer ${token}`
+                }
+            });
+            const data = await response.data;
+            return data;
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || error.message || "Error adding image";
+            setError(errorMessage);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const editProduct = async (product: EditProduct) => {
         if(!product){
             return;
@@ -111,7 +148,7 @@ const useOpenFoodFacts = () => {
         }  
     }
 
-    return { loading, error, getProduct, product, notFound, addProduct, editProduct };
+    return { loading, error, getProduct, product, notFound, addProduct, editProduct, addImage };
 };
 
 export default useOpenFoodFacts

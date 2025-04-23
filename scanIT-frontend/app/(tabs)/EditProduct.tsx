@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput } from 'react-native'
+import { View, Text, ScrollView, TextInput, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
@@ -10,6 +10,9 @@ import ShakingErrorText from '@/components/ShakingErrorText';
 import useOpenFoodFacts from '@/hooks/useOpenFoodFacts';
 import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks/useAuth';
+import * as ImagePicker from 'expo-image-picker';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
 type EditProductProps = { route: RouteProp<RootStackParamList, "EditProduct"> };
 
@@ -17,13 +20,16 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
     const { barcode, product } = route.params;
     const { colors } = useTheme();
     const { t } = useTranslation();
-    const { error, editProduct } = useOpenFoodFacts();
+    const { error, editProduct, addImage, loading } = useOpenFoodFacts();
     const { token } = useAuth();
     const { addEditedProduct } = useUser(token);
 
     const globalStyles = createGlobalStyles(colors);
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const [imageFront, setImageFront] = useState<string | undefined>(undefined);
+    const [imageIngredients, setImageIngredients] = useState<string | undefined>(undefined);
+    const [imageNutrition, setImageNutrition] = useState<string | undefined>(undefined);
     const [editedProduct, setEditedProduct] = useState<EditProduct>({
         barcode: barcode,
         product_name:  "",
@@ -67,6 +73,55 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
         if(response.status === 1){
             await addEditedProduct(editedProduct.barcode);
         }
+
+        if (imageFront) {
+            await addImage(imageFront, editedProduct.barcode, 'front');
+            console.log("Image front added successfully");
+        }
+        if (imageIngredients) {
+            await addImage(imageIngredients, editedProduct.barcode, 'ingredients');
+            console.log("Image ingredients added successfully");
+        }
+        if (imageNutrition) {
+            await addImage(imageNutrition, editedProduct.barcode, 'nutrition');
+            console.log("Image nutrition added successfully");
+        }
+
+        showToast();
+        setTimeout(() => {
+            navigation.navigate("AccountInformation");
+          }, 2500);
+    }
+
+    const pickImage = async (type: string) => {
+          console.log("Uploading image of type: ", type);
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: false,
+            quality: 1,
+          });
+          if (!result.canceled && result.assets.length > 0) {
+            switch(type){
+              case "front":
+                setImageFront(result.assets[0].uri);
+                break;
+              case "ingredients":
+                setImageIngredients(result.assets[0].uri);
+                break;
+              case "nutrition":
+                setImageNutrition(result.assets[0].uri);
+                break;
+              default:
+                break;
+            }
+          }
+    };
+
+    const showToast = () => {
+        Toast.show({
+            type: 'success',
+            text1: t("productEdited"),
+        });
     }
 
     return (
@@ -94,6 +149,44 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
                         <View style={globalStyles.addProductInputContainer}>
                             <Text>{t("stores")} - {product?.stores || t("none")}</Text>
                             <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, stores: text}))} placeholder={`${t("stores")} - ${t("separateWith")} ,`} />
+                        </View>
+                    </View>
+                    <View style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+                        <Text style={globalStyles.subtitle}>{t('frontPackageImage')}</Text>
+                        <View style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                        <Image source={{ uri: imageFront }} style={{ width: 100, height: 100, borderWidth: 1, borderColor: colors.primary}} />
+                        <View style={{display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'baseline'}}>
+                            <TouchableOpacity onPress={() => pickImage("front")}>
+                            <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setImageFront(undefined)}>
+                            <MaterialCommunityIcons name="trash-can" size={24} color={colors.primary} />
+                            </TouchableOpacity>
+                        </View>
+                        </View>
+                        <Text style={globalStyles.subtitle}>{t('ingredientPackageImage')}</Text>
+                        <View style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                        <Image source={{ uri: imageIngredients }} style={{ width: 100, height: 100, borderWidth: 1, borderColor: colors.primary}} />
+                        <View style={{display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'baseline'}}>
+                            <TouchableOpacity onPress={() => pickImage("ingredients")}>
+                            <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setImageIngredients(undefined)}>
+                            <MaterialCommunityIcons name="trash-can" size={24} color={colors.primary} />
+                            </TouchableOpacity>
+                        </View>
+                        </View>
+                        <Text style={globalStyles.subtitle}>{t('nutritionPackageImage')}</Text>
+                        <View style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                        <Image source={{ uri: imageNutrition }} style={{ width: 100, height: 100, borderWidth: 1, borderColor: colors.primary}} />
+                        <View style={{display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'baseline'}}>
+                            <TouchableOpacity onPress={() => pickImage("nutrition")}>
+                            <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setImageNutrition(undefined)}>
+                            <MaterialCommunityIcons name="trash-can" size={24} color={colors.primary} />
+                            </TouchableOpacity>
+                        </View>
                         </View>
                     </View>
                     <Text style={globalStyles.subtitle}>{t("ingredients")}</Text>
@@ -190,6 +283,7 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
                         </View>
                     </View>
                     { error ? <ShakingErrorText text={error} /> : null }
+                    { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
                     <MyButton title={t("submitProduct")} onPress={handleEditProduct} containerStyle={{width: "auto"}} />
                 </View>
             </ScrollView>

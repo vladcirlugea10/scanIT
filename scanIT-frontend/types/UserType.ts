@@ -22,6 +22,8 @@ interface UserData{
     gender?: string | null;
     allergies?: string[] | null;
     scannedProducts?: ScannedProduct[] | null;
+    addedProductsBarcodes?: string[] | null;
+    editedProductsBarcodes?: string[] | null;
     createdAt: Date;
 }
 interface UpdateData{
