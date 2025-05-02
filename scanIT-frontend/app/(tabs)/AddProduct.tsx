@@ -328,6 +328,7 @@ const AddProduct = () => {
           </> : 
           null 
         }
+        {loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
         <MyButton title={t("submitBarcode")} onPress={handleCheckBarcode} containerStyle={{width: "auto", marginTop: 20}} />
       </View>
     )

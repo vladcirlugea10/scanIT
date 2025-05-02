@@ -145,8 +145,8 @@ const Login = () => {
               <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('ForgotPassword'); clearError()}}>{t('forgotPassword')}?</Text>
               <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('Register'); clearError()}}>{t('createAnAccount')}</Text>
             </View>
-            <View style={{display: 'flex', flexDirection: 'row', gap: 10, marginTop: 20}}>
-              <Text>{t('authWith')}</Text>
+            <View style={{display: 'flex', flexDirection: 'row', gap: 10, marginTop: 20, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={globalStyles.textForPressing} >{t('authWith')}:</Text>
               <TouchableOpacity onPress={handleGoogleLogin}>
                 <Image source={require('@/assets/images/google.png')} style={{width: 30, height: 30}} />
               </TouchableOpacity>

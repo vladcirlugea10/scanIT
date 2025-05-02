@@ -185,7 +185,7 @@ const Home = () => {
         return(
             <View style={styles.mainContainer}>
                 <Text>{t('permission to use camera required')}</Text>
-                <MyButton title={t('request camera permission')} onPress={requestPermission} />
+                <MyButton title={t('request camera permission')} onPress={requestPermission} containerStyle={{width: 'auto'}} />
             </View>
         )
     }
@@ -229,9 +229,9 @@ const Home = () => {
                     <CameraView ref={cameraRef} style={styles.camera} onBarcodeScanned={({data}) => {
                         setBarcodeData(data);
                     }} />
-                    <TouchableOpacity style={{position: 'absolute', bottom: 20, left: 20}}>
+                    { selectedMode === 'photo' && <TouchableOpacity style={{position: 'absolute', bottom: 20, left: 20}}>
                         <MaterialCommunityIcons name='plus' size={30} color={colors.primary} onPress={pickImage} />
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                 </View>
                 { selectedMode === 'photo' ? <MyButton iconName='camera' iconColor={colors.secondary} iconSize={30} onPress={takePhoto} containerStyle={{justifyContent: 'flex-end'}} /> : null }
             </View>
