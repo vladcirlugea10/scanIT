@@ -23,7 +23,8 @@ const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOpt
             alignItems: 'center',
             backgroundColor: colors.secondary,
             borderWidth: 1,
-            borderColor: colors.third,
+            borderRadius: 10,
+            borderColor: colors.primary,
         },
         title:{
             padding: 2,

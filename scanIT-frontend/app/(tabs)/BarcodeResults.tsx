@@ -7,6 +7,7 @@ import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { LayoutAnimationType } from 'react-native-reanimated';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type BarcodeResultsProps = { route: RouteProp<RootStackParamList, 'BarcodeResults'> };
 
@@ -159,24 +160,30 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
             <Text style={styles.rowText}>{product.nutriments.fat_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.fat_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.fat}</Text>
+            { product.nutriments.fat > 50 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('saturatedFats')}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat}</Text>
+            { product.nutriments.saturated_fat > 20 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('carbohydrates')}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates}</Text>
+            { product.nutriments.carbohydrates > 250 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('sugars')}</Text>
             <Text style={styles.rowText}>{product.nutriments.sugars_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.sugars_100g}</Text>
-            <Text style={styles.rowText}>{product.nutriments.sugars}</Text>
+            <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+              <Text style={styles.rowText}>{product.nutriments.sugars}</Text>
+              { product.nutriments.sugars > 50 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+            </View>
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('proteins')}</Text>
@@ -189,12 +196,14 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
             <Text style={styles.rowText}>{product.nutriments.salt_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.salt_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.salt}</Text>
+            { product.nutriments.salt > 3 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('sodium')}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium}</Text>
+            { product.nutriments.sodium > 3 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
         </View>
       </View>
