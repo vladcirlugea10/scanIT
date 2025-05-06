@@ -1,13 +1,14 @@
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
 import { useTheme } from '../ColorThemeContext';
 import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import { LayoutAnimationType } from 'react-native-reanimated';
+import * as SecureStore from 'expo-secure-store';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useTextTranslation from '@/hooks/useTextTranslation';
 
 type BarcodeResultsProps = { route: RouteProp<RootStackParamList, 'BarcodeResults'> };
 
@@ -17,9 +18,13 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   const { token } = useAuth();
   const { addProduct } = useUser(token);
   const { t } = useTranslation();
+  const { translateText } = useTextTranslation();
   const energykcal = product.nutriments["energy-kcal"];
   const energykcal100g = product.nutriments["energy-kcal_100g"];
   const energykcalunit = product.nutriments["energy-kcal_unit"];
+
+  const [translatedText, setTranslatedText] = useState("");
+  const [translatedTitle, setTranslatedTitle] = useState("");
 
   const styles = StyleSheet.create({
     mainContainer: {
@@ -107,7 +112,6 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   }
 
   useEffect(() => {
-    console.log("aici:",product);
     const newProduct: ScannedProduct = {
       barcode: product._id,
       name: product.product_name,
@@ -118,10 +122,30 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
     addProduct(newProduct);
   }, []);
 
+  useEffect(() => {
+    const getLangAndTranslate = async () => {
+      try{
+        const targetLanguage = await SecureStore.getItemAsync('selectedLanguage');
+        const target = targetLanguage?.split('-')[0];
+        console.log("Target language: ", target);
+        const [translatedText, translatedTitle] = await Promise.all([
+          translateText(product.ingredients_text, target),
+          translateText(product.product_name, target),
+        ]);
+  
+        setTranslatedText(translatedText || "");
+        setTranslatedTitle(translatedTitle || "");
+      }catch(error){
+        console.error("Error translating text: ", error);
+      }
+    }
+    getLangAndTranslate();
+  }, []);
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.mainContainer}>
-        <Text style={styles.title}>{product.product_name} - {product.brands}</Text>
+        <Text style={styles.title}>{translatedTitle || product.product_name} - {product.brands}</Text>
         <View style={styles.imagesContainer}>
           <Image style={styles.image} source={{uri: product.image_url}} />
           {product.selected_images && product.selected_images.front && <Image source={{uri: product.selected_images.front.display.ro}} style={styles.image} />}
@@ -131,7 +155,7 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
         <Text style={styles.subtitle}>{t('soldIn')}</Text>
         <Text style={styles.text}>{product.countries}</Text>
         <Text style={styles.subtitle}>{t('ingredients')}</Text>
-        <Text style={styles.text}>{product.ingredients_text}</Text>
+        <Text style={styles.text}>{translatedText || product.ingredients_text}</Text>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Image source={{ uri: getNutriscoreImage(product.nutriscore_grade)}} style={{width: 200, height: 100}} />
         </View>

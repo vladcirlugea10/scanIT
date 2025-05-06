@@ -117,7 +117,6 @@ const Home = () => {
 
     useEffect(() => {
         if(product){
-            console.log("home: ", product);
             navigation.navigate('BarcodeResults', { product: product });
             setBarcodeData(undefined);
         }
