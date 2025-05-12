@@ -11,6 +11,10 @@ import { useTranslation } from 'react-i18next';
 import ShakingErrorText from '@/components/ShakingErrorText';
 import { createGlobalStyles } from '@/assets/styles';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import Animated from 'react-native-reanimated';
+import { waveKeyframe } from '@/assets/animations';
+import { toastSuccess } from '@/components/ToastSuccess';
+import { toastError } from '@/components/ToastError';
 
 type LoginNavProps = NativeStackNavigationProp<AuthStackParams, 'Login'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -91,6 +95,12 @@ const Login = () => {
     return () => clearError();
   }, [email, password]);
 
+  useEffect(() => {
+    if(error){
+      toastError(error);
+    }
+  }, [error]);
+
   const onSubmit = async () => {
     Keyboard.dismiss();
     const loginData = {
@@ -102,6 +112,7 @@ const Login = () => {
     console.log(response);
     if(response){
       parentNavigation.navigate('Profile');
+      toastSuccess(t('loginSuccess'));
     }
   }
 
@@ -130,7 +141,10 @@ const Login = () => {
     <ScrollView>
       <View style={styles.mainContainer}>
           <View style={styles.formContainer}>
-            <Text style={styles.title}>{t('welcomeBack')}!</Text>
+            <View style={[globalStyles.rowContainer, {gap: 20, alignItems: 'baseline'}]}>
+              <Text style={styles.title}>{t('welcomeBack')}!</Text>
+              <Animated.Text entering={waveKeyframe.duration(2000)} style={{fontSize: 40}}>👋</Animated.Text>
+            </View>
             <View style={styles.inputContainer}>
               <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
               <View style={styles.passwordContainer}>

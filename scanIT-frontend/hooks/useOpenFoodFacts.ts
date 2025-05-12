@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 import * as SecureStore from 'expo-secure-store';
-import countryMap from "@/assets/data/countries";
+import { countryMap } from "@/assets/data/countries";
 
 const useOpenFoodFacts = () => {
     const { token } = useAuth();

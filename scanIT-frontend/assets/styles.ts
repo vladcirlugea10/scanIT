@@ -55,4 +55,10 @@ export const createGlobalStyles = (colors: any) =>
             backgroundColor: 'white',
             borderRadius: 10,
         },
+        rowContainer:{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%',
+        },
     });

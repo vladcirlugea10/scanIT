@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { NavigationProp, RouteProp, useNavigation } from '@react-navigation/native'
 import MyButton from '@/components/MyButton';
@@ -8,6 +8,11 @@ import useImageOCR from '@/hooks/useImageOCR';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
 import NetInfo from '@react-native-community/netinfo';
+import SelectBox from '@/components/SelectBox';
+import { countryCodes } from '@/assets/data/countries';
+import { createGlobalStyles } from '@/assets/styles';
+import useTextTranslation from '@/hooks/useTextTranslation';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 type ScanImageNavProps = { route: RouteProp<RootStackParamList, 'ScanImage'> };
 
@@ -17,10 +22,14 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     const { colors } = useTheme();
     const { t } = useTranslation();
     const { scanImage, scanImageOffline, loading, data } = useImageOCR();
+    const { translateText, loading: translationLoading } = useTextTranslation();
+    const globalStyles = createGlobalStyles(colors);
     console.log(data);
 
     const [isConnected, setIsConnected] = useState<boolean | null>(null);
     const [scanMethod, setScanMethod] = useState<string | null>(null);
+    const [selectedLanguage, setSelectedLanguage] = useState("");
+    const [translatedText, setTranslatedText] = useState("");
 
     const styles = StyleSheet.create({
       mainContainer: {
@@ -38,6 +47,16 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
           borderTopWidth: 2,
           borderTopColor: 'black',
         },
+        translationContainer:{
+          width: '85%',
+          height: 'auto',
+          padding: 16,
+          display: 'flex',
+          flexDirection: 'row',
+          gap: 10,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }
   })
 
     useEffect(() => {
@@ -84,6 +103,18 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         }
     }
 
+    const handleSelectedLanguage = (language: string) => {
+      setSelectedLanguage(language);
+      handleTranslation(language);
+    }
+
+    const handleTranslation = async (language: string) => {
+        const lang = language || selectedLanguage;
+        const translatedText = await translateText(data.text.join(" "), lang);
+        setTranslatedText(translatedText);
+        toastSuccess(t('translationSuccess'));
+    }
+
     const handleCheckIngredients = () => {
         navigation.navigate('IngredientsCheck', {data: data});
     }
@@ -100,11 +131,21 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     if(data.text.length > 0){
         return(
           <View style={styles.mainContainer}>
+            <View style={styles.translationContainer}>
+              <Text style={globalStyles.textForPressing}>{t('translateTo')}</Text>
+              <Ionicons name='arrow-forward' size={20} color={colors.primary} />
+              <SelectBox title={t("language")} options={countryCodes} selectedOption={selectedLanguage} setSelectedOption={handleSelectedLanguage} />
+            </View>
             <Text style={{fontSize: 25, fontWeight: 700}}>
               {t('productIngredientList')}:
             </Text>
             <View style={styles.resultContainer}>
-              <Text style={{fontSize: 16}}>{data.text.join(" ")}</Text>
+              {translationLoading ? (
+                  <ActivityIndicator size='large' color={colors.primary} />
+                ) : (
+                  <Text style={{fontSize: 16}}>{translatedText || data.text.join(" ")}</Text>
+                )
+              }
             </View>
             <MyButton title={t('checkIngredients')} onPress={handleCheckIngredients} containerStyle={{width: "auto"}} />
           </View>

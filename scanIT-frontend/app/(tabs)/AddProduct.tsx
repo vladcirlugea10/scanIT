@@ -12,7 +12,7 @@ import { RootStackParamList } from '@/types/StackParamsList';
 import { createGlobalStyles } from '@/assets/styles';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Toast from 'react-native-toast-message';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 const AddProduct = () => {
     const { colors } = useTheme();
@@ -79,7 +79,7 @@ const AddProduct = () => {
         console.log("Image nutrition added successfully");
       }
 
-      showToast();
+      toastSuccess(t("productAdded"));
       setTimeout(() => {
         navigation.navigate("AccountInformation");
       }, 2500);
@@ -133,13 +133,6 @@ const AddProduct = () => {
         }
       }
     };
-
-    const showToast = () => {
-            Toast.show({
-                type: 'success',
-                text1: t("productAdded"),
-            });
-    }
 
     if(checkedBarcode){
       return (

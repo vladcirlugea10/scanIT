@@ -12,6 +12,8 @@ import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
 import ShakingErrorText from '@/components/ShakingErrorText'
 import { createGlobalStyles } from '@/assets/styles'
+import { toastSuccess } from '@/components/ToastSuccess'
+import { toastError } from '@/components/ToastError'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -98,6 +100,12 @@ const Register = () => {
 
   const { onRegister, error, clearError, loading } = useAuth();
 
+  useEffect(() => {
+    if(error){
+      toastError(error);
+    }
+  }, [error]);
+
   const onSubmit = async () => {
     Keyboard.dismiss();
     console.log('email:', email);
@@ -113,6 +121,7 @@ const Register = () => {
     const response = await onRegister(newUser);
     if(response){
       parentNavigation.navigate('Profile');
+      toastSuccess(t('registerSuccess'));
     }
   }
 

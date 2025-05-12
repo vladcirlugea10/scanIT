@@ -8,6 +8,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
 import ShakingErrorText from '@/components/ShakingErrorText'
+import { toastSuccess } from '@/components/ToastSuccess'
+import { toastError } from '@/components/ToastError'
 
 type ResetPasswordProps = { route: RouteProp<AuthStackParams, 'ResetPassword'> };
 
@@ -79,11 +81,18 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
         return () => clearError();
     }, [password, confirmPassword]);
 
+    useEffect(() => {
+      if (error) {
+          toastError(error);
+      }
+    }, [error]);
+
     const handleSubmit = async () => {
         const response = await changePassword({email: email, password: password, confirmPassword: confirmPassword});
         if(response){
             console.log('Password changed');
             setSuccess(true);
+            toastSuccess(t('passwordChangedSuccessfully'));
             setTimeout(() => {
                 navigation.navigate('Login');
             }, 3000)

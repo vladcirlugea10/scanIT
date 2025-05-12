@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert, ScrollView, Switch } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -12,7 +12,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { calculateCalories } from '@/utils/calloriesCalculator';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
-import Toast from 'react-native-toast-message';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 const PersonalInformation = () => {
   const { isAuth, user, token } = useAuth();
@@ -142,13 +142,6 @@ const PersonalInformation = () => {
     }
   }, [user]);
 
-  const showToast = () => {
-    Toast.show({
-        type: 'success',
-        text1: t("accountInfoEdited"),
-    });
-  }
-
   useEffect(() => {
     if(!isAuth){
       navigation.navigate('Auth');
@@ -169,7 +162,7 @@ const PersonalInformation = () => {
           await addAllergy(selectedAllergy);
           setShowSelectBox(false);
           setSelectedAllergy('');
-          showToast();
+          toastSuccess(t('accountInfoEdited'));
       } catch(error){
           console.log('Error adding allergy: ', error);
       }
@@ -180,7 +173,7 @@ const PersonalInformation = () => {
     if(allergy){
       try{
           await removeAllergy(allergy);
-          showToast();
+          toastSuccess(t('accountInfoEdited'));
       } catch(error){
           console.log('Error removing allergy: ', error);
         }
@@ -197,7 +190,7 @@ const PersonalInformation = () => {
           }
           console.log('Edited user: ', formattedUser);
           await editUser(formattedUser);
-          showToast();
+          toastSuccess(t('accountInfoEdited'));
       }catch(error){
         console.log('Error editing profile: ', error);
       }

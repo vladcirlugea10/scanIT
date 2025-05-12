@@ -12,7 +12,7 @@ import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks/useAuth';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Toast from 'react-native-toast-message';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 type EditProductProps = { route: RouteProp<RootStackParamList, "EditProduct"> };
 
@@ -87,7 +87,7 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
             console.log("Image nutrition added successfully");
         }
 
-        showToast();
+        toastSuccess(t("productEdited"));
         setTimeout(() => {
             navigation.navigate("AccountInformation");
           }, 2500);
@@ -116,13 +116,6 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
             }
           }
     };
-
-    const showToast = () => {
-        Toast.show({
-            type: 'success',
-            text1: t("productEdited"),
-        });
-    }
 
     return (
         <View style={globalStyles.addProductmainContainer}>

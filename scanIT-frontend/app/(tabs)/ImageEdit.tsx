@@ -7,6 +7,7 @@ import ImageCropper from '@/components/ImageCropper';
 import { RootStackParamList } from '@/types/StackParamsList';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 type ImageEditProps = { route: RouteProp<RootStackParamList, 'ImageEdit'> };
 
@@ -44,13 +45,14 @@ const ImageEdit: React.FC<ImageEditProps> = ({route}) => {
       overflow: 'hidden',
       resizeMode: 'contain',
     },
-  })
+  });
 
   const handleCropImage = async (cropArea: {originX: number, originY: number, width: number, height: number} ) => {
     const editedResult = await ImageManipulator.manipulateAsync(photoUri, [{crop: cropArea}], {compress: 1, format: ImageManipulator.SaveFormat.JPEG});
     setCroppedImage(editedResult.uri);
     setIsCropping(false);
-  }
+    toastSuccess(t('imageCropped'));
+  };
 
   const handleScanImage = async () => {
     if(croppedImage || photoUri){

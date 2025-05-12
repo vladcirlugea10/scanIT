@@ -8,6 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
 import ShakingErrorText from '@/components/ShakingErrorText';
+import { toastSuccess } from '@/components/ToastSuccess';
+import { toastError } from '@/components/ToastError';
 
 type ForgotPasswordProps = NativeStackNavigationProp<AuthStackParams, 'ForgotPassword'>;
 
@@ -66,10 +68,17 @@ const ForgotPassword = () => {
     return () => clearError();
   }, [email, code]);
 
+  useEffect(() => {
+    if(error){
+      toastError(error);
+    }
+  }, [error]);
+
   const handleForgotPass = async () => {
     if(email){
       const response = await forgotPassword(email);
       if(response){
+        toastSuccess(t('resetLinkSent'));
         console.log('Reset link sent!');
         setStep(2);
       }
@@ -81,7 +90,10 @@ const ForgotPassword = () => {
       const response = await checkResetCode(code);
       if(response){
         console.log('Code is correct!');
-        navigation.navigate('ResetPassword', { email: email });
+        toastSuccess(t('codeIsCorrect'));
+        setTimeout(() => {
+          navigation.navigate('ResetPassword', { email: email });
+        }, 2000)
       }
     }
   }

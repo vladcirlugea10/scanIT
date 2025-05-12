@@ -6,7 +6,7 @@ import ProfileSectionCard from '@/components/ProfileSectionCard';
 import { useTheme } from '../ColorThemeContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import Toast from 'react-native-toast-message';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 const Profile = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -42,19 +42,12 @@ const Profile = () => {
       await onLogout();
       navigation.navigate("Home");
     }
-  }
-
-  const showToast = () => {
-      Toast.show({
-          type: 'success',
-          text1: t("colorSchemeChanged"),
-      });
-  }
+  };
 
   const handleChangeColorScheme = () => {
     toggleTheme();
-    showToast();
-  }
+    toastSuccess(t("colorSchemeChanged"));
+  };
 
   return (
     <View style={styles.mainContainer}>
