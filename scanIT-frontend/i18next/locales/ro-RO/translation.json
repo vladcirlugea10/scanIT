@@ -11,6 +11,7 @@
   "allergies": "Alergii",
   "alreadyHaveAnAccount": "Ai deja un cont",
   "aProductWithThisBarcodeCouldntBeFound": "Un produs cu acest cod de bare nu a putut fi găsit! Te rog să reîncerci!",
+  "areYouSureLogout": "Ești sigur că vrei să te deconectezi?",
   "availableLanguages": "Limbi disponibile",
   "authWith": "Autentificare cu",
   "barcode": "Cod de bare",
@@ -125,8 +126,8 @@
   "weight": "Greutate",
   "welcomeBack": "Bine ai revenit",
   "yearsOld": "ani",
+  "yes": "Da",
   "youAre": "Ești",
-
   "youDontHaveAnyAllergies": "Nu ai nici o alergie",
   "yourAverageDailyCaloriesIntake": "Cantitatea ta medie zilnică de calorii",
   "yourAddedProducts": "Produsele adăugate de tine",

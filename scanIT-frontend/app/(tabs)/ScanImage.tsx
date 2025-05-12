@@ -39,13 +39,14 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
           justifyContent: 'center',
           gap: 16,
           backgroundColor: colors.secondary,
+          paddingBottom: 20
         },
         resultContainer:{
           width: '85%',
           height: '50%',
           padding: 16,
           borderTopWidth: 2,
-          borderTopColor: 'black',
+          borderTopColor: colors.third,
         },
         translationContainer:{
           width: '85%',
@@ -132,18 +133,18 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
         return(
           <View style={styles.mainContainer}>
             <View style={styles.translationContainer}>
-              <Text style={globalStyles.textForPressing}>{t('translateTo')}</Text>
+              <Text style={[globalStyles.textForPressing, {color: colors.primary}]}>{t('translateTo')}</Text>
               <Ionicons name='arrow-forward' size={20} color={colors.primary} />
               <SelectBox title={t("language")} options={countryCodes} selectedOption={selectedLanguage} setSelectedOption={handleSelectedLanguage} />
             </View>
-            <Text style={{fontSize: 25, fontWeight: 700}}>
+            <Text style={globalStyles.title}>
               {t('productIngredientList')}:
             </Text>
             <View style={styles.resultContainer}>
               {translationLoading ? (
                   <ActivityIndicator size='large' color={colors.primary} />
                 ) : (
-                  <Text style={{fontSize: 16}}>{translatedText || data.text.join(" ")}</Text>
+                  <Text style={globalStyles.simpleText}>{translatedText || data.text.join(" ")}</Text>
                 )
               }
             </View>

@@ -37,22 +37,12 @@ const Login = () => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.secondary
-    },
-    formContainer:{
-      width: '100%',
-      height: '100%',
-      backgroundColor: colors.white,
-      marginTop: '80%',
-      gap: 30,
-      padding: '10%',
-      display: 'flex',
-      flexDirection: 'column',
+      backgroundColor: colors.third
     },
     title:{
       fontSize: 30,
       fontWeight: 'bold',
-      color: colors.third,
+      color: colors.primary,
       marginBottom: '5%',
     },
     inputContainer:{
@@ -79,16 +69,6 @@ const Login = () => {
       position: 'relative',
       width: '100%',
     },
-    eyeIcon:{
-      position: 'absolute',
-      right: 10,
-      top: '25%',
-      color: colors.primary,
-    },
-    errorText:{
-      color: 'red',
-      fontWeight: 'bold',
-    }
   });
 
   useEffect(() => {
@@ -140,16 +120,16 @@ const Login = () => {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
-          <View style={styles.formContainer}>
+          <View style={[globalStyles.formContainer, {marginTop: "80%"}]}>
             <View style={[globalStyles.rowContainer, {gap: 20, alignItems: 'baseline'}]}>
               <Text style={styles.title}>{t('welcomeBack')}!</Text>
-              <Animated.Text entering={waveKeyframe.duration(2000)} style={{fontSize: 40}}>👋</Animated.Text>
+              <Animated.Text entering={waveKeyframe.duration(3000)} style={{fontSize: 40}}>👋</Animated.Text>
             </View>
             <View style={styles.inputContainer}>
-              <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
+              <TextInput style={styles.input} placeholderTextColor={colors.primary} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
               <View style={styles.passwordContainer}>
-                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
-                <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+                <TextInput style={styles.input} placeholderTextColor={colors.primary} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
+                <MaterialCommunityIcons name='eye' size={24} style={globalStyles.eyeIcon} onPress={handleShowPass} />
               </View>
               {loading && <ActivityIndicator size='large' color={colors.primary} />}
               {error && <ShakingErrorText text={error} />}

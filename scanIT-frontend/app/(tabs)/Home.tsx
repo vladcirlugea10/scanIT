@@ -194,7 +194,7 @@ const Home = () => {
             setCountry(country);
     };
 
-    const handleBarcodeScanned = async ({data}) => {
+    const handleBarcodeScanned = async ({ data }: { data: string }) => {
         if (isScanning && data) {
             console.log("Scanned barcode:", data);
             setBarcodeData(data);

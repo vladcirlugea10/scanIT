@@ -34,8 +34,13 @@ export const createGlobalStyles = (colors: any) =>
         },
         subtitle: {
             fontSize: 20,
-            fontWeight: "bold",
-            color: colors.third,
+            fontWeight: 'bold',
+            color: colors.primary,
+        },
+        title: {
+            fontSize: 30,
+            fontWeight: 'bold',
+            color: colors.primary,
         },
         textForPressing:{
             color: colors.third,
@@ -60,5 +65,29 @@ export const createGlobalStyles = (colors: any) =>
             flexDirection: 'row',
             alignItems: 'center',
             width: '100%',
+        },
+        simpleText:{
+            fontSize: 15,
+            color: colors.third,
+        },
+        formContainer:{
+            width: '100%',
+            height: '100%',
+            backgroundColor: colors.secondary,
+            marginTop: '60%',
+            gap: 30,
+            padding: '10%',
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        errorText:{
+          color: 'red',
+          fontWeight: 'bold',
+        },
+        eyeIcon:{
+            position: 'absolute',
+            right: 10,
+            top: '25%',
+            color: colors.primary,
         },
     });
