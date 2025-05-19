@@ -30,7 +30,9 @@ export const createGlobalStyles = (colors: any) =>
         input: {
             borderWidth: 1,
             width: "100%",
-            height: "auto"
+            height: "auto",
+            color: colors.primary,
+            borderColor: colors.primary,
         },
         subtitle: {
             fontSize: 20,
@@ -57,7 +59,7 @@ export const createGlobalStyles = (colors: any) =>
             width: '80%',
             padding: 10,
             gap: 20,
-            backgroundColor: 'white',
+            backgroundColor: colors.secondary,
             borderRadius: 10,
         },
         rowContainer:{
