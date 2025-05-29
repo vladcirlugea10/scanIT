@@ -20,7 +20,7 @@ const darkColors = {
     warning: '#EAC435',
     danger: '#DE541E',
     success: '#4CAF50',
-    white: '#ffffff',
+    white: '#5A5A5A',
     Oldthird: '#0C090D',
     newThird: '#08415C'
 }

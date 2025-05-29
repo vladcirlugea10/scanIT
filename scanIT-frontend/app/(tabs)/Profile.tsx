@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Alert } from 'react-native'
 import React from 'react'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList';
@@ -6,7 +6,7 @@ import ProfileSectionCard from '@/components/ProfileSectionCard';
 import { useTheme } from '../ColorThemeContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import Toast from 'react-native-toast-message';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 const Profile = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -42,18 +42,26 @@ const Profile = () => {
       await onLogout();
       navigation.navigate("Home");
     }
-  }
-
-  const showToast = () => {
-      Toast.show({
-          type: 'success',
-          text1: t("colorSchemeChanged"),
-      });
-  }
+  };
 
   const handleChangeColorScheme = () => {
     toggleTheme();
-    showToast();
+    toastSuccess(t("colorSchemeChanged"));
+  };
+
+  const showAlert = () => {
+    Alert.alert(
+      t('logout'),
+      t('areYouSureLogout'),
+      [
+        {
+          text: t('cancel'),
+          style: 'cancel',
+        },
+        { text: t('yes'), onPress: handleLogout },
+      ],
+      { cancelable: false }
+    )
   }
 
   return (
@@ -64,10 +72,9 @@ const Profile = () => {
         <ProfileSectionCard onPress={() => navigation.navigate('AddedProducts')} title={t('addedProducts')} iconName='add-circle' iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={() => navigation.navigate('EditedProducts')} title={t('editedProducts')} iconName='create' iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={handleChangeColorScheme} title={theme === 'light' ? t('darkMode') : t('lightMode')} iconName={theme === 'light' ? 'moon' : 'sunny'} iconSize={24} textColor={colors.secondary} />
-        <ProfileSectionCard onPress={() => console.log('Notifications')} title={t('notifications')} iconName='notifications' iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={() => navigation.navigate('ChangeLanguage')} title={t('languageAndLocation')} iconName='language' iconSize={24} textColor={colors.secondary} />
         <ProfileSectionCard onPress={() => console.log('Terms of use')} title={t('termsOfUse')} iconName='help-circle' iconSize={24} textColor={colors.secondary} />
-        <ProfileSectionCard onPress={handleLogout} title={t('logout')} iconName='log-out' iconSize={24} textColor={colors.secondary} containerStyle={{backgroundColor: colors.danger}} textStyle={{borderBottomWidth: 0}} />
+        <ProfileSectionCard onPress={showAlert} title={t('logout')} iconName='log-out' iconSize={24} textColor={colors.secondary} containerStyle={{backgroundColor: colors.danger, marginTop: "15%"}} textStyle={{borderBottomWidth: 0}} />
       </View>
     </View>
   )

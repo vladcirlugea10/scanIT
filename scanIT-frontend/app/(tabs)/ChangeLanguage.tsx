@@ -1,11 +1,11 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '../ColorThemeContext';
 import * as SecureStore from 'expo-secure-store';
 import SelectBox from '@/components/SelectBox';
-import countryMap from '@/assets/data/countries';
-import Toast from 'react-native-toast-message';
+import { countryMap } from '@/assets/data/countries';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 const ChangeLanguage = () => {
     const { t, i18n } = useTranslation();
@@ -41,26 +41,19 @@ const ChangeLanguage = () => {
         }
     });
 
-    const showToast = () => {
-        Toast.show({
-            type: 'success',
-            text1: t("languageChanged"),
-        });
-    }
-
     const handleLanguageChange = async (language: string) => {
         await SecureStore.setItemAsync('selectedLanguage', language);
         i18n.changeLanguage(language);
-        showToast();
+        toastSuccess(t("languageChanged"));
         console.log("Language changed to: ", language);
-    }
+    };
 
     const handleSelectedCountry = async (country: string) => {
         console.log("Selected country: ", country);
         setSelectedCountry(country);
         await SecureStore.setItemAsync('selectedCountry', country);
         console.log("Country code saved: ", country);
-    }
+    };
 
     return (
         <View style={styles.mainContainer}>

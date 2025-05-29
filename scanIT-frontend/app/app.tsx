@@ -7,10 +7,14 @@ import { AuthProvider } from '@/hooks/useAuth';
 import { ThemeProvider } from './ColorThemeContext';
 import '@/i18next';
 import Toast from 'react-native-toast-message';
+import * as SecureStore from 'expo-secure-store';
 
 const App = () => {
   const initDatabase = async () => {
     try {
+      if(!await SecureStore.getItemAsync('selectedLanguage')) {
+        await SecureStore.setItemAsync('selectedLanguage', 'en'); // Default language
+      }
       await initDB();
       console.log('Database initialized with success!');
     } catch(error) {

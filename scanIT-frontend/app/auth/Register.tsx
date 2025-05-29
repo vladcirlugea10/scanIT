@@ -12,6 +12,8 @@ import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
 import ShakingErrorText from '@/components/ShakingErrorText'
 import { createGlobalStyles } from '@/assets/styles'
+import { toastSuccess } from '@/components/ToastSuccess'
+import { toastError } from '@/components/ToastError'
 
 type RegisterNavigationProps = NativeStackNavigationProp<AuthStackParams, 'Register'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -38,22 +40,12 @@ const Register = () => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.secondary
+      backgroundColor: colors.third
     },
-    formContainer:{
-        width: '100%',
-        height: '100%',
-        backgroundColor: colors.white,
-        marginTop: '60%',
-        gap: 30,
-        padding: '10%',
-        display: 'flex',
-        flexDirection: 'column',
-      },
       title:{
         fontSize: 30,
         fontWeight: 'bold',
-        color: colors.third,
+        color: colors.primary,
         marginBottom: '5%',
       },
       inputContainer:{
@@ -80,23 +72,19 @@ const Register = () => {
         flexDirection: 'column',
         gap: 10,
       },
-      errorText:{
-        fontWeight: 'bold',
-        color: colors.danger,
-      },
       passwordContainer:{
         position: 'relative',
         width: '100%',
       },
-      eyeIcon:{
-        position: 'absolute',
-        right: 10,
-        top: '25%',
-        color: colors.primary,
-      },
   });
 
   const { onRegister, error, clearError, loading } = useAuth();
+
+  useEffect(() => {
+    if(error){
+      toastError(error);
+    }
+  }, [error]);
 
   const onSubmit = async () => {
     Keyboard.dismiss();
@@ -113,6 +101,7 @@ const Register = () => {
     const response = await onRegister(newUser);
     if(response){
       parentNavigation.navigate('Profile');
+      toastSuccess(t('registerSuccess'));
     }
   }
 
@@ -131,17 +120,17 @@ const Register = () => {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
-        <View style={styles.formContainer}>
+        <View style={globalStyles.formContainer}>
           <Text style={styles.title}>{t('createAnAccount')}</Text>
           <View style={styles.inputContainer}>
-            <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
+            <TextInput style={styles.input} placeholderTextColor={colors.primary} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
             <View style={styles.passwordContainer}>
-              <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
-              <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+              <TextInput style={styles.input} placeholderTextColor={colors.primary} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
+              <MaterialCommunityIcons name='eye' size={24} style={globalStyles.eyeIcon} onPress={handleShowPass} />
             </View>
-            <TextInput style={styles.input} value={userName} onChangeText={setUserName} placeholder={t('username')} autoCapitalize="none" />
-            <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder={t('firstName')} autoCapitalize="words" />
-            <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder={t('lastName(optional)')} autoCapitalize="words" />
+            <TextInput style={styles.input} placeholderTextColor={colors.primary} value={userName} onChangeText={setUserName} placeholder={t('username')} autoCapitalize="none" />
+            <TextInput style={styles.input} placeholderTextColor={colors.primary} value={firstName} onChangeText={setFirstName} placeholder={t('firstName')} autoCapitalize="words" />
+            <TextInput style={styles.input} placeholderTextColor={colors.primary} value={lastName} onChangeText={setLastName} placeholder={t('lastName(optional)')} autoCapitalize="words" />
             <View>
               {showDate && <DateTimePicker value={new Date()} mode='date' display='spinner' maximumDate={new Date()} onChange={(event, selectedDate) => {
                 if(selectedDate){
@@ -149,8 +138,8 @@ const Register = () => {
                 }
                 setShowDate(false);
               }} />}
-              <TextInput style={styles.input} value={formatDateToString(birthday)} placeholder={t('birthdat(optional)')} editable={false} />
-              <MaterialCommunityIcons name='calendar' size={24} style={styles.eyeIcon} onPress={handleShowDate} />
+              <TextInput style={styles.input} placeholderTextColor={colors.primary} value={formatDateToString(birthday)} placeholder={t('birthdat(optional)')} editable={false} />
+              <MaterialCommunityIcons name='calendar' size={24} style={globalStyles.eyeIcon} onPress={handleShowDate} />
             </View>
           </View>
           {loading && <ActivityIndicator size='large' color={colors.primary} />}

@@ -12,7 +12,8 @@ import { RootStackParamList } from '@/types/StackParamsList';
 import { createGlobalStyles } from '@/assets/styles';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Toast from 'react-native-toast-message';
+import { toastSuccess } from '@/components/ToastSuccess';
+import { toastError } from '@/components/ToastError';
 
 const AddProduct = () => {
     const { colors } = useTheme();
@@ -78,11 +79,14 @@ const AddProduct = () => {
         await addImage(imageNutrition, newProduct.barcode, 'nutrition');
         console.log("Image nutrition added successfully");
       }
-
-      showToast();
-      setTimeout(() => {
-        navigation.navigate("AccountInformation");
-      }, 2500);
+      if(!error && response?.status === 1){
+        toastSuccess(t("productAdded"));
+        setTimeout(() => {
+          navigation.navigate("Profile");
+        }, 2500);
+      }else{
+        toastError(t("productNotAdded"));
+      }
     }
 
     const handleCheckBarcode = async () => {
@@ -134,13 +138,6 @@ const AddProduct = () => {
       }
     };
 
-    const showToast = () => {
-            Toast.show({
-                type: 'success',
-                text1: t("productAdded"),
-            });
-    }
-
     if(checkedBarcode){
       return (
         <View style={globalStyles.addProductmainContainer}>
@@ -148,27 +145,27 @@ const AddProduct = () => {
             <View style={globalStyles.addProductDataContainer}>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("productName")}</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, product_name: text}))} placeholder={t("productName")} />
+                  <Text style={globalStyles.simpleText}>{t("productName")}</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, product_name: text}))} placeholder={t("productName")} />
                 </View>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>Brand</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, brands: text}))} placeholder="Brand" />
+                  <Text style={globalStyles.simpleText}>Brand</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, brands: text}))} placeholder="Brand" />
                 </View>
               </View>
               <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("categories")}</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, categories: text}))} placeholder={`${t("categories")} - ${t("separateWith")} ,`} />
+                  <Text style={globalStyles.simpleText}>{t("categories")}</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, categories: text}))} placeholder={`${t("categories")} - ${t("separateWith")} ,`} />
               </View>
               <Text style={globalStyles.subtitle}>{t("soldIn")}:</Text>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("countries")}</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, countries: text}))} placeholder={`${t("countries")} - ${t("separateWith")} ,`} />
+                  <Text style={globalStyles.simpleText}>{t("countries")}</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, countries: text}))} placeholder={`${t("countries")} - ${t("separateWith")} ,`} />
                 </View>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("stores")}</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, stores: text}))} placeholder={`${t("stores")} - ${t("separateWith")} ,`} />
+                  <Text style={globalStyles.simpleText}>{t("stores")}</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, stores: text}))} placeholder={`${t("stores")} - ${t("separateWith")} ,`} />
                 </View>
               </View>
               <View style={{display: 'flex', flexDirection: 'column', gap: 10}}>
@@ -210,96 +207,96 @@ const AddProduct = () => {
                 </View>
               </View>
               <Text style={globalStyles.subtitle}>{t("ingredients")}</Text>
-              <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, ingredients_text: text}))} placeholder={`${t("ingredients")} - ${t("separateWith")} ,`} />
+              <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, ingredients_text: text}))} placeholder={`${t("ingredients")} - ${t("separateWith")} ,`} />
               <Text style={globalStyles.subtitle}>{t("nutrimentsInfo")}:</Text>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("carbohydrates")}(g)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, carbohydrates: parseFloat(text)}))} placeholder={t("carbohydrates")} />
+                  <Text style={globalStyles.simpleText}>{t("carbohydrates")}(g)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, carbohydrates: parseFloat(text)}))} placeholder={t("carbohydrates")} />
                 </View>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("carbohydrates")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, carbohydrates_100g: parseFloat(text)}))} placeholder={t("carbohydrates")} />
-                </View>
-              </View>
-              <View style={globalStyles.horizontalInputContainer}>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("energy")}(kJ)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy: parseFloat(text)}))} placeholder={t("energy")} />
-                </View>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("energy")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy_100g: parseFloat(text)}))} placeholder={t("energy")} />
+                  <Text style={globalStyles.simpleText}>{t("carbohydrates")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, carbohydrates_100g: parseFloat(text)}))} placeholder={t("carbohydrates")} />
                 </View>
               </View>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("energy")}(kcal)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy_kcal: parseFloat(text)}))} placeholder={t("energy")} />
+                  <Text style={globalStyles.simpleText}>{t("energy")}(kJ)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy: parseFloat(text)}))} placeholder={t("energy")} />
                 </View>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("energy")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy_kcal_100g: parseFloat(text)}))} placeholder={t("energy")} />
-                </View>
-              </View>
-              <View style={globalStyles.horizontalInputContainer}>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("fats")}(g)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, fat: parseFloat(text)}))} placeholder={t("fats")} />
-                </View>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("fats")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, fat_100g: parseFloat(text)}))} placeholder={t("fats")} />
+                  <Text style={globalStyles.simpleText}>{t("energy")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy_100g: parseFloat(text)}))} placeholder={t("energy")} />
                 </View>
               </View>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("proteins")}(g)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, proteins: parseFloat(text)}))} placeholder={t("proteins")} />
+                  <Text style={globalStyles.simpleText}>{t("energy")}(kcal)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy_kcal: parseFloat(text)}))} placeholder={t("energy")} />
                 </View>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("proteins")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, proteins_100g: parseFloat(text)}))} placeholder={t("proteins")} />
-                </View>
-              </View>
-              <View style={globalStyles.horizontalInputContainer}>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("salt")}(g)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, salt: parseFloat(text)}))} placeholder={t("salt")} />
-                </View>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("salt")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, salt_100g: parseFloat(text)}))} placeholder={t("salt")} />
+                  <Text style={globalStyles.simpleText}>{t("energy")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, energy_kcal_100g: parseFloat(text)}))} placeholder={t("energy")} />
                 </View>
               </View>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("saturatedFats")}(g)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, saturated_fat: parseFloat(text)}))} placeholder={t("saturatedFats")} />
+                  <Text style={globalStyles.simpleText}>{t("fats")}(g)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, fat: parseFloat(text)}))} placeholder={t("fats")} />
                 </View>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("saturatedFats")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, saturated_fat_100g: parseFloat(text)}))} placeholder={t("saturatedFats")} />
-                </View>
-              </View>
-              <View style={globalStyles.horizontalInputContainer}>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("sodium")}(g)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, sodium: parseFloat(text)}))} placeholder={t("sodium")} />
-                </View>
-                <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("sodium")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, sodium_100g: parseFloat(text)}))} placeholder={t("sodium")} />
+                  <Text style={globalStyles.simpleText}>{t("fats")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, fat_100g: parseFloat(text)}))} placeholder={t("fats")} />
                 </View>
               </View>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("sugars")}(g)</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, sugars: parseFloat(text)}))} placeholder={t("sugars")} />
+                  <Text style={globalStyles.simpleText}>{t("proteins")}(g)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, proteins: parseFloat(text)}))} placeholder={t("proteins")} />
                 </View>
                 <View style={globalStyles.addProductInputContainer}>
-                  <Text>{t("sugars")}/100g</Text>
-                  <TextInput style={globalStyles.input} onChangeText={(text) => setNewProduct((prev) => ({...prev, sugars_100g: parseFloat(text)}))} placeholder={t("sugars")} />
+                  <Text style={globalStyles.simpleText}>{t("proteins")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, proteins_100g: parseFloat(text)}))} placeholder={t("proteins")} />
+                </View>
+              </View>
+              <View style={globalStyles.horizontalInputContainer}>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("salt")}(g)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, salt: parseFloat(text)}))} placeholder={t("salt")} />
+                </View>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("salt")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, salt_100g: parseFloat(text)}))} placeholder={t("salt")} />
+                </View>
+              </View>
+              <View style={globalStyles.horizontalInputContainer}>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("saturatedFats")}(g)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, saturated_fat: parseFloat(text)}))} placeholder={t("saturatedFats")} />
+                </View>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("saturatedFats")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, saturated_fat_100g: parseFloat(text)}))} placeholder={t("saturatedFats")} />
+                </View>
+              </View>
+              <View style={globalStyles.horizontalInputContainer}>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("sodium")}(g)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, sodium: parseFloat(text)}))} placeholder={t("sodium")} />
+                </View>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("sodium")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, sodium_100g: parseFloat(text)}))} placeholder={t("sodium")} />
+                </View>
+              </View>
+              <View style={globalStyles.horizontalInputContainer}>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("sugars")}(g)</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, sugars: parseFloat(text)}))} placeholder={t("sugars")} />
+                </View>
+                <View style={globalStyles.addProductInputContainer}>
+                  <Text style={globalStyles.simpleText}>{t("sugars")}/100g</Text>
+                  <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, sugars_100g: parseFloat(text)}))} placeholder={t("sugars")} />
                 </View>
               </View>
               { error ? <ShakingErrorText text={error} /> : null }
@@ -314,8 +311,8 @@ const AddProduct = () => {
     return (
       <View style={[globalStyles.addProductmainContainer, {alignItems: "center", paddingTop: 100}]}>
         <View style={globalStyles.addProductInputContainer}>
-          <Text>{t("enterBarcode")}: </Text>
-          <TextInput style={globalStyles.input} onChangeText={(text) => setBarcode(text)} keyboardType='numeric' placeholder={t("barcode")} />
+          <Text style={globalStyles.simpleText}>{t("enterBarcode")}: </Text>
+          <TextInput style={[globalStyles.input, {borderColor: colors.primary}]} placeholderTextColor={colors.primary} onChangeText={(text) => setBarcode(text)} keyboardType='numeric' placeholder={t("barcode")} />
         </View>
         { productState === "Barcode is empty" ? <ShakingErrorText text={productState} /> : null }
         { productState === "Product already exists" ? 
@@ -328,6 +325,7 @@ const AddProduct = () => {
           </> : 
           null 
         }
+        {loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
         <MyButton title={t("submitBarcode")} onPress={handleCheckBarcode} containerStyle={{width: "auto", marginTop: 20}} />
       </View>
     )

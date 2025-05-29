@@ -12,7 +12,8 @@ import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks/useAuth';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Toast from 'react-native-toast-message';
+import { toastSuccess } from '@/components/ToastSuccess';
+import { toastError } from '@/components/ToastError';
 
 type EditProductProps = { route: RouteProp<RootStackParamList, "EditProduct"> };
 
@@ -59,38 +60,106 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
     });
 
     const handleEditProduct = async () => {
-        if(editedProduct.product_name == product?.product_name || editedProduct.product_name == product?.product_name_en ){
-            console.log("product",product?.product_name_en);
-            console.log("edited",editedProduct.product_name);
-            setEditedProduct((prev) => ({...prev, product_name: ""}));
+        let productToEdit = { ...editedProduct };
+        
+        if(productToEdit.product_name == product?.product_name || productToEdit.product_name == product?.product_name_en ){
+            productToEdit.product_name = "";
         }
-        if(editedProduct.ingredients_text == product?.ingredients_text){
-            setEditedProduct((prev) => ({...prev, ingredients_text: ""}));
+        if(productToEdit.ingredients_text == product?.ingredients_text){
+            productToEdit.ingredients_text = "";
         }
-        console.log(editedProduct);
-        const response = await editProduct(editedProduct);
-        console.log("response:", response);
-        if(response.status === 1){
-            await addEditedProduct(editedProduct.barcode);
+        
+        console.log('productToEdit:', productToEdit);
+        
+        const { barcode, ...productWithoutBarcode } = productToEdit;
+        const hasProductChanges = Object.values(productWithoutBarcode).some(value => 
+            value !== "" && value !== 0
+        );
+    
+        const hasImages = imageFront || imageIngredients || imageNutrition;
+        
+        if (!hasProductChanges && !hasImages) {
+            console.log('No changes to save, returning early');
+            toastError("No changes to save");
+            return;
         }
-
+        
+        let productEditSuccess = true;
+        let response = { status: 1 };
+        
+        if (hasProductChanges) {
+            response = await editProduct(productToEdit);
+            console.log("response:", response);
+            productEditSuccess = response.status === 1;
+            
+            if (productEditSuccess) {
+                console.log('About to call addEditedProduct with barcode:', productToEdit.barcode);
+                try {
+                    await addEditedProduct(productToEdit.barcode);
+                    console.log('addEditedProduct completed successfully');
+                } catch (error) {
+                    console.error('Error in addEditedProduct:', error);
+                }
+            }
+            console.log('Product edit section completed');
+        } else {
+            console.log('No product changes, skipping product edit');
+        }
+        
+        let imageUploadSuccess = true;
+        
         if (imageFront) {
-            await addImage(imageFront, editedProduct.barcode, 'front');
-            console.log("Image front added successfully");
+            console.log('Attempting to upload front image...');
+            try {
+                const result = await addImage(imageFront, productToEdit.barcode, 'front');
+                console.log("Front image upload result:", result);
+            } catch (error) {
+                console.error("Failed to upload front image:", error);
+                imageUploadSuccess = false;
+            }
+        } else {
+            console.log('No front image to upload');
         }
+        
         if (imageIngredients) {
-            await addImage(imageIngredients, editedProduct.barcode, 'ingredients');
-            console.log("Image ingredients added successfully");
+            console.log('Attempting to upload ingredients image...');
+            try {
+                const result = await addImage(imageIngredients, productToEdit.barcode, 'ingredients');
+                console.log("Ingredients image upload result:", result);
+            } catch (error) {
+                console.error("Failed to upload ingredients image:", error);
+                imageUploadSuccess = false;
+            }
+        } else {
+            console.log('No ingredients image to upload');
         }
+        
         if (imageNutrition) {
-            await addImage(imageNutrition, editedProduct.barcode, 'nutrition');
-            console.log("Image nutrition added successfully");
+            console.log('Attempting to upload nutrition image...');
+            console.log('Calling addImage with:', {
+                image: imageNutrition,
+                barcode: productToEdit.barcode,
+                imagefield: 'nutrition'
+            });
+            try {
+                const result = await addImage(imageNutrition, productToEdit.barcode, 'nutrition');
+                console.log("Nutrition image upload result:", result);
+            } catch (error) {
+                console.error("Failed to upload nutrition image:", error);
+                imageUploadSuccess = false;
+            }
+        } else {
+            console.log('No nutrition image to upload');
         }
-
-        showToast();
-        setTimeout(() => {
-            navigation.navigate("AccountInformation");
-          }, 2500);
+        
+        if (!error && (productEditSuccess || !hasProductChanges) && imageUploadSuccess) {
+            toastSuccess(t("productEdited"));
+            setTimeout(() => {
+                navigation.navigate("Profile");
+            }, 2500);
+        } else {
+            toastError(t("errorEditingProduct"));
+        }
     }
 
     const pickImage = async (type: string) => {
@@ -117,38 +186,31 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
           }
     };
 
-    const showToast = () => {
-        Toast.show({
-            type: 'success',
-            text1: t("productEdited"),
-        });
-    }
-
     return (
         <View style={globalStyles.addProductmainContainer}>
             <ScrollView>
                 <View style={globalStyles.addProductDataContainer}>
                     <View style={globalStyles.addProductInputContainer}>
-                        <Text>{t("productName")}</Text>
-                        <TextInput style={globalStyles.input} editable={true} defaultValue={product?.product_name || product?.product_name_en} onChangeText={(text) => setEditedProduct((prev) => ({...prev, product_name: text}))} placeholder={ product?.product_name ? "" : t("productName")} />
+                        <Text style={globalStyles.simpleText}>{t("productName")}</Text>
+                        <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} editable={true} defaultValue={product?.product_name || product?.product_name_en} onChangeText={(text) => setEditedProduct((prev) => ({...prev, product_name: text}))} placeholder={ product?.product_name ? "" : t("productName")} />
                     </View>
                     <View style={globalStyles.addProductInputContainer}>
-                        <Text>Brands - {product?.brands || t("none")}</Text>
-                        <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, brands: text}))} placeholder={`Brands - ${t("separateWith")} ,`} />
+                        <Text style={globalStyles.simpleText}>Brands - {product?.brands || t("none")}</Text>
+                        <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, brands: text}))} placeholder={`Brands - ${t("separateWith")} ,`} />
                     </View>
                     <View style={globalStyles.addProductInputContainer}>
-                        <Text>{t("categories") || t("none")} - {product?.categories}</Text>
-                        <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, categories: text}))} placeholder={`${t("categories")} - ${t("separateWith")} ,`} />
+                        <Text style={globalStyles.simpleText}>{t("categories") || t("none")} - {product?.categories}</Text>
+                        <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, categories: text}))} placeholder={`${t("categories")} - ${t("separateWith")} ,`} />
                     </View>
                     <Text style={globalStyles.subtitle}>{t("soldIn")}:</Text>
                     <View style={globalStyles.horizontalInputContainer}>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("countries")} - {product?.countries || t("none")}</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, countries: text}))} placeholder={`${t("countries")} - ${t("separateWith")} ,`} />
+                            <Text style={globalStyles.simpleText}>{t("countries")} - {product?.countries || t("none")}</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, countries: text}))} placeholder={`${t("countries")} - ${t("separateWith")} ,`} />
                         </View>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("stores")} - {product?.stores || t("none")}</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, stores: text}))} placeholder={`${t("stores")} - ${t("separateWith")} ,`} />
+                            <Text style={globalStyles.simpleText}>{t("stores")} - {product?.stores || t("none")}</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, stores: text}))} placeholder={`${t("stores")} - ${t("separateWith")} ,`} />
                         </View>
                     </View>
                     <View style={{display: 'flex', flexDirection: 'column', gap: 10}}>
@@ -190,96 +252,96 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
                         </View>
                     </View>
                     <Text style={globalStyles.subtitle}>{t("ingredients")}</Text>
-                    <TextInput style={globalStyles.input} defaultValue={product?.ingredients_text} onChangeText={(text) => setEditedProduct((prev) => ({...prev, ingredients_text: text}))} placeholder={`${t("ingredients")} - ${t("separateWith")} ,`} />
+                    <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} defaultValue={product?.ingredients_text} onChangeText={(text) => setEditedProduct((prev) => ({...prev, ingredients_text: text}))} placeholder={`${t("ingredients")} - ${t("separateWith")} ,`} />
                     <Text style={globalStyles.subtitle}>{t("nutrimentsInfo")}:</Text>
                     <View style={globalStyles.horizontalInputContainer}>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("carbohydrates")} - {product?.nutriments.carbohydrates}(g)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, carbohydrates: parseFloat(text)}))} placeholder={t("carbohydrates")} />
+                            <Text style={globalStyles.simpleText}>{t("carbohydrates")} - {product?.nutriments.carbohydrates}(g)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, carbohydrates: parseFloat(text)}))} placeholder={t("carbohydrates")} />
                         </View>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("carbohydrates")} - {product?.nutriments.carbohydrates_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, carbohydrates_100g: parseFloat(text)}))} placeholder={t("carbohydrates")} />
-                        </View>
-                    </View>
-                    <View style={globalStyles.horizontalInputContainer}>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("energy")} - {product?.nutriments.energy}(kJ)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy: parseFloat(text)}))} placeholder={t("energy")} />
-                        </View>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("energy")} - {product?.nutriments.energy_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy_100g: parseFloat(text)}))} placeholder={t("energy")} />
+                            <Text style={globalStyles.simpleText}>{t("carbohydrates")} - {product?.nutriments.carbohydrates_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, carbohydrates_100g: parseFloat(text)}))} placeholder={t("carbohydrates")} />
                         </View>
                     </View>
                     <View style={globalStyles.horizontalInputContainer}>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("energy")} - {product?.nutriments['energy-kcal']}(kcal)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy_kcal: parseFloat(text)}))} placeholder={t("energy")} />
+                            <Text style={globalStyles.simpleText}>{t("energy")} - {product?.nutriments.energy}(kJ)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy: parseFloat(text)}))} placeholder={t("energy")} />
                         </View>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("energy")} - {product?.nutriments['energy-kcal_100g']}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy_kcal_100g: parseFloat(text)}))} placeholder={t("energy")} />
-                        </View>
-                    </View>
-                    <View style={globalStyles.horizontalInputContainer}>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("fats")} - {product?.nutriments.fat}(g)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, fat: parseFloat(text)}))} placeholder={t("fats")} />
-                        </View>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("fats")} - {product?.nutriments.fat_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, fat_100g: parseFloat(text)}))} placeholder={t("fats")} />
+                            <Text style={globalStyles.simpleText}>{t("energy")} - {product?.nutriments.energy_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy_100g: parseFloat(text)}))} placeholder={t("energy")} />
                         </View>
                     </View>
                     <View style={globalStyles.horizontalInputContainer}>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("proteins")} - {product?.nutriments.proteins}(g)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, proteins: parseFloat(text)}))} placeholder={t("proteins")} />
+                            <Text style={globalStyles.simpleText}>{t("energy")} - {product?.nutriments['energy-kcal']}(kcal)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy_kcal: parseFloat(text)}))} placeholder={t("energy")} />
                         </View>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("proteins")} - {product?.nutriments.proteins_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, proteins_100g: parseFloat(text)}))} placeholder={t("proteins")} />
-                        </View>
-                    </View>
-                    <View style={globalStyles.horizontalInputContainer}>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("salt")} - {product?.nutriments.salt}(g)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, salt: parseFloat(text)}))} placeholder={t("salt")} />
-                        </View>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("salt")} - {product?.nutriments.salt_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, salt_100g: parseFloat(text)}))} placeholder={t("salt")} />
+                            <Text style={globalStyles.simpleText}>{t("energy")} - {product?.nutriments['energy-kcal_100g']}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, energy_kcal_100g: parseFloat(text)}))} placeholder={t("energy")} />
                         </View>
                     </View>
                     <View style={globalStyles.horizontalInputContainer}>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("saturatedFats")} - {product?.nutriments.saturated_fat}(g)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, saturated_fat: parseFloat(text)}))} placeholder={t("saturatedFats")} />
+                            <Text style={globalStyles.simpleText}>{t("fats")} - {product?.nutriments.fat}(g)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, fat: parseFloat(text)}))} placeholder={t("fats")} />
                         </View>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("saturatedFats")} - {product?.nutriments.saturated_fat_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, saturated_fat_100g: parseFloat(text)}))} placeholder={t("saturatedFats")} />
-                        </View>
-                    </View>
-                    <View style={globalStyles.horizontalInputContainer}>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("sodium")} - {product?.nutriments.sodium}(g)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sodium: parseFloat(text)}))} placeholder={t("sodium")} />
-                        </View>
-                        <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("sodium")} - {product?.nutriments.sodium_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sodium_100g: parseFloat(text)}))} placeholder={t("sodium")} />
+                            <Text style={globalStyles.simpleText}>{t("fats")} - {product?.nutriments.fat_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, fat_100g: parseFloat(text)}))} placeholder={t("fats")} />
                         </View>
                     </View>
                     <View style={globalStyles.horizontalInputContainer}>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("sugars")} - {product?.nutriments.sugars}(g)</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sugars: parseFloat(text)}))} placeholder={t("sugars")} />
+                            <Text style={globalStyles.simpleText}>{t("proteins")} - {product?.nutriments.proteins}(g)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, proteins: parseFloat(text)}))} placeholder={t("proteins")} />
                         </View>
                         <View style={globalStyles.addProductInputContainer}>
-                            <Text>{t("sugars")} - {product?.nutriments.sugars_100g}/100g</Text>
-                            <TextInput style={globalStyles.input} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sugars_100g: parseFloat(text)}))} placeholder={t("sugars")} />
+                            <Text style={globalStyles.simpleText}>{t("proteins")} - {product?.nutriments.proteins_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, proteins_100g: parseFloat(text)}))} placeholder={t("proteins")} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.horizontalInputContainer}>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("salt")} - {product?.nutriments.salt}(g)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, salt: parseFloat(text)}))} placeholder={t("salt")} />
+                        </View>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("salt")} - {product?.nutriments.salt_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, salt_100g: parseFloat(text)}))} placeholder={t("salt")} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.horizontalInputContainer}>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("saturatedFats")} - {product?.nutriments.saturated_fat}(g)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, saturated_fat: parseFloat(text)}))} placeholder={t("saturatedFats")} />
+                        </View>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("saturatedFats")} - {product?.nutriments.saturated_fat_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, saturated_fat_100g: parseFloat(text)}))} placeholder={t("saturatedFats")} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.horizontalInputContainer}>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("sodium")} - {product?.nutriments.sodium}(g)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sodium: parseFloat(text)}))} placeholder={t("sodium")} />
+                        </View>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("sodium")} - {product?.nutriments.sodium_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sodium_100g: parseFloat(text)}))} placeholder={t("sodium")} />
+                        </View>
+                    </View>
+                    <View style={globalStyles.horizontalInputContainer}>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("sugars")} - {product?.nutriments.sugars}(g)</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sugars: parseFloat(text)}))} placeholder={t("sugars")} />
+                        </View>
+                        <View style={globalStyles.addProductInputContainer}>
+                            <Text style={globalStyles.simpleText}>{t("sugars")} - {product?.nutriments.sugars_100g}/100g</Text>
+                            <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setEditedProduct((prev) => ({...prev, sugars_100g: parseFloat(text)}))} placeholder={t("sugars")} />
                         </View>
                     </View>
                     { error ? <ShakingErrorText text={error} /> : null }

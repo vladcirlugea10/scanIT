@@ -11,6 +11,10 @@ import { useTranslation } from 'react-i18next';
 import ShakingErrorText from '@/components/ShakingErrorText';
 import { createGlobalStyles } from '@/assets/styles';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import Animated from 'react-native-reanimated';
+import { waveKeyframe } from '@/assets/animations';
+import { toastSuccess } from '@/components/ToastSuccess';
+import { toastError } from '@/components/ToastError';
 
 type LoginNavProps = NativeStackNavigationProp<AuthStackParams, 'Login'>;
 type ParentNavigationProps = NativeStackNavigationProp<RootStackParamList>;
@@ -33,22 +37,12 @@ const Login = () => {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.secondary
-    },
-    formContainer:{
-      width: '100%',
-      height: '100%',
-      backgroundColor: colors.white,
-      marginTop: '80%',
-      gap: 30,
-      padding: '10%',
-      display: 'flex',
-      flexDirection: 'column',
+      backgroundColor: colors.third
     },
     title:{
       fontSize: 30,
       fontWeight: 'bold',
-      color: colors.third,
+      color: colors.primary,
       marginBottom: '5%',
     },
     inputContainer:{
@@ -75,21 +69,17 @@ const Login = () => {
       position: 'relative',
       width: '100%',
     },
-    eyeIcon:{
-      position: 'absolute',
-      right: 10,
-      top: '25%',
-      color: colors.primary,
-    },
-    errorText:{
-      color: 'red',
-      fontWeight: 'bold',
-    }
   });
 
   useEffect(() => {
     return () => clearError();
   }, [email, password]);
+
+  useEffect(() => {
+    if(error){
+      toastError(error);
+    }
+  }, [error]);
 
   const onSubmit = async () => {
     Keyboard.dismiss();
@@ -102,6 +92,7 @@ const Login = () => {
     console.log(response);
     if(response){
       parentNavigation.navigate('Profile');
+      toastSuccess(t('loginSuccess'));
     }
   }
 
@@ -129,13 +120,16 @@ const Login = () => {
   return (
     <ScrollView>
       <View style={styles.mainContainer}>
-          <View style={styles.formContainer}>
-            <Text style={styles.title}>{t('welcomeBack')}!</Text>
+          <View style={[globalStyles.formContainer, {marginTop: "80%"}]}>
+            <View style={[globalStyles.rowContainer, {gap: 20, alignItems: 'baseline'}]}>
+              <Text style={styles.title}>{t('welcomeBack')}!</Text>
+              <Animated.Text entering={waveKeyframe.duration(3000)} style={{fontSize: 40}}>👋</Animated.Text>
+            </View>
             <View style={styles.inputContainer}>
-              <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
+              <TextInput style={styles.input} placeholderTextColor={colors.primary} value={email} onChangeText={setEmail} placeholder='Email' keyboardType="email-address" autoCapitalize="none" />
               <View style={styles.passwordContainer}>
-                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
-                <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+                <TextInput style={styles.input} placeholderTextColor={colors.primary} value={password} onChangeText={setPassword} placeholder={t('password')} autoCapitalize="none" secureTextEntry={!showPass} />
+                <MaterialCommunityIcons name='eye' size={24} style={globalStyles.eyeIcon} onPress={handleShowPass} />
               </View>
               {loading && <ActivityIndicator size='large' color={colors.primary} />}
               {error && <ShakingErrorText text={error} />}
@@ -145,8 +139,8 @@ const Login = () => {
               <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('ForgotPassword'); clearError()}}>{t('forgotPassword')}?</Text>
               <Text style={globalStyles.textForPressing} onPress={() => {navigation.navigate('Register'); clearError()}}>{t('createAnAccount')}</Text>
             </View>
-            <View style={{display: 'flex', flexDirection: 'row', gap: 10, marginTop: 20}}>
-              <Text>{t('authWith')}</Text>
+            <View style={{display: 'flex', flexDirection: 'row', gap: 10, marginTop: 20, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={globalStyles.textForPressing} >{t('authWith')}:</Text>
               <TouchableOpacity onPress={handleGoogleLogin}>
                 <Image source={require('@/assets/images/google.png')} style={{width: 30, height: 30}} />
               </TouchableOpacity>

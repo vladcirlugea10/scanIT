@@ -1,12 +1,15 @@
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RouteProp } from '@react-navigation/native'
 import { RootStackParamList } from '@/types/StackParamsList'
 import { useTheme } from '../ColorThemeContext';
 import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
-import { LayoutAnimationType } from 'react-native-reanimated';
+import * as SecureStore from 'expo-secure-store';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useTextTranslation from '@/hooks/useTextTranslation';
+import { createGlobalStyles } from '@/assets/styles';
 
 type BarcodeResultsProps = { route: RouteProp<RootStackParamList, 'BarcodeResults'> };
 
@@ -16,9 +19,14 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   const { token } = useAuth();
   const { addProduct } = useUser(token);
   const { t } = useTranslation();
+  const { translateText } = useTextTranslation();
+  const globalStyles = createGlobalStyles(colors);
   const energykcal = product.nutriments["energy-kcal"];
   const energykcal100g = product.nutriments["energy-kcal_100g"];
   const energykcalunit = product.nutriments["energy-kcal_unit"];
+
+  const [translatedText, setTranslatedText] = useState("");
+  const [translatedTitle, setTranslatedTitle] = useState("");
 
   const styles = StyleSheet.create({
     mainContainer: {
@@ -35,17 +43,6 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
       flexGrow: 1,
       backgroundColor: colors.secondary,
     },
-    title: {
-      fontSize: 30,
-      fontWeight: 'bold',
-    },
-    subtitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
-    text: {
-      fontSize: 16,
-    },
     imagesContainer: {
       flexDirection: "row",
       flexWrap: "wrap",
@@ -53,7 +50,7 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
       gap: 10,
       paddingTop: 10,
       borderTopWidth: 5,
-      borderTopColor: colors.primary,
+      borderTopColor: colors.third,
     },
     image: {
       width: "30%",
@@ -67,7 +64,8 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
     headerText: {
       flex: 1,
       textAlign: 'center',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      color: colors.third
     },
     tableRow: {
       flex: 1, 
@@ -78,6 +76,7 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
     rowText: {
       flex: 1,
       textAlign: 'center',
+      color: colors.third,
     }
   });
 
@@ -106,7 +105,6 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
   }
 
   useEffect(() => {
-    console.log("aici:",product);
     const newProduct: ScannedProduct = {
       barcode: product._id,
       name: product.product_name,
@@ -117,29 +115,49 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
     addProduct(newProduct);
   }, []);
 
+  useEffect(() => {
+    const getLangAndTranslate = async () => {
+      try{
+        const targetLanguage = await SecureStore.getItemAsync('selectedLanguage');
+        const target = targetLanguage?.split('-')[0];
+        console.log("Target language: ", target);
+        const [translatedText, translatedTitle] = await Promise.all([
+          translateText(product.ingredients_text, target),
+          translateText(product.product_name, target),
+        ]);
+  
+        setTranslatedText(translatedText || "");
+        setTranslatedTitle(translatedTitle || "");
+      }catch(error){
+        console.error("Error translating text: ", error);
+      }
+    }
+    getLangAndTranslate();
+  }, []);
+
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.mainContainer}>
-        <Text style={styles.title}>{product.product_name} - {product.brands}</Text>
+        <Text style={globalStyles.title}>{translatedTitle || product.product_name} - {product.brands}</Text>
         <View style={styles.imagesContainer}>
           <Image style={styles.image} source={{uri: product.image_url}} />
           {product.selected_images && product.selected_images.front && <Image source={{uri: product.selected_images.front.display.ro}} style={styles.image} />}
           {product.selected_images && product.selected_images.ingredients && <Image source={{uri: product.selected_images.ingredients.display.ro}} style={styles.image} />}
           {product.selected_images && product.selected_images.nutrition && <Image source={{uri: product.selected_images.nutrition.display.ro}} style={styles.image} />}
         </View>
-        <Text style={styles.subtitle}>{t('soldIn')}</Text>
-        <Text style={styles.text}>{product.countries}</Text>
-        <Text style={styles.subtitle}>{t('ingredients')}</Text>
-        <Text style={styles.text}>{product.ingredients_text}</Text>
+        <Text style={globalStyles.subtitle}>{t('soldIn')}</Text>
+        <Text style={globalStyles.simpleText}>{product.countries}</Text>
+        <Text style={globalStyles.subtitle}>{t('ingredients')}</Text>
+        <Text style={globalStyles.simpleText}>{translatedText || product.ingredients_text}</Text>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Image source={{ uri: getNutriscoreImage(product.nutriscore_grade)}} style={{width: 200, height: 100}} />
         </View>
-        <Text style={styles.subtitle}>Product has {product.additives_n} additives: </Text>
+        <Text style={globalStyles.subtitle}>Product has {product.additives_n} additives </Text>
         { product.additives_tags && product.additives_tags.map((additive, index) => {
-            return <Text style={styles.text} key={index}>{additive}</Text>
+            return <Text style={globalStyles.simpleText} key={index}>{additive}</Text>
           })
         }
-        <Text style={styles.subtitle}>{t('nutritionalValues')}</Text>
+        <Text style={globalStyles.subtitle}>{t('nutritionalValues')}</Text>
 
         <View style={styles.tableHeader}>
           <View style={[styles.tableRow, {borderBottomWidth: 5, borderBottomColor: colors.primary}]}>
@@ -159,24 +177,30 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
             <Text style={styles.rowText}>{product.nutriments.fat_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.fat_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.fat}</Text>
+            { product.nutriments.fat > 50 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('saturatedFats')}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat}</Text>
+            { product.nutriments.saturated_fat > 20 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('carbohydrates')}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates}</Text>
+            { product.nutriments.carbohydrates > 250 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('sugars')}</Text>
             <Text style={styles.rowText}>{product.nutriments.sugars_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.sugars_100g}</Text>
-            <Text style={styles.rowText}>{product.nutriments.sugars}</Text>
+            <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+              <Text style={styles.rowText}>{product.nutriments.sugars}</Text>
+              { product.nutriments.sugars > 50 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+            </View>
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('proteins')}</Text>
@@ -189,12 +213,14 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
             <Text style={styles.rowText}>{product.nutriments.salt_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.salt_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.salt}</Text>
+            { product.nutriments.salt > 3 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('sodium')}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium}</Text>
+            { product.nutriments.sodium > 3 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
         </View>
       </View>

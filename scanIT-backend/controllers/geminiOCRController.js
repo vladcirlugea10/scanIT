@@ -14,7 +14,7 @@ exports.scanImage = async (req, res) => {
             contents: [
                 {
                     parts: [
-                        { text: "Extract all the text from this image clearly and accurately." },
+                        { text: "Extract all the text from this image clearly and accurately. Return only the text from the image." },
                         {
                             inline_data: {
                                 mime_type: mimeType,

@@ -106,9 +106,9 @@ const EditedProducts = () => {
         <View style={styles.mainContainer}>
             <Text style={[globalStyles.subtitle, {color: colors.primary}]}>{t('yourEditedProducts')}: </Text>
             <View style={styles.productContainer}>
-                {user?.addedProductsBarcodes && user.addedProductsBarcodes.length > 0 ? 
+                {user?.editedProductsBarcodes && user.editedProductsBarcodes.length > 0 ? 
                 (
-                    user.addedProductsBarcodes.map((product, index) => (
+                    user.editedProductsBarcodes.map((product, index) => (
                     <View key={index} style={styles.infoContainerRow}>
                         <Text style={styles.text}>{product}</Text>
                         <TouchableOpacity onPress={() => handleDetailsPress(product)} style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
@@ -119,7 +119,7 @@ const EditedProducts = () => {
                     ))
                 ) : 
                 (
-                    <Text style={styles.text}>{t("noProductsAdded")}</Text>
+                    <Text style={styles.text}>{t("noProductsEdited")}</Text>
                 )
                 }
                 <TouchableOpacity>

@@ -8,6 +8,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useTheme } from '../ColorThemeContext'
 import { useTranslation } from 'react-i18next'
 import ShakingErrorText from '@/components/ShakingErrorText'
+import { toastSuccess } from '@/components/ToastSuccess'
+import { toastError } from '@/components/ToastError'
+import { createGlobalStyles } from '@/assets/styles'
 
 type ResetPasswordProps = { route: RouteProp<AuthStackParams, 'ResetPassword'> };
 
@@ -21,28 +24,19 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
     const { changePassword, error, clearError, loading } = useAuth();
     const { colors } = useTheme();
     const { t } = useTranslation(); 
+    const globalStyles = createGlobalStyles(colors);
     const navigation = useNavigation<NavigationProp<AuthStackParams>>();
     const styles = StyleSheet.create({
       mainContainer: {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: colors.secondary,
+          backgroundColor: colors.third,
       },
-      formContainer:{
-          width: '100%',
-          height: '80%',
-          backgroundColor: colors.white,
-          marginTop: '40%',
-          gap: 30,
-          padding: '10%',
-          display: 'flex',
-          flexDirection: 'column',
-        },
         title:{
           fontSize: 30,
           fontWeight: 'bold',
-          color: colors.third,
+          color: colors.primary,
           borderBottomWidth: 2,
           borderBottomColor: colors.primary,
         },
@@ -59,19 +53,9 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
           color: colors.success,
           fontWeight: 'bold',
         },
-        errorText:{
-          color: 'red',
-          fontWeight: 'bold',
-        },
         passwordContainer:{
           position: 'relative',
           width: '100%',
-        },
-        eyeIcon:{
-          position: 'absolute',
-          right: 10,
-          top: '25%',
-          color: colors.primary,
         },
   });
     
@@ -79,11 +63,18 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
         return () => clearError();
     }, [password, confirmPassword]);
 
+    useEffect(() => {
+      if (error) {
+          toastError(error);
+      }
+    }, [error]);
+
     const handleSubmit = async () => {
         const response = await changePassword({email: email, password: password, confirmPassword: confirmPassword});
         if(response){
             console.log('Password changed');
             setSuccess(true);
+            toastSuccess(t('passwordChangedSuccessfully'));
             setTimeout(() => {
                 navigation.navigate('Login');
             }, 3000)
@@ -100,15 +91,15 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({route}) => {
 
   return (
     <View style={styles.mainContainer}>
-        <View style={styles.formContainer}>
+        <View style={[globalStyles.formContainer, {height: '80%', marginTop: '40%'}]}>
             <Text style={styles.title}>{t('enterANewPassword')}</Text>
             <View style={styles.passwordContainer}>
-                <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder={t('newPassword')} secureTextEntry={!showPass} autoCapitalize='none' />
-                <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowPass} />
+                <TextInput style={styles.input} placeholderTextColor={colors.primary} value={password} onChangeText={setPassword} placeholder={t('newPassword')} secureTextEntry={!showPass} autoCapitalize='none' />
+                <MaterialCommunityIcons name='eye' size={24} style={globalStyles.eyeIcon} onPress={handleShowPass} />
             </View>
             <View style={styles.passwordContainer}>
-                <TextInput style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword} placeholder={t('confirmNewPassword')} secureTextEntry={!showConfirmPass} autoCapitalize='none' />
-                <MaterialCommunityIcons name='eye' size={24} style={styles.eyeIcon} onPress={handleShowConfirmPass} />
+                <TextInput style={styles.input} placeholderTextColor={colors.primary} value={confirmPassword} onChangeText={setConfirmPassword} placeholder={t('confirmNewPassword')} secureTextEntry={!showConfirmPass} autoCapitalize='none' />
+                <MaterialCommunityIcons name='eye' size={24} style={globalStyles.eyeIcon} onPress={handleShowConfirmPass} />
             </View>
             {loading && <ActivityIndicator size='large' color={colors.primary} />}
             {error && <ShakingErrorText text={error} />}

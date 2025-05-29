@@ -9,6 +9,7 @@ import { RootStackParamList } from '@/types/StackParamsList';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { createGlobalStyles } from '@/assets/styles';
+import { toastSuccess } from '@/components/ToastSuccess';
 
 const AccountInformation = () => {
     const { colors } = useTheme();
@@ -149,6 +150,7 @@ const AccountInformation = () => {
               }
               console.log('Edited user: ', formattedUser);
               await editUser(formattedUser);
+              toastSuccess(t('accountInfoEdited'));
           }catch(error){
             console.log('Error editing profile: ', error);
           }

@@ -22,6 +22,8 @@ const BarcodeModal: React.FC<BarcodeModalProps> = ({visible, onClose, onPressSub
         input:{
             borderWidth: 1,
             borderColor: colors.third,
+            color: colors.primary,
+            fontWeight: 'bold',
         }
     })
 
@@ -29,8 +31,8 @@ const BarcodeModal: React.FC<BarcodeModalProps> = ({visible, onClose, onPressSub
         <Modal visible={visible} transparent={true} animationType='slide'>
             <View style={globalStyles.modalContainer}>
                 <View style={globalStyles.modalContent}>
-                    <Text>{t("enterBarcode")}</Text>
-                    <TextInput style={styles.input} keyboardType='numeric' placeholder={t("barcode")} onChangeText={(text) => setBarcode(text)} ></TextInput>
+                    <Text style={globalStyles.simpleText} >{t("enterBarcode")}</Text>
+                    <TextInput style={styles.input} placeholderTextColor={colors.primary} keyboardType='numeric' placeholder={t("barcode")} onChangeText={(text) => setBarcode(text)} ></TextInput>
                     <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
                         <MyButton title={t("submit")} onPress={() => onPressSubmit(barcode)} />
                         <MyButton title={t("close")} onPress={onClose} />
