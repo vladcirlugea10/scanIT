@@ -13,6 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { toastSuccess } from '@/components/ToastSuccess';
+import { toastError } from '@/components/ToastError';
 
 type EditProductProps = { route: RouteProp<RootStackParamList, "EditProduct"> };
 
@@ -59,38 +60,106 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
     });
 
     const handleEditProduct = async () => {
-        if(editedProduct.product_name == product?.product_name || editedProduct.product_name == product?.product_name_en ){
-            console.log("product",product?.product_name_en);
-            console.log("edited",editedProduct.product_name);
-            setEditedProduct((prev) => ({...prev, product_name: ""}));
+        let productToEdit = { ...editedProduct };
+        
+        if(productToEdit.product_name == product?.product_name || productToEdit.product_name == product?.product_name_en ){
+            productToEdit.product_name = "";
         }
-        if(editedProduct.ingredients_text == product?.ingredients_text){
-            setEditedProduct((prev) => ({...prev, ingredients_text: ""}));
+        if(productToEdit.ingredients_text == product?.ingredients_text){
+            productToEdit.ingredients_text = "";
         }
-        console.log(editedProduct);
-        const response = await editProduct(editedProduct);
-        console.log("response:", response);
-        if(response.status === 1){
-            await addEditedProduct(editedProduct.barcode);
+        
+        console.log('productToEdit:', productToEdit);
+        
+        const { barcode, ...productWithoutBarcode } = productToEdit;
+        const hasProductChanges = Object.values(productWithoutBarcode).some(value => 
+            value !== "" && value !== 0
+        );
+    
+        const hasImages = imageFront || imageIngredients || imageNutrition;
+        
+        if (!hasProductChanges && !hasImages) {
+            console.log('No changes to save, returning early');
+            toastError("No changes to save");
+            return;
         }
-
+        
+        let productEditSuccess = true;
+        let response = { status: 1 };
+        
+        if (hasProductChanges) {
+            response = await editProduct(productToEdit);
+            console.log("response:", response);
+            productEditSuccess = response.status === 1;
+            
+            if (productEditSuccess) {
+                console.log('About to call addEditedProduct with barcode:', productToEdit.barcode);
+                try {
+                    await addEditedProduct(productToEdit.barcode);
+                    console.log('addEditedProduct completed successfully');
+                } catch (error) {
+                    console.error('Error in addEditedProduct:', error);
+                }
+            }
+            console.log('Product edit section completed');
+        } else {
+            console.log('No product changes, skipping product edit');
+        }
+        
+        let imageUploadSuccess = true;
+        
         if (imageFront) {
-            await addImage(imageFront, editedProduct.barcode, 'front');
-            console.log("Image front added successfully");
+            console.log('Attempting to upload front image...');
+            try {
+                const result = await addImage(imageFront, productToEdit.barcode, 'front');
+                console.log("Front image upload result:", result);
+            } catch (error) {
+                console.error("Failed to upload front image:", error);
+                imageUploadSuccess = false;
+            }
+        } else {
+            console.log('No front image to upload');
         }
+        
         if (imageIngredients) {
-            await addImage(imageIngredients, editedProduct.barcode, 'ingredients');
-            console.log("Image ingredients added successfully");
+            console.log('Attempting to upload ingredients image...');
+            try {
+                const result = await addImage(imageIngredients, productToEdit.barcode, 'ingredients');
+                console.log("Ingredients image upload result:", result);
+            } catch (error) {
+                console.error("Failed to upload ingredients image:", error);
+                imageUploadSuccess = false;
+            }
+        } else {
+            console.log('No ingredients image to upload');
         }
+        
         if (imageNutrition) {
-            await addImage(imageNutrition, editedProduct.barcode, 'nutrition');
-            console.log("Image nutrition added successfully");
+            console.log('Attempting to upload nutrition image...');
+            console.log('Calling addImage with:', {
+                image: imageNutrition,
+                barcode: productToEdit.barcode,
+                imagefield: 'nutrition'
+            });
+            try {
+                const result = await addImage(imageNutrition, productToEdit.barcode, 'nutrition');
+                console.log("Nutrition image upload result:", result);
+            } catch (error) {
+                console.error("Failed to upload nutrition image:", error);
+                imageUploadSuccess = false;
+            }
+        } else {
+            console.log('No nutrition image to upload');
         }
-
-        toastSuccess(t("productEdited"));
-        setTimeout(() => {
-            navigation.navigate("AccountInformation");
-          }, 2500);
+        
+        if (!error && (productEditSuccess || !hasProductChanges) && imageUploadSuccess) {
+            toastSuccess(t("productEdited"));
+            setTimeout(() => {
+                navigation.navigate("Profile");
+            }, 2500);
+        } else {
+            toastError(t("errorEditingProduct"));
+        }
     }
 
     const pickImage = async (type: string) => {

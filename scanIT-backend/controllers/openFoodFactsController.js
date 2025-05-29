@@ -127,7 +127,7 @@ exports.editProduct = async (req, res) => {
         console.log(params);
         const response = await axios.get(URL, {
             params,
-            timeout: 10000,
+            timeout: 15000,
         });
 
         res.status(200).json(response.data);

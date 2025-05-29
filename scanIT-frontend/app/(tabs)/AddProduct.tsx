@@ -13,6 +13,7 @@ import { createGlobalStyles } from '@/assets/styles';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { toastSuccess } from '@/components/ToastSuccess';
+import { toastError } from '@/components/ToastError';
 
 const AddProduct = () => {
     const { colors } = useTheme();
@@ -78,11 +79,14 @@ const AddProduct = () => {
         await addImage(imageNutrition, newProduct.barcode, 'nutrition');
         console.log("Image nutrition added successfully");
       }
-
-      toastSuccess(t("productAdded"));
-      setTimeout(() => {
-        navigation.navigate("AccountInformation");
-      }, 2500);
+      if(!error && response?.status === 1){
+        toastSuccess(t("productAdded"));
+        setTimeout(() => {
+          navigation.navigate("Profile");
+        }, 2500);
+      }else{
+        toastError(t("productNotAdded"));
+      }
     }
 
     const handleCheckBarcode = async () => {

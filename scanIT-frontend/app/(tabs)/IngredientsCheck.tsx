@@ -6,11 +6,9 @@ import { GetAllergenIngredient } from '@/types/AllergenIngredient';
 import { getIngredientsAllergens, getIngredientsUnhealthy } from '@/database/local/sqLite';
 import { Ionicons } from '@expo/vector-icons';
 import IngredientModal from '../../components/IngredientModal';
-import MyButton from '@/components/MyButton';
 import { useTheme } from '../ColorThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
-import useUser from '@/hooks/useUser';
 
 type IngredientsCheckNavProps = { route: RouteProp<RootStackParamList, 'IngredientsCheck'> };
 

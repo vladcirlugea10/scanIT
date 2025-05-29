@@ -25,7 +25,7 @@ const initI18next = async () => {
         compatibilityJSON: 'v3',
         resources,
         lng: selectedLanguage,
-        fallbackLng: 'en-US',
+        fallbackLng: 'en-UK',
         interpolation: {
             escapeValue: false
         },   

@@ -93,41 +93,61 @@ const useOpenFoodFacts = () => {
     }
 
     const addImage = async (image: string, barcode: string, imagefield: string) => {
-        if(!image || !barcode || !imagefield){
-            return;
-        }
-        console.log(`Uploading ${imagefield} image for barcode: ${barcode}`);
-        const formData = new FormData();
-        const filename = image.split('/').pop() || `image_${Date.now()}.jpg`;
-        const fileType = filename.split('.').pop() || 'jpg';
-
-        formData.append('barcode', barcode);
-        formData.append('imagefield', imagefield);
-        formData.append('image', {
-            uri: image,
-            name: filename,
-            type: `image/${fileType}`,
-        } as any);
-
-        setLoading(true);
-        clearError();
-        try {
-            const response = await axios.post(`http://192.168.1.9:5000/api/open-food-facts/add-product-image`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Token': `Bearer ${token}`
-                }
-            });
-            const data = await response.data;
-            return data;
-        } catch (error: any) {
-            const errorMessage = error.response?.data?.message || error.message || "Error adding image";
-            setError(errorMessage);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
+    console.log('=== addImage function called ===');
+    console.log('image:', image);
+    console.log('barcode:', barcode);
+    console.log('imagefield:', imagefield);
+    console.log('image type:', typeof image);
+    console.log('barcode type:', typeof barcode);
+    console.log('imagefield type:', typeof imagefield);
+    
+    if(!image || !barcode || !imagefield){
+        console.log('Early return due to missing parameters:');
+        console.log('- image missing or falsy:', !image);
+        console.log('- barcode missing or falsy:', !barcode);
+        console.log('- imagefield missing or falsy:', !imagefield);
+        return;
     }
+    
+    console.log(`Uploading ${imagefield} image for barcode: ${barcode}`);
+    const formData = new FormData();
+    const filename = image.split('/').pop() || `image_${Date.now()}.jpg`;
+    const fileType = filename.split('.').pop() || 'jpg';
+
+    console.log('filename:', filename);
+    console.log('fileType:', fileType);
+
+    formData.append('barcode', barcode);
+    formData.append('imagefield', imagefield);
+    formData.append('image', {
+        uri: image,
+        name: filename,
+        type: `image/${fileType}`,
+    } as any);
+
+    console.log('FormData prepared, making API call...');
+    
+    setLoading(true);
+    clearError();
+    try {
+        const response = await axios.post(`http://192.168.1.9:5000/api/open-food-facts/add-product-image`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Token': `Bearer ${token}`
+            }
+        });
+        const data = await response.data;
+        console.log('API response:', data);
+        return data;
+    } catch (error: any) {
+        console.error('API error:', error);
+        const errorMessage = error.response?.data?.message || error.message || "Error adding image";
+        setError(errorMessage);
+        throw error;
+    } finally {
+        setLoading(false);
+    }
+}
 
     const editProduct = async (product: EditProduct) => {
         if(!product){
