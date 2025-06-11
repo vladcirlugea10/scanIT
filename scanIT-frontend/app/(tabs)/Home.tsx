@@ -28,7 +28,7 @@ const Home = () => {
     const [isScanning, setIsScanning] = useState(false);
 
     const cameraRef = useRef<CameraView>(null);
-    const { getProduct, product, notFound } = useOpenFoodFacts();
+    const { getProduct, resetProduct, product, notFound } = useOpenFoodFacts();
     const { colors } = useTheme();
     const { t } = useTranslation();
     const globalStyles = createGlobalStyles(colors);
@@ -137,6 +137,7 @@ const Home = () => {
             setBarcodeData(undefined);
             setPhoto(undefined);
             setIsScanning(true);
+            resetProduct();
             return () => {}
         }, [])
     );
@@ -145,8 +146,10 @@ const Home = () => {
         if(product){
             navigation.navigate('BarcodeResults', { product: product });
             setBarcodeData(undefined);
+            setIsScanning(true);
+            resetProduct();
         }
-    }, [product]);
+    }, [product, navigation, resetProduct]);
 
     useEffect(() => {
         if(notFound){
@@ -207,7 +210,7 @@ const Home = () => {
     };
 
     const handleBarcodeScanned = async ({ data }: { data: string }) => {
-        if (isScanning && data) {
+        if (isScanning && data && data !== barcodeData) {
             console.log("Scanned barcode:", data);
             setBarcodeData(data);
             setIsScanning(false);
@@ -290,7 +293,7 @@ const Home = () => {
                     <CameraView 
                         ref={cameraRef} 
                         style={styles.camera} 
-                        onBarcodeScanned={isScanning ? handleBarcodeScanned : undefined} 
+                        onBarcodeScanned={selectedMode === 'barcode' && isScanning ? handleBarcodeScanned : undefined} 
                     />
                     {selectedMode === 'barcode' && barcodeData && !isScanning && (
                         <View style={styles.scanOverlay}>

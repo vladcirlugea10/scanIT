@@ -71,6 +71,13 @@ const useOpenFoodFacts = () => {
         });
     };
 
+    const resetProduct = () => {
+        setProduct(null);
+        setNotFound(false);
+        setBarcode("");
+        setCountry("");
+    }
+
     const addProduct = async (product: AddProduct) => {
         if(!product){
             return;
@@ -169,7 +176,7 @@ const useOpenFoodFacts = () => {
         }  
     }
 
-    return { loading, error, getProduct, product, notFound, addProduct, editProduct, addImage };
+    return { loading, error, getProduct, resetProduct, product, notFound, addProduct, editProduct, addImage };
 };
 
 export default useOpenFoodFacts
