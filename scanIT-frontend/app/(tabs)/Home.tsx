@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import SelectBox from '@/components/SelectBox'
 import { countryMap } from '@/assets/data/countries'
+import { toastInfo } from '@/components/ToastInfo'
+import { createGlobalStyles } from '@/assets/styles'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -29,6 +31,7 @@ const Home = () => {
     const { getProduct, product, notFound } = useOpenFoodFacts();
     const { colors } = useTheme();
     const { t } = useTranslation();
+    const globalStyles = createGlobalStyles(colors);
 
     const navigation = useNavigation<HomeNavProps>();
 
@@ -96,6 +99,15 @@ const Home = () => {
             marginBottom: 20,
         }
     });
+
+    useEffect(() => {
+        if(selectedMode === 'barcode'){
+            toastInfo(t('scan a product by barcode to get started'));
+        }
+        if(selectedMode === 'photo'){
+            toastInfo(t('take a photo of a product label to scan the text'));
+        }
+    }, [selectedMode]);
 
     const showAlert = () =>
     Alert.alert(
@@ -262,13 +274,17 @@ const Home = () => {
                         textStyle={[styles.buttonText]} 
                     />
                 </View>
+                { selectedMode === 'photo' && <Text style={globalStyles.textForPressing}>{t('take a photo of a product label to scan the text')}</Text> }
                 { selectedMode === 'barcode' && 
-                    <SelectBox 
-                        title={t("location")} 
-                        options={Object.keys(countryMap)} 
-                        selectedOption={country} 
-                        setSelectedOption={handleSelectedCountry} 
-                    /> 
+                    <View>
+                        <SelectBox 
+                            title={t("location")} 
+                            options={Object.keys(countryMap)} 
+                            selectedOption={country} 
+                            setSelectedOption={handleSelectedCountry} 
+                        /> 
+                        <Text style={globalStyles.textForPressing}>{t('scan a product by barcode to get started')}</Text>
+                    </View>
                 }
                 <View style={styles.cameraContainer}>
                     <CameraView 

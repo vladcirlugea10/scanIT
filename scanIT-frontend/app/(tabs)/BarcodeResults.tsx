@@ -152,13 +152,22 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Image source={{ uri: getNutriscoreImage(product.nutriscore_grade)}} style={{width: 200, height: 100}} />
         </View>
-        <Text style={globalStyles.subtitle}>Product has {product.additives_n} additives </Text>
+        <View style={globalStyles.rowContainer}>
+          <Text style={globalStyles.subtitle}>Product has {product.additives_n} additives </Text>
+          {product.additives_n < 1 && <MaterialCommunityIcons name='check-circle-outline' size={24} color={colors.success} />}
+        </View>
         { product.additives_tags && product.additives_tags.map((additive, index) => {
             return <Text style={globalStyles.simpleText} key={index}>{additive}</Text>
           })
         }
-        <Text style={globalStyles.subtitle}>{t('nutritionalValues')}</Text>
-
+        <View style={globalStyles.rowContainer}>
+          {product.allergens && <Text style={globalStyles.subtitle}>Product has allergens: {product.allergens.split(',').map(item => item.replace('en:', ' | '))} </Text>}
+          {product.allergens.length > 1 && (<MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />)}
+        </View>
+        <View style={globalStyles.rowContainer}>
+          <Text style={globalStyles.subtitle}>{t('nutritionalValues')}</Text>
+          {product.quantity && <Text style={globalStyles.subtitle}> ({product.quantity})</Text>}
+        </View>
         <View style={styles.tableHeader}>
           <View style={[styles.tableRow, {borderBottomWidth: 5, borderBottomColor: colors.primary}]}>
             <Text style={styles.headerText}>Nutrient</Text>

@@ -13,7 +13,7 @@ const App = () => {
   const initDatabase = async () => {
     try {
       if(!await SecureStore.getItemAsync('selectedLanguage')) {
-        await SecureStore.setItemAsync('selectedLanguage', 'en'); // Default language
+        await SecureStore.setItemAsync('selectedLanguage', 'en-UK'); // Default language
       }
       await initDB();
       console.log('Database initialized with success!');
