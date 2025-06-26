@@ -7,7 +7,6 @@ import requests
 app = Flask(__name__)
 CORS(app)
 
-# Initialize EasyOCR reader (Romanian and English language support)
 reader = easyocr.Reader(['ro', 'en'])
 
 @app.route('/ocr', methods=['POST'])
@@ -28,7 +27,7 @@ def ocr_img():
         text_output = [entry[1] for entry in result]
         
         try:
-            os.remove(img_path)  # Clean up the image file
+            os.remove(img_path)
         except Exception as e:
             print(f"Error deleting file: {str(e)}")
             

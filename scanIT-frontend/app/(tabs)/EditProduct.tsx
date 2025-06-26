@@ -384,7 +384,7 @@ const EditProduct: React.FC<EditProductProps> = ({route}) => {
                         </View>
                     </View>
                     { error ? <ShakingErrorText text={error} /> : null }
-                    { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
+                    { loading ? <ActivityIndicator testID="loading-indicator" size="large" color={colors.primary} /> : null }
                     <MyButton title={t("submitProduct")} onPress={handleEditProduct} containerStyle={{width: "auto"}} />
                 </View>
             </ScrollView>

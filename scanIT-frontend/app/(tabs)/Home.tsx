@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, ActivityIndicator, Alert, TouchableOpacity, TextInput } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
@@ -228,6 +228,23 @@ const Home = () => {
         }
     };
 
+    const handleTextInputBarcode = async () => {
+        if (barcodeData && barcodeData.trim() !== '') {
+            setIsScanning(false);
+            
+            try {
+                if (country) {
+                    await getProduct(barcodeData.trim(), country);
+                } else {
+                    await getProduct(barcodeData.trim());
+                }
+            } catch (error) {
+                console.error("Error fetching product:", error);
+                setIsScanning(true);
+            }
+        }
+    };
+
     const resetScanning = () => {
         setBarcodeData(undefined);
         setIsScanning(true);
@@ -248,7 +265,7 @@ const Home = () => {
                 <StatusBar style='light' backgroundColor='black' />
                 <View style={styles.dataContainer}>
                     <View style={styles.cameraContainer}>
-                        <Image source={{uri: photo.uri}} style={styles.camera} />
+                        <Image testID="photo-image" source={{uri: photo.uri}} style={styles.camera} />
                     </View>
                     <View style={{display: "flex", flexDirection:"row", gap: 50}}>
                         <MyButton title={t('advance')} onPress={handleScan} iconName='checkmark-outline' textStyle={{fontSize: 16}} />
@@ -286,7 +303,11 @@ const Home = () => {
                             selectedOption={country} 
                             setSelectedOption={handleSelectedCountry} 
                         /> 
-                        <Text style={globalStyles.textForPressing}>{t('scan a product by barcode to get started')}</Text>
+                        <Text style={globalStyles.textForPressing}>{t('scan a product by barcode or enter it to get started')}</Text>
+                        <View style={[globalStyles.rowContainer, {gap: 10, justifyContent: 'center'}]}>
+                            <TextInput style={[globalStyles.input, {width: '50%', borderRadius: 10}]} placeholderTextColor={colors.primary} onChangeText={(text) => setBarcodeData(text)} placeholder={t('enterBarcode')} value={barcodeData || ''} onSubmitEditing={handleTextInputBarcode} returnKeyType="search"/>
+                            <MyButton onPress={handleTextInputBarcode} containerStyle={{width: 60, height: 35, paddding: 2, justifyContent: 'flex-end'}} iconName='search-outline' iconSize={15} iconColor={colors.secondary} />
+                        </View>
                     </View>
                 }
                 <View style={styles.cameraContainer}>
@@ -313,7 +334,8 @@ const Home = () => {
                     )}
                 </View>
                 {selectedMode === 'photo' ? (
-                    <MyButton 
+                    <MyButton
+                        testID="take-photo-button" 
                         iconName='camera' 
                         iconColor={colors.secondary} 
                         iconSize={30} 

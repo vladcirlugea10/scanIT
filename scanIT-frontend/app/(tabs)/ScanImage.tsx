@@ -30,6 +30,8 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     const [scanMethod, setScanMethod] = useState<string | null>(null);
     const [selectedLanguage, setSelectedLanguage] = useState("");
     const [translatedText, setTranslatedText] = useState("");
+    console.log("Photo URI:", photoUri);
+    console.log("Is connected:", isConnected);
 
     const styles = StyleSheet.create({
       mainContainer: {
@@ -123,7 +125,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     if(loading){
         return(
           <View style={styles.mainContainer}>
-            <ActivityIndicator size='large' color={colors.primary} />
+            <ActivityIndicator testID="loading-indicator" size='large' color={colors.primary} />
             <Text>{t('scanningImage')}...</Text>
           </View>
         )
@@ -142,7 +144,7 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
             </Text>
             <View style={styles.resultContainer}>
               {translationLoading ? (
-                  <ActivityIndicator size='large' color={colors.primary} />
+                  <ActivityIndicator testID="loading-indicator" size='large' color={colors.primary} />
                 ) : (
                   <Text style={globalStyles.simpleText}>{translatedText || data.text.join(" ")}</Text>
                 )

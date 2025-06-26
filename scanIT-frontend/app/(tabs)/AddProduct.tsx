@@ -340,7 +340,7 @@ const AddProduct = () => {
                 </View>
               </View>
               { error ? <ShakingErrorText text={error} /> : null }
-              { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
+              { loading ? <ActivityIndicator testID="loading-indicator" size="large" color={colors.primary} /> : null }
               <MyButton title={t("submitProduct")} onPress={handleAddProduct} containerStyle={{width: "auto"}} />
             </View>
           </ScrollView>
@@ -358,14 +358,14 @@ const AddProduct = () => {
         { productState === "Product already exists" ? 
           <>
             <ShakingErrorText text={productState} />
-            { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
+            { loading ? <ActivityIndicator testID="loading-indicator" size="large" color={colors.primary} /> : null }
             <TouchableOpacity onPress={() => navigation.navigate("EditProduct", { barcode: barcode, product: product })}>
                 <Text style={globalStyles.textForPressing}>{t("editProduct")}</Text>
             </TouchableOpacity>
           </> : 
           null 
         }
-        {loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
+        {loading ? <ActivityIndicator testID="loading-indicator" size="large" color={colors.primary} /> : null }
         <MyButton title={t("submitBarcode")} onPress={handleCheckBarcode} containerStyle={{width: "auto", marginTop: 20}} />
       </View>
     )

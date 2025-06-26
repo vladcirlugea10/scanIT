@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import useUser from '@/hooks/useUser'
 import { useAuth } from '@/hooks/useAuth'
@@ -63,11 +63,15 @@ const AddedProducts = () => {
     }, [product]);
 
     useEffect(() => {
-        if (notFound && selectedBarcode) {
-            alert(t('product not found'));
-            setSelectedBarcode(null);
-        }
-    }, [notFound]);
+    if (notFound && selectedBarcode) {
+        Alert.alert(
+            t('error'),
+            t('product not found'),
+            [{ text: 'OK', style: 'cancel' }]
+        );
+        setSelectedBarcode(null);
+    }
+}, [notFound]);
 
     const handleDetailsPress = (barcode: string) => {
         setSelectedBarcode(barcode);

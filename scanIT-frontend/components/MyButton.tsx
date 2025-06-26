@@ -11,6 +11,7 @@ interface MyButtonProps {
     iconName?: string | undefined;
     iconSize?: number;
     iconColor?: string;
+    testID?: string;
 }
 
 const MyButton = ({
@@ -20,7 +21,8 @@ const MyButton = ({
     containerStyle = {},
     iconName,
     iconSize = 24,
-    iconColor
+    iconColor,
+    testID
 }:MyButtonProps) => {
     const { colors } = useTheme();
     const finalIconColor = iconColor || colors.secondary;
@@ -40,7 +42,7 @@ const MyButton = ({
         }
     });
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, containerStyle]}>
+    <TouchableOpacity onPress={onPress} style={[styles.container, containerStyle]} testID={testID}>
         <Text style={[styles.buttonText, textStyle]}>
             {title}
         </Text>

@@ -140,10 +140,10 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
       <View style={styles.mainContainer}>
         <Text style={globalStyles.title}>{translatedTitle || product.product_name} - {product.brands}</Text>
         <View style={styles.imagesContainer}>
-          <Image style={styles.image} source={{uri: product.image_url}} />
-          {product.selected_images && product.selected_images.front && <Image source={{uri: product.selected_images.front.display.ro}} style={styles.image} />}
-          {product.selected_images && product.selected_images.ingredients && <Image source={{uri: product.selected_images.ingredients.display.ro}} style={styles.image} />}
-          {product.selected_images && product.selected_images.nutrition && <Image source={{uri: product.selected_images.nutrition.display.ro}} style={styles.image} />}
+          <Image testID="product-image-main" style={styles.image} source={{uri: product.image_url}} />
+          {product.selected_images && product.selected_images.front && <Image testID="product-image-front" source={{uri: product.selected_images.front.display.ro}} style={styles.image} />}
+          {product.selected_images && product.selected_images.ingredients && <Image testID="product-image-ingredients" source={{uri: product.selected_images.ingredients.display.ro}} style={styles.image} />}
+          {product.selected_images && product.selected_images.nutrition && <Image testID="product-image-nutrition" source={{uri: product.selected_images.nutrition.display.ro}} style={styles.image} />}
         </View>
         <Text style={globalStyles.subtitle}>{t('soldIn')}</Text>
         <Text style={globalStyles.simpleText}>{product.countries}</Text>
@@ -186,21 +186,21 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
             <Text style={styles.rowText}>{product.nutriments.fat_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.fat_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.fat}</Text>
-            { product.nutriments.fat > 50 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+            { product.nutriments.fat > 50 && <MaterialCommunityIcons testID='warning-icon' name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('saturatedFats')}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.saturated_fat}</Text>
-            { product.nutriments.saturated_fat > 20 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+            { product.nutriments.saturated_fat > 20 && <MaterialCommunityIcons testID='warning-icon' name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('carbohydrates')}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.carbohydrates}</Text>
-            { product.nutriments.carbohydrates > 250 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+            { product.nutriments.carbohydrates > 250 && <MaterialCommunityIcons testID='warning-icon' name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('sugars')}</Text>
@@ -208,7 +208,7 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
             <Text style={styles.rowText}>{product.nutriments.sugars_100g}</Text>
             <View style={{flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
               <Text style={styles.rowText}>{product.nutriments.sugars}</Text>
-              { product.nutriments.sugars > 50 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+              { product.nutriments.sugars > 50 && <MaterialCommunityIcons testID='warning-icon' name='alert-circle-outline' size={24} color={colors.danger} />}
             </View>
           </View>
           <View style={styles.tableRow}>
@@ -222,14 +222,14 @@ const BarcodeResults: React.FC<BarcodeResultsProps> = ({route}) => {
             <Text style={styles.rowText}>{product.nutriments.salt_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.salt_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.salt}</Text>
-            { product.nutriments.salt > 3 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+            { product.nutriments.salt > 3 && <MaterialCommunityIcons testID='warning-icon' name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
           <View style={styles.tableRow}>
             <Text style={styles.rowText}>{t('sodium')}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium_unit}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium_100g}</Text>
             <Text style={styles.rowText}>{product.nutriments.sodium}</Text>
-            { product.nutriments.sodium > 3 && <MaterialCommunityIcons name='alert-circle-outline' size={24} color={colors.danger} />}
+            { product.nutriments.sodium > 3 && <MaterialCommunityIcons testID='warning-icon' name='alert-circle-outline' size={24} color={colors.danger} />}
           </View>
         </View>
       </View>

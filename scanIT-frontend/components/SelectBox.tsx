@@ -9,9 +9,10 @@ type SelectBoxProps = {
     style?: object;
     selectedOption: string;
     setSelectedOption: (option: string) => void;
+    testID?: string;
 }
 
-const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOption, setSelectedOption}) => {
+const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOption, setSelectedOption, testID}) => {
     const [showOptions, setShowOptions] = useState(false);
     const { colors } = useTheme();
     const styles = StyleSheet.create({
@@ -77,7 +78,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({title, options, style, selectedOpt
 
     return (
         <View style={[styles.mainContainer, style]}>
-            <TouchableOpacity style={{width: '100%'}} onPress={handleShowOptions}>
+            <TouchableOpacity testID={testID} style={{width: '100%'}} onPress={handleShowOptions}>
                 <View style={styles.title}>
                     { selectedOption ? <Text style={styles.textTitle}>{selectedOption}</Text> : ( title ? <Text style={styles.textTitle}>{title}</Text> : <Text style={styles.textTitle}>Select</Text> ) }
                     <MaterialCommunityIcons name="chevron-down" size={24} color={colors.primary} />
