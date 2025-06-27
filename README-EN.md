@@ -30,7 +30,7 @@ scanIT is a React Native mobile application that allows users to scan barcodes o
 3️⃣ **Start the Development Server**
   - `npx expo start` – frontend
   - `npm run dev` – backend
-  - `python paddleOCR.py` – for OCR processing
+  - `python paddleOCR.py` – for OCR processing with easyOCR and translation with Libretranslate
 
 ## 📸 Usage
 - **Choose a Mode**: Select either "Barcode" or "Photo" mode.
