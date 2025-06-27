@@ -25,6 +25,7 @@ const AddProduct = () => {
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+    const [cameraActive, setCameraActive] = useState(false);
     const [imageFront, setImageFront] = useState<string | undefined>(undefined);
     const [imageIngredients, setImageIngredients] = useState<string | undefined>(undefined);
     const [imageNutrition, setImageNutrition] = useState<string | undefined>(undefined);
@@ -138,6 +139,30 @@ const AddProduct = () => {
       }
     };
 
+    const handleTakePicture = async (type: string) => {
+      console.log("Taking picture of: ", type);
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        allowsEditing: false,
+        quality: 1,
+      });
+      if(!result.canceled && result.assets.length > 0) {
+        switch(type){
+          case "front":
+            setImageFront(result.assets[0].uri);
+            break;
+          case "ingredients":
+            setImageIngredients(result.assets[0].uri);
+            break;
+          case "nutrition":
+            setImageNutrition(result.assets[0].uri);
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
     if(checkedBarcode){
       return (
         <View style={globalStyles.addProductmainContainer}>
@@ -173,9 +198,14 @@ const AddProduct = () => {
                 <View style={{display: 'flex', flexDirection: 'row', gap: 10}}>
                   <Image source={{ uri: imageFront }} style={{ width: 100, height: 100, borderWidth: 1, borderColor: colors.primary}} />
                   <View style={{display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'baseline'}}>
-                    <TouchableOpacity onPress={() => pickImage("front")}>
-                      <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
-                    </TouchableOpacity>
+                    <View style={[globalStyles.rowContainer, {gap: 10}]}> 
+                      <TouchableOpacity>
+                        <MaterialCommunityIcons name="camera" size={24} color={colors.primary} onPress={() => handleTakePicture("front")} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => pickImage("front")}>
+                        <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
+                      </TouchableOpacity>
+                    </View>
                     <TouchableOpacity onPress={() => setImageFront(undefined)}>
                       <MaterialCommunityIcons name="trash-can" size={24} color={colors.primary} />
                     </TouchableOpacity>
@@ -185,9 +215,14 @@ const AddProduct = () => {
                 <View style={{display: 'flex', flexDirection: 'row', gap: 10}}>
                   <Image source={{ uri: imageIngredients }} style={{ width: 100, height: 100, borderWidth: 1, borderColor: colors.primary}} />
                   <View style={{display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'baseline'}}>
-                    <TouchableOpacity onPress={() => pickImage("ingredients")}>
-                      <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
-                    </TouchableOpacity>
+                    <View style={[globalStyles.rowContainer, {gap: 10}]}> 
+                      <TouchableOpacity>
+                        <MaterialCommunityIcons name="camera" size={24} color={colors.primary} onPress={() => handleTakePicture("ingredients")} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => pickImage("ingredients")}>
+                        <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
+                      </TouchableOpacity>
+                    </View>
                     <TouchableOpacity onPress={() => setImageIngredients(undefined)}>
                       <MaterialCommunityIcons name="trash-can" size={24} color={colors.primary} />
                     </TouchableOpacity>
@@ -197,9 +232,14 @@ const AddProduct = () => {
                 <View style={{display: 'flex', flexDirection: 'row', gap: 10}}>
                   <Image source={{ uri: imageNutrition }} style={{ width: 100, height: 100, borderWidth: 1, borderColor: colors.primary}} />
                   <View style={{display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'baseline'}}>
-                    <TouchableOpacity onPress={() => pickImage("nutrition")}>
-                      <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
-                    </TouchableOpacity>
+                    <View style={[globalStyles.rowContainer, {gap: 10}]}> 
+                      <TouchableOpacity>
+                        <MaterialCommunityIcons name="camera" size={24} color={colors.primary} onPress={() => handleTakePicture("nutrition")} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => pickImage("nutrition")}>
+                        <MaterialCommunityIcons name="plus" size={24} color={colors.primary} />
+                      </TouchableOpacity>
+                    </View>
                     <TouchableOpacity onPress={() => setImageNutrition(undefined)}>
                       <MaterialCommunityIcons name="trash-can" size={24} color={colors.primary} />
                     </TouchableOpacity>
@@ -207,7 +247,7 @@ const AddProduct = () => {
                 </View>
               </View>
               <Text style={globalStyles.subtitle}>{t("ingredients")}</Text>
-              <TextInput style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, ingredients_text: text}))} placeholder={`${t("ingredients")} - ${t("separateWith")} ,`} />
+              <TextInput multiline={true} style={globalStyles.input} placeholderTextColor={colors.primary} onChangeText={(text) => setNewProduct((prev) => ({...prev, ingredients_text: text}))} placeholder={`${t("ingredients")} - ${t("separateWith")} ,`} />
               <Text style={globalStyles.subtitle}>{t("nutrimentsInfo")}:</Text>
               <View style={globalStyles.horizontalInputContainer}>
                 <View style={globalStyles.addProductInputContainer}>
@@ -300,7 +340,7 @@ const AddProduct = () => {
                 </View>
               </View>
               { error ? <ShakingErrorText text={error} /> : null }
-              { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
+              { loading ? <ActivityIndicator testID="loading-indicator" size="large" color={colors.primary} /> : null }
               <MyButton title={t("submitProduct")} onPress={handleAddProduct} containerStyle={{width: "auto"}} />
             </View>
           </ScrollView>
@@ -318,14 +358,14 @@ const AddProduct = () => {
         { productState === "Product already exists" ? 
           <>
             <ShakingErrorText text={productState} />
-            { loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
+            { loading ? <ActivityIndicator testID="loading-indicator" size="large" color={colors.primary} /> : null }
             <TouchableOpacity onPress={() => navigation.navigate("EditProduct", { barcode: barcode, product: product })}>
                 <Text style={globalStyles.textForPressing}>{t("editProduct")}</Text>
             </TouchableOpacity>
           </> : 
           null 
         }
-        {loading ? <ActivityIndicator size="large" color={colors.primary} /> : null }
+        {loading ? <ActivityIndicator testID="loading-indicator" size="large" color={colors.primary} /> : null }
         <MyButton title={t("submitBarcode")} onPress={handleCheckBarcode} containerStyle={{width: "auto", marginTop: 20}} />
       </View>
     )

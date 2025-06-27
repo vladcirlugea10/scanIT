@@ -123,7 +123,7 @@ const EditedProducts = () => {
                 )
                 }
                 <TouchableOpacity>
-                    <Text style={globalStyles.textForPressing} onPress={handleModal} >{t("editExistingProduct")}</Text>
+                    <Text style={[globalStyles.textForPressing, {color: colors.primary}]} onPress={handleModal} >{t("editExistingProduct")}</Text>
                 </TouchableOpacity>
             </View>
             <BarcodeModal visible={modalVisible} onClose={handleModal} onPressSubmit={checkBarcode} /> 

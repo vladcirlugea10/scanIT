@@ -28,15 +28,15 @@ const IngredientModal: React.FC<IngredientModalProps> = ({visible, onClose, ingr
                 <View style={globalStyles.modalContent}>
                     <View style={[globalStyles.horizontalInputContainer, {alignItems: "baseline"}] }>
                         <Text style={globalStyles.subtitle}>{t("name")}:</Text>
-                        <Text>{ingredient.name}</Text>
+                        <Text style={globalStyles.simpleText}>{ingredient.name}</Text>
                     </View>
                     <View style={[globalStyles.horizontalInputContainer, {alignItems: "baseline"}] }>
                         <Text style={globalStyles.subtitle}>{t("group")}:</Text>
-                        <Text>{ingredient.group}</Text>
+                        <Text style={globalStyles.simpleText}>{ingredient.group}</Text>
                     </View>
                     <View style={[globalStyles.horizontalInputContainer, {alignItems: "baseline"}] }>
                         <Text style={globalStyles.subtitle}>{t("description")}:</Text>
-                        <Text>{ingredient.description}</Text>
+                        <Text style={globalStyles.simpleText}>{ingredient.description}</Text>
                     </View>
                     <MyButton title={t("close")} onPress={onClose} />
                 </View>

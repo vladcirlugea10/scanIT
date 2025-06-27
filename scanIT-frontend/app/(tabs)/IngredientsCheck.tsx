@@ -120,7 +120,7 @@ const IngredientsCheck: React.FC<IngredientsCheckNavProps> = ({route}) => {
                     { user && user.allergies && user.allergies.includes(ingredient.group) && <Text style={{color: colors.warning}}>{t('youAre')} {t('allergicTo')}: </Text> }
                     <Text style={{color: colors.danger}} key={ingredient.id}>{ingredient.name}({ingredient.group})</Text>
                     <TouchableOpacity onPress={() => handleOpenModal(ingredient)}>
-                      <Ionicons name='add-circle-outline' size={32} color={colors.danger} />
+                      <Ionicons testID='add-circle-outline' name='add-circle-outline' size={32} color={colors.danger} />
                     </TouchableOpacity>
                   </View>
                 ))

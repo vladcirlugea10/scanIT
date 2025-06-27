@@ -271,11 +271,11 @@ const PersonalInformation = () => {
       <View style={styles.mainContainer}>
         <Text style={styles.title}>{t('personalInformation')}</Text>
         <View style={styles.buttonContainer}>
-          { isEditing && <TouchableOpacity onPress={handleCancelEdit}> 
+          { isEditing && <TouchableOpacity testID='cancel-edit-button' onPress={handleCancelEdit}> 
               <MaterialCommunityIcons name='close-circle' size={40} color={colors.danger} />
             </TouchableOpacity> 
           }
-          <TouchableOpacity onPress={handleEditProfile} >
+          <TouchableOpacity testID='edit-button' onPress={handleEditProfile} >
                   <MaterialCommunityIcons name={isEditing ? 'check-circle' : 'pencil-circle'} size={40} color={colors.primary} />
           </TouchableOpacity>
         </View>
@@ -283,7 +283,7 @@ const PersonalInformation = () => {
           <View style={styles.personalDataContainer}>
             <View style={styles.infoContainer}>
               <Text style={styles.subtitle}>{t('name')}:</Text>
-              <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.firstName} onChangeText={(text) => setEditedUser((prev) => ({...prev, firstName: text}))} />
+              <TextInput testID='first-name-input' style={dynamicStyles.input} editable={isEditing} value={editedUser.firstName} onChangeText={(text) => setEditedUser((prev) => ({...prev, firstName: text}))} />
               { editedUser.lastName ? (<TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.lastName} onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))} />) :
                 isEditing ? (<TextInput style={dynamicStyles.input} editable={isEditing} value='' onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))}  />) : null
               }
@@ -303,13 +303,13 @@ const PersonalInformation = () => {
             <View style={styles.allergiesContainer}>
               <View style={styles.allergiesTitle}> 
                   <Text style={styles.subtitle}>{t('allergies')}: </Text>
-                  <TouchableOpacity>
-                      { showSelectBox ? <MaterialCommunityIcons name='minus-box' size={24} color={colors.danger} onPress={handleSelectBox} /> : <MaterialCommunityIcons name='plus-box' size={24} color={colors.third} onPress={handleSelectBox} /> }
+                  <TouchableOpacity onPress={handleSelectBox} testID="toggle-allergy-select">
+                      { showSelectBox ? <MaterialCommunityIcons name='minus-box' size={24} color={colors.danger} /> : <MaterialCommunityIcons name='plus-box' size={24} color={colors.third} /> }
                   </TouchableOpacity>
                   { showSelectBox && 
                       <View style={{position: 'absolute', display: 'flex', right: 0, flexDirection: 'row', gap: 10}}>
-                          <SelectBox style={{width: 'auto'}} title={t('selectAnAllergy')} options={AllergenGroups} selectedOption={selectedAllergy} setSelectedOption={setSelectedAllergy} />
-                          <TouchableOpacity>
+                          <SelectBox testID='select-allergy' style={{width: 'auto'}} title={t('selectAnAllergy')} options={AllergenGroups} selectedOption={selectedAllergy} setSelectedOption={setSelectedAllergy} />
+                          <TouchableOpacity testID='confirm-allergy-button'>
                               <MaterialCommunityIcons name='check' size={24} color={colors.primary} onPress={handleAddAllergy} />
                           </TouchableOpacity>
                       </View> 

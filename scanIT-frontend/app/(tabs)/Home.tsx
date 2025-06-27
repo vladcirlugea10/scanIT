@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, ActivityIndicator, Alert, TouchableOpacity, TextInput } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { CameraCapturedPicture, CameraView, useCameraPermissions, CameraPictureOptions } from 'expo-camera'
 import { StatusBar } from 'expo-status-bar'
@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import SelectBox from '@/components/SelectBox'
 import { countryMap } from '@/assets/data/countries'
+import { toastInfo } from '@/components/ToastInfo'
+import { createGlobalStyles } from '@/assets/styles'
 
 type HomeNavProps = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -26,9 +28,10 @@ const Home = () => {
     const [isScanning, setIsScanning] = useState(false);
 
     const cameraRef = useRef<CameraView>(null);
-    const { getProduct, product, notFound } = useOpenFoodFacts();
+    const { getProduct, resetProduct, product, notFound } = useOpenFoodFacts();
     const { colors } = useTheme();
     const { t } = useTranslation();
+    const globalStyles = createGlobalStyles(colors);
 
     const navigation = useNavigation<HomeNavProps>();
 
@@ -97,6 +100,15 @@ const Home = () => {
         }
     });
 
+    useEffect(() => {
+        if(selectedMode === 'barcode'){
+            toastInfo(t('scan a product by barcode to get started'));
+        }
+        if(selectedMode === 'photo'){
+            toastInfo(t('take a photo of a product label to scan the text'));
+        }
+    }, [selectedMode]);
+
     const showAlert = () =>
     Alert.alert(
         t('product not found'),
@@ -125,6 +137,7 @@ const Home = () => {
             setBarcodeData(undefined);
             setPhoto(undefined);
             setIsScanning(true);
+            resetProduct();
             return () => {}
         }, [])
     );
@@ -133,8 +146,10 @@ const Home = () => {
         if(product){
             navigation.navigate('BarcodeResults', { product: product });
             setBarcodeData(undefined);
+            setIsScanning(true);
+            resetProduct();
         }
-    }, [product]);
+    }, [product, navigation, resetProduct]);
 
     useEffect(() => {
         if(notFound){
@@ -195,7 +210,7 @@ const Home = () => {
     };
 
     const handleBarcodeScanned = async ({ data }: { data: string }) => {
-        if (isScanning && data) {
+        if (isScanning && data && data !== barcodeData) {
             console.log("Scanned barcode:", data);
             setBarcodeData(data);
             setIsScanning(false);
@@ -205,6 +220,23 @@ const Home = () => {
                     await getProduct(data, country);
                 } else {
                     await getProduct(data);
+                }
+            } catch (error) {
+                console.error("Error fetching product:", error);
+                setIsScanning(true);
+            }
+        }
+    };
+
+    const handleTextInputBarcode = async () => {
+        if (barcodeData && barcodeData.trim() !== '') {
+            setIsScanning(false);
+            
+            try {
+                if (country) {
+                    await getProduct(barcodeData.trim(), country);
+                } else {
+                    await getProduct(barcodeData.trim());
                 }
             } catch (error) {
                 console.error("Error fetching product:", error);
@@ -233,7 +265,7 @@ const Home = () => {
                 <StatusBar style='light' backgroundColor='black' />
                 <View style={styles.dataContainer}>
                     <View style={styles.cameraContainer}>
-                        <Image source={{uri: photo.uri}} style={styles.camera} />
+                        <Image testID="photo-image" source={{uri: photo.uri}} style={styles.camera} />
                     </View>
                     <View style={{display: "flex", flexDirection:"row", gap: 50}}>
                         <MyButton title={t('advance')} onPress={handleScan} iconName='checkmark-outline' textStyle={{fontSize: 16}} />
@@ -262,19 +294,27 @@ const Home = () => {
                         textStyle={[styles.buttonText]} 
                     />
                 </View>
+                { selectedMode === 'photo' && <Text style={globalStyles.textForPressing}>{t('take a photo of a product label to scan the text')}</Text> }
                 { selectedMode === 'barcode' && 
-                    <SelectBox 
-                        title={t("location")} 
-                        options={Object.keys(countryMap)} 
-                        selectedOption={country} 
-                        setSelectedOption={handleSelectedCountry} 
-                    /> 
+                    <View>
+                        <SelectBox 
+                            title={t("location")} 
+                            options={Object.keys(countryMap)} 
+                            selectedOption={country} 
+                            setSelectedOption={handleSelectedCountry} 
+                        /> 
+                        <Text style={globalStyles.textForPressing}>{t('scan a product by barcode or enter it to get started')}</Text>
+                        <View style={[globalStyles.rowContainer, {gap: 10, justifyContent: 'center'}]}>
+                            <TextInput style={[globalStyles.input, {width: '50%', borderRadius: 10}]} placeholderTextColor={colors.primary} onChangeText={(text) => setBarcodeData(text)} placeholder={t('enterBarcode')} value={barcodeData || ''} onSubmitEditing={handleTextInputBarcode} returnKeyType="search"/>
+                            <MyButton onPress={handleTextInputBarcode} containerStyle={{width: 60, height: 35, paddding: 2, justifyContent: 'flex-end'}} iconName='search-outline' iconSize={15} iconColor={colors.secondary} />
+                        </View>
+                    </View>
                 }
                 <View style={styles.cameraContainer}>
                     <CameraView 
                         ref={cameraRef} 
                         style={styles.camera} 
-                        onBarcodeScanned={isScanning ? handleBarcodeScanned : undefined} 
+                        onBarcodeScanned={selectedMode === 'barcode' && isScanning ? handleBarcodeScanned : undefined} 
                     />
                     {selectedMode === 'barcode' && barcodeData && !isScanning && (
                         <View style={styles.scanOverlay}>
@@ -294,7 +334,8 @@ const Home = () => {
                     )}
                 </View>
                 {selectedMode === 'photo' ? (
-                    <MyButton 
+                    <MyButton
+                        testID="take-photo-button" 
                         iconName='camera' 
                         iconColor={colors.secondary} 
                         iconSize={30} 

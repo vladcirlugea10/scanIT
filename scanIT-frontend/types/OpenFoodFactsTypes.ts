@@ -35,6 +35,7 @@ interface Product {
             thumb: { [key: string]: string };
         };
     };
+    quantity: string;
 }
 
 interface AddProduct {

@@ -20,17 +20,19 @@ import AddProduct from './(tabs)/AddProduct';
 import EditProduct from './(tabs)/EditProduct';
 import AddedProducts from './(tabs)/AddedProducts';
 import EditedProducts from './(tabs)/EditedProducts';
+import { useAuth } from '@/hooks/useAuth';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const { user, isAuth } = useAuth();
 
   return (
     <NavigationContainer>
         <Stack.Navigator initialRouteName='Home'>
-            <Stack.Screen name='Home' component={Home} options={{header: () => <PageHeader title={t('home')} backButton={false} />, headerRight: () => <Ionicons name='person-outline' size={24} color={colors.secondary}/>}} />
+            <Stack.Screen name='Home' component={Home} options={{header: () => <PageHeader title={isAuth ? `${t('welcome')}, ${user?.firstName}` : t('home')} backButton={false} />, headerRight: () => <Ionicons name='person-outline' size={24} color={colors.secondary}/>}} />
             <Stack.Screen name='ImageEdit' component={ImageEdit} options={{header: () => <PageHeader title={t('editImage')} backButton={true} />, headerBackVisible: false,}} />
             <Stack.Screen name='ScanImage' component={ScanImage} options={{header: () => <PageHeader title={t('scanResults')} backButton={true} />, headerBackVisible: false,}} />
             <Stack.Screen name='IngredientsCheck' component={IngredientsCheck} options={{header: () => <PageHeader title={t('checkIngredients')} backButton={true} />, headerBackVisible: false,}} />

@@ -7,7 +7,7 @@ export const calculateCalories = (weight: number, height: number, age: number, g
         return BMR;
     }else if(gender === 'Female'){
         const BMR = 447.6 + (9.2*weight) + (3.1*height) - (4.3*age);
-        return BMR;
+        return BMR.toFixed(2);
     }else{
         return;
     }

@@ -233,11 +233,11 @@ const AccountInformation = () => {
       <View style={styles.mainContainer}>
         <Text style={styles.title}>{t('accountInformation')}</Text>
         <View style={styles.buttonContainer}>
-          { isEditing && <TouchableOpacity onPress={handleCancelEdit}> 
+          { isEditing && <TouchableOpacity testID='cancel-edit-button' onPress={handleCancelEdit}> 
               <MaterialCommunityIcons name='close-circle' size={40} color={colors.danger} />
             </TouchableOpacity> 
           }
-          <TouchableOpacity onPress={handleEditProfile} >
+          <TouchableOpacity testID='edit-button' onPress={handleEditProfile} >
                   <MaterialCommunityIcons name={isEditing ? 'check-circle' : 'pencil-circle'} size={40} color={colors.primary} />
           </TouchableOpacity>
         </View>
@@ -245,7 +245,7 @@ const AccountInformation = () => {
           <View style={styles.personalDataContainer}>
             <View style={styles.infoContainer}>
               <Text style={styles.subtitle}>{t('name')}: </Text>
-              <TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.firstName} onChangeText={(text) => setEditedUser((prev) => ({...prev, firstName: text}))} />
+              <TextInput testID="first-name-input" style={dynamicStyles.input} editable={isEditing} value={editedUser.firstName} onChangeText={(text) => setEditedUser((prev) => ({...prev, firstName: text}))} />
               { editedUser.lastName ? (<TextInput style={dynamicStyles.input} editable={isEditing} value={editedUser.lastName} onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))} />) :
                 isEditing ? (<TextInput style={dynamicStyles.input} editable={isEditing} value='' onChangeText={(text) => setEditedUser((prev) => ({...prev, lastName: text}))}  />) : null
               }

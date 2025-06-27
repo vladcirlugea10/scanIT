@@ -61,10 +61,10 @@ const ChangeLanguage = () => {
             <Text>{t("currentCountrySelected")}: {}</Text>
             <Text style={styles.text} >{t("availableLanguages")}: </Text>
             <View style={styles.languagesContainer}>
-                <TouchableOpacity onPress={() => handleLanguageChange('en-UK')}>
+                <TouchableOpacity testID="uk-flag-button" onPress={() => handleLanguageChange('en-UK')}>
                     <Image style={styles.image} source={require('../../assets/images/uk_flag.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleLanguageChange('ro-RO')}>
+                <TouchableOpacity testID="romania-flag-button" onPress={() => handleLanguageChange('ro-RO')}>
                     <Image style={styles.image} source={require('../../assets/images/romania_flag.png')} />
                 </TouchableOpacity>
             </View>

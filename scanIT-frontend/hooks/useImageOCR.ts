@@ -7,7 +7,7 @@ const useImageOCR = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<OCRResult>({ text: [] });
 
-    const URL = "https://f229-84-232-135-18.ngrok-free.app";
+    const URL = "https://4012-82-78-85-248.ngrok-free.app";
 
     const scanImage = async (image: Image) => {
         setLoading(true);
@@ -25,7 +25,7 @@ const useImageOCR = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-                timeout: 20000
+                timeout: 10000
             });
 
             console.log("Backend OCR Response:", response.data);
