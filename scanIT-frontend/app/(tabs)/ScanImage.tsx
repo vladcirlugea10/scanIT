@@ -87,24 +87,33 @@ const ScanImage: React.FC<ScanImageNavProps> = ({route}) => {
     }, [photoUri, isConnected]);
 
     const handleScan = async() => {
-        if(!photoUri) return;
+      if(!photoUri) return;
 
-        try{
-            if(isConnected){
-              setScanMethod('online');
-              await scanImage({uri: photoUri});
-            } else {
-              setScanMethod('offline');
-              await scanImageOffline({uri: photoUri});
-            }
-        }catch(error){
-            console.error("Error during scan:", error);
-            if(isConnected && scanMethod === 'online'){
+      try{
+          if(isConnected){
+            setScanMethod('online');
+            await scanImage({uri: photoUri});
+            
+            if(data.text.length === 0 || 
+              data.text.includes("No text detected.") || 
+              data.text.includes("Error extracting text.")) {
+              console.log("Gemini scan failed, falling back to EasyOCR");
               setScanMethod('offline (fallback)');
               await scanImageOffline({uri: photoUri});
             }
-        }
-    }
+          } else {
+            setScanMethod('offline');
+            await scanImageOffline({uri: photoUri});
+          }
+      }catch(error){
+          console.error("Error during scan:", error);
+          if(isConnected){
+            console.log("Scan error occurred, falling back to EasyOCR");
+            setScanMethod('offline (fallback)');
+            await scanImageOffline({uri: photoUri});
+          }
+      }
+  }
 
     const handleSelectedLanguage = (language: string) => {
       setSelectedLanguage(language);

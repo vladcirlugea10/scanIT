@@ -137,7 +137,7 @@ const useOpenFoodFacts = () => {
     setLoading(true);
     clearError();
     try {
-        const response = await axios.post(`http://192.168.1.10:5000/api/open-food-facts/add-product-image`, formData, {
+        const response = await axios.post(`http://192.168.1.9:5000/api/open-food-facts/add-product-image`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Token': `Bearer ${token}`

@@ -7,7 +7,7 @@ const useImageOCR = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<OCRResult>({ text: [] });
 
-    const URL = "https://ecb7-185-53-197-46.ngrok-free.app";
+    const URL = "https://4012-82-78-85-248.ngrok-free.app";
 
     const scanImage = async (image: Image) => {
         setLoading(true);

@@ -4,7 +4,7 @@ import { useState } from "react"
 const useTextTranslation = () => {
     const [loading, setLoading] = useState(false);
 
-    const URL = "https://ecb7-185-53-197-46.ngrok-free.app";
+    const URL = "https://4012-82-78-85-248.ngrok-free.app";
 
     const detectLanguage = async (text: string) => {
 
