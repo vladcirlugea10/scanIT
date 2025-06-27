@@ -25,7 +25,7 @@ const useImageOCR = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
-                timeout: 15000
+                timeout: 10000
             });
 
             console.log("Backend OCR Response:", response.data);
